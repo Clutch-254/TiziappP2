@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiziappp2/presentation/pages/homepage.dart';
+
 import 'package:tiziappp2/technicals/bottomnav.dart';
 
 void main() {

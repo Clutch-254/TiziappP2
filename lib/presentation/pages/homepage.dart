@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiziappp2/presentation/productdetails.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
 class Homepage extends StatefulWidget {
@@ -55,41 +56,46 @@ class _HomepageState extends State<Homepage> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    child: Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              "Images/Jina_Trainer.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            ),
-                            Text(
-                              "Jina - Personal Trainer",
-                              style: AppWidget.smallBoldTextFieledStyle(),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Text(
-                              "Personal Trainer",
-                              style: AppWidget.smallSemiBoldTextFieledStyle(),
-                            ),
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            Text(
-                              "\Ksh1000 per session",
-                              style: AppWidget.smallBoldTextFieledStyle(),
-                            ),
-                          ],
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Productdetails(),),);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      child: Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: EdgeInsets.all(14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                "Images/Jina_Trainer.png",
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
+                              Text(
+                                "Jina - Personal Trainer",
+                                style: AppWidget.smallBoldTextFieledStyle(),
+                              ),
+                              SizedBox(
+                                height: 5.0,
+                              ),
+                              Text(
+                                "Personal Trainer",
+                                style: AppWidget.smallSemiBoldTextFieledStyle(),
+                              ),
+                              SizedBox(
+                                height: 5.0,
+                              ),
+                              Text(
+                                "\Ksh1,000 per session",
+                                style: AppWidget.smallBoldTextFieledStyle(),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -128,7 +134,7 @@ class _HomepageState extends State<Homepage> {
                               height: 5.0,
                             ),
                             Text(
-                              "\Ksh14000 per month",
+                              "\Ksh14,000 per month",
                               style: AppWidget.smallBoldTextFieledStyle(),
                             ),
                           ],
@@ -186,7 +192,7 @@ class _HomepageState extends State<Homepage> {
                           Container(
                             width: MediaQuery.of(context).size.width / 2,
                             child: Text(
-                              "\Ksh2000 per session",
+                              "\Ksh2,000 per session",
                               style: AppWidget.smallBoldTextFieledStyle(),
                             ),
                           )
