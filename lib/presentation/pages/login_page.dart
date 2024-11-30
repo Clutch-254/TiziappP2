@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiziappp2/presentation/pages/signup_page.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -127,6 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                             height: 50.0,
                           ),
                           Material(
+                            borderRadius: BorderRadius.circular(20),
+                            elevation: 5,
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 8.0),
                               width: 200,
@@ -154,9 +157,19 @@ class _LoginPageState extends State<LoginPage> {
                   SizedBox(
                     height: 70,
                   ),
-                  Text(
-                    "Don't have an account? Sign Up",
-                    style: AppWidget.smallBoldTextFieledStyle(),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SignupPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Don't have an account? Sign Up",
+                      style: AppWidget.smallBoldTextFieledStyle(),
+                    ),
                   ),
                 ],
               ),
