@@ -1,7 +1,22 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/onboard.dart';
+import 'package:tiziappp2/presentation/pages/signup_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: const FirebaseOptions(
+            apiKey: "AIzaSyCZ-B2EsfIptUSOcJjbzCm7PH1IoCEiXFs",
+            appId: "1:1038477082:web:58a4472f1603abdc7caea3",
+            messagingSenderId: "1038477082",
+            projectId: "tiziapppro2"));
+  } else {
+    await Firebase.initializeApp();
+  }
+
   runApp(const MyApp());
 }
 
@@ -32,7 +47,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: Onboard());
+        home: const SignupPage());
   }
 }
 

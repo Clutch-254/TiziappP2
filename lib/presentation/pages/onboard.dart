@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tiziappp2/presentation/pages/signup_page.dart';
+import 'package:tiziappp2/presentation/pages/login_page.dart';
+
 import 'package:tiziappp2/technicals/widgets/content_model.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
@@ -90,7 +91,7 @@ class _OnboardState extends State<Onboard> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SignupPage(),
+                    builder: (context) => LoginPage(),
                   ),
                 );
               }
