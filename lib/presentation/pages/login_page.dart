@@ -3,6 +3,9 @@ import 'package:tiziappp2/presentation/pages/signup_page.dart';
 import 'package:tiziappp2/technicals/widgets/button.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
+import '../../technicals/bottomnav.dart';
+import '../../technicals/widgets/authentication.dart';
+import '../../technicals/widgets/snack_bar.dart';
 import '../../technicals/widgets/text_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,6 +18,42 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  bool isLoading = false;
+
+        @override
+    // ignore: unused_element
+    void despose(){
+      super.dispose();
+      emailController.dispose();
+      passwordController.dispose();
+    }
+    
+      void loginUser() async {
+      String res = await AuthenServ().loginUser(
+        email: emailController.text,
+        password: passwordController.text,
+        
+      );
+      //if log in is successful user navigates to homepage else error message displayed
+      if (res == "Success!") {
+        setState(() {
+          isLoading = true;
+        });
+        //navigate to homepage
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => Bottomnav(),
+          ),
+        );
+      }else {
+        setState(() {
+          isLoading = false;
+        });
+        //displays error
+        showSnackBar(context, res);
+      }
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                 icon: Icons.email,
               ),
               TextFieldIn(
+                isPass: true,
                 textEditingController: passwordController,
                 hintText: "Enter password",
                 icon: Icons.lock,
@@ -51,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              ThisButton(onTab: () {}, text: "Log In"),
+              ThisButton(onTab: loginUser, text: "Log In"),
               SizedBox(height: height / 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

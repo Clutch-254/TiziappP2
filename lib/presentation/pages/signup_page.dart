@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/login_page.dart';
+import 'package:tiziappp2/technicals/bottomnav.dart';
+import 'package:tiziappp2/technicals/widgets/authentication.dart';
+import 'package:tiziappp2/technicals/widgets/snack_bar.dart';
 import 'package:tiziappp2/technicals/widgets/text_field.dart';
 
 import '../../technicals/widgets/button.dart';
@@ -13,14 +16,48 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
+    bool isLoading = false;
+    
+    @override
+    // ignore: unused_element
+    void despose(){
+      super.dispose();
+      nameController.dispose();
+      emailController.dispose();
+      passwordController.dispose();
+    }
+
+    void signUpUser() async {
+      String res = await AuthenServ().signUpUser(
+        name: nameController.text,
+        email: emailController.text,
+        password: passwordController.text,
+        
+      );
+      //if sign up is successful user navigates to homepage else error message displayed
+      if (res == "Success!") {
+        setState(() {
+          isLoading = true;
+        });
+        //navigate to homepage
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => Bottomnav(),
+          ),
+        );
+      }else {
+        setState(() {
+          isLoading = false;
+        });
+        //displays error
+        showSnackBar(context, res);
+      }
+    }
 
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -48,15 +85,16 @@ class _SignupPageState extends State<SignupPage> {
               TextFieldIn(
                 textEditingController: passwordController,
                 hintText: "Enter password",
+                isPass: true,
                 icon: Icons.password,
               ),
-              ThisButton(onTab: () {}, text: "Sign Up"),
+              ThisButton(onTab: signUpUser, text: "Sign Up"),
               SizedBox(height: height / 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Alraedy have an account? ",
+                    "Already have an account? ",
                     style: AppWidget.smallBoldTextFieledStyle(),
                   ),
                   GestureDetector(

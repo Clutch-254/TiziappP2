@@ -6,6 +6,7 @@ import 'package:tiziappp2/presentation/pages/homepage.dart';
 import 'package:tiziappp2/presentation/pages/orderhireapply.dart';
 import 'package:tiziappp2/presentation/pages/profile.dart';
 
+
 class Bottomnav extends StatefulWidget {
   const Bottomnav({super.key});
 
@@ -24,18 +25,21 @@ class _BottomnavState extends State<Bottomnav> {
   late Gymaccessories gymaccessories;
   late Orderhireapply orderhireapply;
 
+
   @override
   void initState() {
     homepage = Homepage();
     foodnsupplements = Foodnsupplements();
     gymaccessories = Gymaccessories();
     orderhireapply = Orderhireapply();
+
     profile = Profile();
     pages = [
       homepage,
       foodnsupplements,
       gymaccessories,
       orderhireapply,
+
       profile
     ];
 
@@ -72,10 +76,7 @@ class _BottomnavState extends State<Bottomnav> {
             Icons.shopping_bag_outlined,
             color: Colors.white,
           ),
-          Icon(
-            Icons.wallet_outlined,
-            color: Colors.white,
-          ),
+          
           Icon(
             Icons.person_outlined,
             color: Colors.white,

@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:tiziappp2/presentation/pages/onboard.dart';
-import 'package:tiziappp2/presentation/pages/signup_page.dart';
+import 'package:tiziappp2/presentation/pages/admin_homepage.dart';
+import 'package:tiziappp2/technicals/bottomnav.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const SignupPage());
+        home: const AdminHomepage());
   }
 }
 
