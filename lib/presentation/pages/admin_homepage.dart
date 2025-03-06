@@ -53,11 +53,14 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(6.0),
-                          child: Image.asset(
-                            "Images/logo.png",
-                            height: 100,
-                            width: 100,
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              "Images/logo.png",
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -102,11 +105,14 @@ class _AdminHomepageState extends State<AdminHomepage> {
                       children: [
                         Padding(
                           padding: EdgeInsets.all(6.0),
-                          child: Image.asset(
-                            "Images/logo.png",
-                            height: 100,
-                            width: 100,
-                            fit: BoxFit.cover,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              "Images/logo.png",
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         SizedBox(

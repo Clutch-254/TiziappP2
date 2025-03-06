@@ -1,4 +1,10 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:random_string/random_string.dart';
+import 'package:tiziappp2/technicals/widgets/database.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
 class AddItem extends StatefulWidget {
@@ -19,6 +25,51 @@ class _AddItemState extends State<AddItem> {
   TextEditingController namecontroller = new TextEditingController();
   TextEditingController pricecontroller = new TextEditingController();
   TextEditingController detailcontroller = new TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  File? selectedImage;
+
+  Future getImage() async {
+    var image = await _picker.pickImage(source: ImageSource.gallery);
+
+    selectedImage = File(image!.path);
+    setState(() {});
+  }
+
+  uploadItem() async {
+    if (selectedImage != null &&
+        namecontroller.text != "" &&
+        pricecontroller.text != "" &&
+        detailcontroller.text != "") {
+      String addId = randomAlphaNumeric(10);
+
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child("blogImage").child(addId);
+      final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
+
+      var downloadUrl = await (await task).ref.getDownloadURL();
+
+      Map<String, dynamic> addItem = {
+        "Image": downloadUrl,
+        "Name": namecontroller.text,
+        "Price": pricecontroller.text,
+        "Detail": detailcontroller.text,
+      };
+      await DatabaseMethods().addFitItem(addItem, value!).then((value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.orangeAccent,
+            content: Text(
+              "Food item has been added",
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          ),
+        );
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,24 +103,52 @@ class _AddItemState extends State<AddItem> {
               SizedBox(
                 height: 20.0,
               ),
-              Center(
-                child: Material(
-                  elevation: 4.0,
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 1.5),
-                      borderRadius: BorderRadius.circular(20),
+              selectedImage == null
+                  ? GestureDetector(
+                      onTap: () {
+                        getImage();
+                      },
+                      child: Center(
+                        child: Material(
+                          elevation: 4.0,
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: Container(
+                            width: 150,
+                            height: 150,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.black, width: 1.5),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.camera_alt_outlined,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Material(
+                        elevation: 4.0,
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black, width: 1.5),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.file(
+                              selectedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                    child: Icon(
-                      Icons.camera_alt_outlined,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
               SizedBox(
                 height: 30.0,
               ),
@@ -202,24 +281,29 @@ class _AddItemState extends State<AddItem> {
               SizedBox(
                 height: 30.0,
               ),
-              Center(
-                child: Material(
-                  elevation: 5.0,
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5.0),
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Add",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 21.0,
-                          fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: (){
+                  uploadItem();
+                },
+                child: Center(
+                  child: Material(
+                    elevation: 5.0,
+                    borderRadius: BorderRadius.circular(10),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5.0),
+                      width: 150,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 21.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

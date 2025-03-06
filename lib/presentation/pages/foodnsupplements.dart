@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../technicals/widgets/database.dart';
 import '../../technicals/widgets/supportwidget.dart';
 import '../productdetails.dart';
 
@@ -12,6 +14,21 @@ class Foodnsupplements extends StatefulWidget {
 
 class _FoodnsupplementsState extends State<Foodnsupplements> {
   bool foods = false, supplements = false;
+
+   Stream? gymItemStream;
+  onFitLoad()async{
+    gymItemStream = await DatabaseMethods().getGymItem("Foods");
+    setState(() {
+      
+    });
+  }
+  @override
+  void initState() {
+   onFitLoad();
+    super.initState();
+  }
+  
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,11 +93,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset(
-                                "Images/steak_potato.png",
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.asset(
+                                  "Images/steak_potato.png",
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Text(
                                 "Grilled steak and\n fried potatoes",
@@ -112,11 +132,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              "Images/fruitsalad.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/fruitsalad.png",
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             Text(
                               "Fruit Salad",
@@ -150,11 +173,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        "Images/beefrice.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          "Images/beefrice.png",
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(
                         width: 20.0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../technicals/widgets/database.dart';
 import '../../technicals/widgets/supportwidget.dart';
 import '../productdetails.dart';
 
@@ -12,6 +13,11 @@ class Gymaccessories extends StatefulWidget {
 
 class _GymaccessoriesState extends State<Gymaccessories> {
   bool equipment = false, gymoutfits = false;
+
+  Stream? fitItemStream;
+  onTheLoad()async{
+    fitItemStream = await DatabaseMethods().getFitItem("Equipment");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,11 +82,14 @@ class _GymaccessoriesState extends State<Gymaccessories> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset(
-                                "Images/5kgdumb.png",
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.asset(
+                                  "Images/5kgdumb.png",
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Text(
                                 "5 kilogram dumbbells",
@@ -112,11 +121,14 @@ class _GymaccessoriesState extends State<Gymaccessories> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              "Images/smith.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/smith.png",
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             Text(
                               "Smith Machine",
@@ -150,11 +162,14 @@ class _GymaccessoriesState extends State<Gymaccessories> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        "Images/punchb.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.asset(
+                          "Images/punchb.png",
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(
                         width: 20.0,

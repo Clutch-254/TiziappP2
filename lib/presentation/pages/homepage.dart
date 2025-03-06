@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/productdetails.dart';
+import 'package:tiziappp2/technicals/widgets/database.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 
 class Homepage extends StatefulWidget {
@@ -11,6 +12,11 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   bool trainer2o = false, nutritionist = false, gyms = false;
+
+  Stream? subItemStream;
+  onLoad()async{
+    subItemStream = await DatabaseMethods().getSubItem("Trainer");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,8 +63,13 @@ class _HomepageState extends State<Homepage> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>Productdetails(),),);
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Productdetails(),
+                        ),
+                      );
                     },
                     child: Container(
                       margin: EdgeInsets.all(5),
@@ -70,11 +81,14 @@ class _HomepageState extends State<Homepage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Image.asset(
-                                "Images/Jina_Trainer.png",
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.cover,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.asset(
+                                  "Images/Jina_Trainer.png",
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Text(
                                 "Jina - Personal Trainer",
@@ -113,11 +127,14 @@ class _HomepageState extends State<Homepage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Image.asset(
-                              "Images/PnM.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/PnM.png",
+                                height: 150,
+                                width: 150,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                             Text(
                               "Poly n Mike - Couple's \nPersonal Trainers",
@@ -158,11 +175,14 @@ class _HomepageState extends State<Homepage> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        "Images/jin_woo.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: Image.asset(
+                          "Images/jin_woo.png",
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       SizedBox(
                         width: 20.0,
@@ -214,10 +234,11 @@ class _HomepageState extends State<Homepage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             trainer2o = true;
             nutritionist = false;
             gyms = false;
+
             setState(() {});
           },
           child: Material(
