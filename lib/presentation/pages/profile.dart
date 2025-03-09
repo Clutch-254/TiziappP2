@@ -19,6 +19,7 @@ class _ProfileState extends State<Profile> {
   late DateTime _selectedDate;
   late List<DateTime> _weekDays;
   late PageController _pageController;
+  int _selectedIconIndex = -1; // Track the selected icon index
 
   @override
   void initState() {
@@ -78,21 +79,39 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 4),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Max Achebi",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Poppins',
-                        ),
+                // Add "Max Achebi" above the image
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 3 - 40),
+                    child: Text(
+                      "Max Achebi",
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Poppins',
                       ),
-                    ],
+                    ),
+                  ),
+                ),
+                // Add four icons beneath the image
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height / 3 + 100),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildIconButton(0, Icons.fastfood), // Food icon
+                        SizedBox(width: 40), // Increased space between icons
+                        _buildIconButton(1, Icons.access_time), // Clock/watch icon
+                        SizedBox(width: 40), // Increased space between icons
+                        _buildIconButton(2, Icons.contacts), // Phonebook icon
+                        SizedBox(width: 40), // Increased space between icons
+                        _buildIconButton(3, Icons.bar_chart), // Bar graph icon
+                      ],
+                    ),
                   ),
                 ),
                 Container(
@@ -108,7 +127,7 @@ class _ProfileState extends State<Profile> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
-                              icon: Icon(Icons.chevron_left),
+                              icon: Icon(Icons.chevron_left, color: Colors.grey),
                               onPressed: () => _navigateToWeek(-1),
                               padding: EdgeInsets.zero,
                               constraints: BoxConstraints(),
@@ -118,10 +137,11 @@ class _ProfileState extends State<Profile> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.grey, // Grey color for calendar text
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.chevron_right),
+                              icon: Icon(Icons.chevron_right, color: Colors.grey),
                               onPressed: () => _navigateToWeek(1),
                               padding: EdgeInsets.zero,
                               constraints: BoxConstraints(),
@@ -158,7 +178,7 @@ class _ProfileState extends State<Profile> {
                                       fontSize: 12,
                                       fontWeight: FontWeight.w500,
                                       color: isSelected
-                                          ? Theme.of(context).primaryColor
+                                          ? Colors.grey // Grey color for selected day
                                           : Colors.grey[600],
                                     ),
                                   ),
@@ -170,11 +190,9 @@ class _ProfileState extends State<Profile> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: isSelected
-                                          ? Theme.of(context).primaryColor
+                                          ? Colors.grey // Grey color for selected day
                                           : isToday
-                                              ? Theme.of(context)
-                                                  .primaryColor
-                                                  .withOpacity(0.1)
+                                              ? Colors.grey.withOpacity(0.1)
                                               : Colors.transparent,
                                     ),
                                     child: Center(
@@ -188,8 +206,7 @@ class _ProfileState extends State<Profile> {
                                           color: isSelected
                                               ? Colors.white
                                               : isToday
-                                                  ? Theme.of(context)
-                                                      .primaryColor
+                                                  ? Colors.grey
                                                   : Colors.black87,
                                         ),
                                       ),
@@ -212,6 +229,32 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Helper method to build an icon button
+  Widget _buildIconButton(int index, IconData icon) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedIconIndex = index; // Update the selected icon index
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: _selectedIconIndex == index ? Colors.white : Colors.transparent,
+          shape: BoxShape.circle,
+          border: _selectedIconIndex == index
+              ? Border.all(color: Colors.grey, width: 2)
+              : null,
+        ),
+        child: Icon(
+          icon,
+          size: 30,
+          color: _selectedIconIndex == index ? Colors.grey : Colors.grey[600],
+        ),
+      ),
+    );
+  }
+
   bool _isToday(DateTime date) {
     final now = DateTime.now();
     return date.year == now.year &&
@@ -226,7 +269,7 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-// Example of how to use the WeeklyCalendar widget in an app
+// Example of how to use the Profile widget in an app
 class CalendarExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -242,12 +285,11 @@ class CalendarExample extends StatelessWidget {
                 // Handle date selection here
               },
             ),
-
-            // other utilities
+            // Other utilities
             Expanded(
               child: Center(
                 child: Text(
-                    '3 icons: nutritionl follow up, work out routines with or without trainer and pictures and progress'),
+                    '4 icons: nutrition follow-up, workout routines with or without trainer, pictures and progress, and analytics'),
               ),
             ),
           ],
