@@ -1,5 +1,3 @@
-Tizi app, your fitness and well app
-
 import 'package:flutter/material.dart';
 
 class CartPage extends StatefulWidget {
@@ -17,8 +15,7 @@ class _CartPageState extends State<CartPage> {
       name: "Dumbbell",
       price: 5000,
       quantity: 4,
-      image: "Images/5kgdumbbe.png",
-      status: PurchaseStatus.toPurchase,
+      image: "Images/5kgdumb.png",
     ),
     CartItem(
       id: 2,
@@ -26,7 +23,6 @@ class _CartPageState extends State<CartPage> {
       price: 2500,
       quantity: 1,
       image: "Images/punchb.png",
-      status: PurchaseStatus.bought,
     ),
     CartItem(
       id: 3,
@@ -34,7 +30,6 @@ class _CartPageState extends State<CartPage> {
       price: 6000,
       quantity: 2,
       image: "Images/kettle.png",
-      status: PurchaseStatus.underDelivery,
     ),
     CartItem(
       id: 4,
@@ -42,7 +37,6 @@ class _CartPageState extends State<CartPage> {
       price: 30000,
       quantity: 1,
       image: "Images/smith.png",
-      status: PurchaseStatus.toPurchase,
     ),
     CartItem(
       id: 5,
@@ -50,7 +44,6 @@ class _CartPageState extends State<CartPage> {
       price: 1500,
       quantity: 3,
       image: "Images/resist.png",
-      status: PurchaseStatus.bought,
     ),
     CartItem(
       id: 6,
@@ -58,7 +51,6 @@ class _CartPageState extends State<CartPage> {
       price: 800,
       quantity: 2,
       image: "Images/shelift.png",
-      status: PurchaseStatus.underDelivery,
     ),
     CartItem(
       id: 7,
@@ -66,7 +58,6 @@ class _CartPageState extends State<CartPage> {
       price: 3000,
       quantity: 1,
       image: "Images/nitrotech.png",
-      status: PurchaseStatus.toPurchase,
     ),
     CartItem(
       id: 8,
@@ -74,7 +65,6 @@ class _CartPageState extends State<CartPage> {
       price: 1200,
       quantity: 2,
       image: "Images/labzcreatine.png",
-      status: PurchaseStatus.bought,
     ),
     CartItem(
       id: 9,
@@ -82,7 +72,6 @@ class _CartPageState extends State<CartPage> {
       price: 2800,
       quantity: 1,
       image: "Images/biocreatine.png",
-      status: PurchaseStatus.underDelivery,
     ),
     CartItem(
       id: 10,
@@ -90,7 +79,6 @@ class _CartPageState extends State<CartPage> {
       price: 4500,
       quantity: 1,
       image: "Images/opwhey.png",
-      status: PurchaseStatus.toPurchase,
     ),
     CartItem(
       id: 11,
@@ -98,7 +86,6 @@ class _CartPageState extends State<CartPage> {
       price: 1800,
       quantity: 1,
       image: "Images/opcreatine.png",
-      status: PurchaseStatus.bought,
     ),
     CartItem(
       id: 12,
@@ -106,7 +93,6 @@ class _CartPageState extends State<CartPage> {
       price: 3500,
       quantity: 1,
       image: "Images/xglove.png",
-      status: PurchaseStatus.underDelivery,
     ),
   ];
 
@@ -133,10 +119,10 @@ class _CartPageState extends State<CartPage> {
             Expanded(
               child: GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Reduced from 3 to 2 for larger items
-                  childAspectRatio: 0.65, // Adjusted for taller items
-                  crossAxisSpacing: 20, // Increased spacing between columns
-                  mainAxisSpacing: 20, // Increased spacing between rows
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.6,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 25,
                 ),
                 itemCount: cartItems.length,
                 itemBuilder: (context, index) {
@@ -144,7 +130,7 @@ class _CartPageState extends State<CartPage> {
                 },
               ),
             ),
-            SizedBox(height: 15), // Increased space before checkout button
+            SizedBox(height: 20),
             buildCheckoutButton(),
           ],
         ),
@@ -155,15 +141,15 @@ class _CartPageState extends State<CartPage> {
   Widget buildCartItem(CartItem item) {
     return Material(
       elevation: 5.0,
-      borderRadius: BorderRadius.circular(12), // Increased border radius
+      borderRadius: BorderRadius.circular(12),
       color: Colors.white,
       child: InkWell(
         onTap: () {
           // Handle item tap
         },
-        borderRadius: BorderRadius.circular(12), // Increased border radius
+        borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.all(12), // Increased padding
+          padding: EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -175,11 +161,11 @@ class _CartPageState extends State<CartPage> {
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 8),
+              SizedBox(height: 13),
 
               // Image section
               Expanded(
-                flex: 4, // Increased flex for larger image
+                flex: 4,
                 child: Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
@@ -191,11 +177,11 @@ class _CartPageState extends State<CartPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 12), // Increased spacing
+              SizedBox(height: 17),
 
               // Item details section
               Expanded(
-                flex: 3, // Increased flex for more text content
+                flex: 4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -203,53 +189,51 @@ class _CartPageState extends State<CartPage> {
                       item.name,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16, // Increased font size
+                        fontSize: 16,
                       ),
-                      maxLines: 2, // Allow for 2 lines of text
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 6),
+                    SizedBox(height: 11),
                     Text(
                       "Ksh ${item.price}",
                       style: TextStyle(
-                        fontSize: 15, // Increased font size
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    SizedBox(height: 9),
                     Text(
                       "Qty: ${item.quantity} (Ksh ${item.price * item.quantity})",
                       style: TextStyle(
-                        fontSize: 14, // Increased font size
+                        fontSize: 14,
                       ),
                     ),
-                    SizedBox(height: 10), // Increased spacing
+                    SizedBox(height: 15),
 
-                    // Status button - made larger
-                    Container(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle button action
-                        },
-                        child: Text(
-                          getStatusText(item.status),
-                          style: TextStyle(
-                            fontSize: 13, // Increased font size
-                            fontWeight: FontWeight.bold,
-                            color: item.status == PurchaseStatus.toPurchase
-                                ? Colors.black
-                                : Colors.white,
+                    // Add to cart or Remove button
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle button action
+                          },
+                          child: Text(
+                            "Remove",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: getStatusColor(item.status),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10), // Increased padding
-                          minimumSize: Size(
-                              double.infinity, 38), // Increased button height
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[700],
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            minimumSize: Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
                         ),
                       ),
@@ -267,7 +251,7 @@ class _CartPageState extends State<CartPage> {
   Widget buildCheckoutButton() {
     return Container(
       width: double.infinity,
-      height: 60, // Increased height
+      height: 65,
       child: ElevatedButton(
         onPressed: () {
           // Handle checkout
@@ -275,7 +259,7 @@ class _CartPageState extends State<CartPage> {
         child: Text(
           "CHECKOUT",
           style: TextStyle(
-            fontSize: 18, // Increased font size
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
@@ -283,34 +267,12 @@ class _CartPageState extends State<CartPage> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.grey[800],
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Increased border radius
+            borderRadius: BorderRadius.circular(12),
           ),
-          padding: EdgeInsets.symmetric(vertical: 15), // Increased padding
+          padding: EdgeInsets.symmetric(vertical: 18),
         ),
       ),
     );
-  }
-
-  String getStatusText(PurchaseStatus status) {
-    switch (status) {
-      case PurchaseStatus.toPurchase:
-        return "Yet to Purchase";
-      case PurchaseStatus.bought:
-        return "Bought";
-      case PurchaseStatus.underDelivery:
-        return "Bought - Under Delivery";
-    }
-  }
-
-  Color getStatusColor(PurchaseStatus status) {
-    switch (status) {
-      case PurchaseStatus.toPurchase:
-        return Colors.grey;
-      case PurchaseStatus.bought:
-        return Colors.grey[600]!;
-      case PurchaseStatus.underDelivery:
-        return Colors.grey[700]!;
-    }
   }
 }
 
@@ -321,7 +283,6 @@ class CartItem {
   final int price;
   int quantity;
   final String image;
-  final PurchaseStatus status;
 
   CartItem({
     required this.id,
@@ -329,13 +290,5 @@ class CartItem {
     required this.price,
     required this.quantity,
     required this.image,
-    required this.status,
   });
-}
-
-// Enum for purchase status
-enum PurchaseStatus {
-  toPurchase,
-  bought,
-  underDelivery,
 }

@@ -1,11 +1,11 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:tiziappp2/presentation/pages/cart.dart';
 import 'package:tiziappp2/presentation/pages/foodnsupplements.dart';
 import 'package:tiziappp2/presentation/pages/gymaccessories.dart';
 import 'package:tiziappp2/presentation/pages/homepage.dart';
-import 'package:tiziappp2/presentation/pages/orderhireapply.dart';
-import 'package:tiziappp2/presentation/pages/profile.dart';
 
+import 'package:tiziappp2/presentation/pages/profile.dart';
 
 class Bottomnav extends StatefulWidget {
   const Bottomnav({super.key});
@@ -23,25 +23,17 @@ class _BottomnavState extends State<Bottomnav> {
   late Foodnsupplements foodnsupplements;
   late Profile profile;
   late Gymaccessories gymaccessories;
-  late Orderhireapply orderhireapply;
-
+  late CartPage cart;
 
   @override
   void initState() {
     homepage = Homepage();
     foodnsupplements = Foodnsupplements();
     gymaccessories = Gymaccessories();
-    orderhireapply = Orderhireapply();
+    cart = CartPage();
 
     profile = Profile();
-    pages = [
-      homepage,
-      foodnsupplements,
-      gymaccessories,
-      orderhireapply,
-
-      profile
-    ];
+    pages = [homepage, foodnsupplements, gymaccessories, cart, profile];
 
     super.initState();
   }
@@ -76,7 +68,6 @@ class _BottomnavState extends State<Bottomnav> {
             Icons.shopping_bag_outlined,
             color: Colors.white,
           ),
-          
           Icon(
             Icons.person_outlined,
             color: Colors.white,
