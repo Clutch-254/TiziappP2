@@ -20,7 +20,7 @@ class _ProfileState extends State<Profile> {
   late DateTime _selectedDate;
   late List<DateTime> _weekDays;
   late PageController _pageController;
-  int _selectedIconIndex = -1; // Track the selected icon index
+  int _selectedIconIndex = 0; // Set the food icon as the default selected icon
 
   @override
   void initState() {

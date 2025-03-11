@@ -11,7 +11,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  // Set trainer2o to true by default
+  // Sets trainer2o to true by default
   bool trainer2o = true, nutritionist = false, gyms = false;
 
   Stream? subItemStream;
