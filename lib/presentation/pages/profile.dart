@@ -163,6 +163,24 @@ class _ProfileState extends State<Profile> {
                               ],
                             ),
                           ),
+                        // Show weight gain bar graph if the bar graph icon is selected
+                        if (_selectedIconIndex == 3)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Weight Gain Progress",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                WeightGainBarGraph(),
+                              ],
+                            ),
+                          ),
                       ],
                     ),
                   ),
@@ -326,6 +344,450 @@ class _ProfileState extends State<Profile> {
   bool _isThursday(DateTime date) {
     return date.weekday == DateTime.thursday;
   }
+}
+
+// Custom Painter for Donut Chart (Nutrition)
+class DonutChartPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    final innerRadius = radius * 0.6; // Size of the donut hole
+
+    // Define the colors as specified
+    final proteinColor = Colors.grey[800]!; // Dark grey
+    final carbsColor = Colors.grey[400]!; // Light grey
+    final vitaminsColor = Colors.grey; // Medium grey
+    final mineralsColor = Colors.black; // Black
+
+    // Sample data percentages (adjust as needed)
+    final proteinPercent = 0.35; // 35%
+    final carbsPercent = 0.40; // 40%
+    final vitaminsPercent = 0.15; // 15%
+    final mineralsPercent = 0.10; // 10%
+
+    // Paint configurations
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius - innerRadius;
+
+    // Starting angle is -pi/2 (top of the circle)
+    double startAngle = -pi / 2;
+
+    // Draw protein section
+    paint.color = proteinColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * proteinPercent,
+      false,
+      paint,
+    );
+    startAngle += 2 * pi * proteinPercent;
+
+    // Draw carbs section
+    paint.color = carbsColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * carbsPercent,
+      false,
+      paint,
+    );
+    startAngle += 2 * pi * carbsPercent;
+
+    // Draw vitamins section
+    paint.color = vitaminsColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * vitaminsPercent,
+      false,
+      paint,
+    );
+    startAngle += 2 * pi * vitaminsPercent;
+
+    // Draw minerals section
+    paint.color = mineralsColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * mineralsPercent,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+// Custom Painter for Calories Balance Chart
+class CaloriesBalanceChartPainter extends CustomPainter {
+  final int consumed;
+  final int burned;
+
+  CaloriesBalanceChartPainter({
+    required this.consumed,
+    required this.burned,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width / 2;
+    final innerRadius = radius * 0.6; // Size of the donut hole
+
+    // Define the colors
+    final consumedColor = Colors.grey[800]!; // Dark grey for calories consumed
+    final burnedColor = Colors.black; // Black for calories burned
+
+    // Calculate percentages
+    final total = consumed + burned.toDouble();
+    final consumedPercent = consumed / total;
+    final burnedPercent = burned / total;
+
+    // Paint configurations
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = radius - innerRadius;
+
+    // Starting angle is -pi/2 (top of the circle)
+    double startAngle = -pi / 2;
+
+    // Draw consumed section
+    paint.color = consumedColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * consumedPercent,
+      false,
+      paint,
+    );
+    startAngle += 2 * pi * consumedPercent;
+
+    // Draw burned section
+    paint.color = burnedColor;
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+      startAngle,
+      2 * pi * burnedPercent,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+// Supplement Intake Section with daily checkboxes
+class SupplementIntakeSection extends StatefulWidget {
+  @override
+  _SupplementIntakeSectionState createState() =>
+      _SupplementIntakeSectionState();
+}
+
+class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
+  // Map to track supplement intake status
+  Map<String, bool> supplementStatus = {
+    "Creatine Monohydrate": false,
+    "Protein Powder": false,
+    "Pre-Workout Supplement": false,
+    "Other Supplements": false,
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if we need to reset checkboxes based on last reset date
+    _checkAndResetDailyStatus();
+  }
+
+  // Method to check if we need to reset checkboxes (every 24 hours)
+  void _checkAndResetDailyStatus() {
+    DateTime now = DateTime.now();
+    DateTime lastReset = now; // This would be retrieved from storage
+
+    // If it's a new day, reset all checkboxes
+    if (now.day != lastReset.day ||
+        now.month != lastReset.month ||
+        now.year != lastReset.year) {
+      setState(() {
+        supplementStatus.forEach((key, value) {
+          supplementStatus[key] = false;
+        });
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Supplement Intake",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            "Track your daily supplements. Checkboxes reset every 24 hours.",
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+          SizedBox(height: 16),
+          ...supplementStatus.keys
+              .map((supplement) => _buildSupplementCheckbox(supplement))
+              .toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSupplementCheckbox(String supplement) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: Checkbox(
+              value: supplementStatus[supplement],
+              onChanged: (bool? value) {
+                setState(() {
+                  supplementStatus[supplement] = value ?? false;
+                });
+              },
+              activeColor: Colors.grey[800],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              supplement,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[800],
+                decoration: supplementStatus[supplement]!
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+          ),
+          Text(
+            supplementStatus[supplement]! ? "Taken" : "Not taken",
+            style: TextStyle(
+              fontSize: 14,
+              color: supplementStatus[supplement]!
+                  ? Colors.green[700]
+                  : Colors.red[700],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Weight Gain Bar Graph Widget
+class WeightGainBarGraph extends StatelessWidget {
+  // Sample data - you can replace with actual data
+  final List<double> monthlyWeightGain = [
+    0.8,
+    1.2,
+    0.5,
+    0.9,
+    1.5,
+    0.7,
+    1.0,
+    1.3,
+    0.4,
+    0.6,
+    1.1,
+    0.9
+  ];
+  final List<String> months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate the maximum weight gain for Y-axis scaling
+    double maxWeightGain =
+        monthlyWeightGain.reduce((curr, next) => curr > next ? curr : next);
+
+    return Container(
+      padding: EdgeInsets.all(16),
+      height: 250, // Graph height
+      width: MediaQuery.of(context).size.width * 0.85, // Graph width
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Weight Gained (kg) by Month",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          SizedBox(height: 16),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Y-axis labels
+                Container(
+                  width: 30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("${maxWeightGain.toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightGain * 0.75).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightGain * 0.5).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightGain * 0.25).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("0.0",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 8),
+                // Graph area
+                Expanded(
+                  child: Container(
+                    height: 180,
+                    child: CustomPaint(
+                      size: Size.infinite,
+                      painter: BarGraphPainter(
+                          monthlyWeightGain: monthlyWeightGain,
+                          maxWeightGain: maxWeightGain),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // X-axis labels
+          Container(
+            margin: EdgeInsets.only(left: 38), // Align with bars
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: months
+                  .map((month) => Expanded(
+                        child: Text(
+                          month,
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Custom painter for the bar graph
+class BarGraphPainter extends CustomPainter {
+  final List<double> monthlyWeightGain;
+  final double maxWeightGain;
+
+  BarGraphPainter({
+    required this.monthlyWeightGain,
+    required this.maxWeightGain,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final barWidth = size.width / (monthlyWeightGain.length * 1.5);
+    final barMargin = barWidth / 2;
+    final height = size.height;
+
+    // Drawing horizontal grid lines
+    final gridPaint = Paint()
+      ..color = Colors.grey[300]!
+      ..strokeWidth = 1;
+
+    for (int i = 0; i <= 4; i++) {
+      final y = height - (height * (i / 4));
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+      );
+    }
+
+    // Drawing bars
+    final barPaint = Paint()
+      ..color = Colors.grey[600]!
+      ..style = PaintingStyle.fill;
+
+    for (int i = 0; i < monthlyWeightGain.length; i++) {
+      final barHeight = (monthlyWeightGain[i] / maxWeightGain) * height;
+      final barLeft = i * ((barWidth + barMargin) * 1.5);
+
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            barLeft,
+            height - barHeight,
+            barWidth,
+            barHeight,
+          ),
+          Radius.circular(4),
+        ),
+        barPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
 
 // New Workout Routine Widget
@@ -876,269 +1338,5 @@ class CaloriesBalanceSection extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-// Supplement Intake Section with daily checkboxes
-class SupplementIntakeSection extends StatefulWidget {
-  @override
-  _SupplementIntakeSectionState createState() =>
-      _SupplementIntakeSectionState();
-}
-
-class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
-  // Map to track supplement intake status
-  Map<String, bool> supplementStatus = {
-    "Creatine Monohydrate": false,
-    "Protein Powder": false,
-    "Pre-Workout Supplement": false,
-    "Other Supplements": false,
-  };
-
-  @override
-  void initState() {
-    super.initState();
-    // Check if we need to reset checkboxes based on last reset date
-    _checkAndResetDailyStatus();
-  }
-
-  // Method to check if we need to reset checkboxes (every 24 hours)
-  void _checkAndResetDailyStatus() {
-    DateTime now = DateTime.now();
-    DateTime lastReset = now; // This would be retrieved from storage
-
-    // If it's a new day, reset all checkboxes
-    if (now.day != lastReset.day ||
-        now.month != lastReset.month ||
-        now.year != lastReset.year) {
-      setState(() {
-        supplementStatus.forEach((key, value) {
-          supplementStatus[key] = false;
-        });
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Supplement Intake",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            "Track your daily supplements. Checkboxes reset every 24 hours.",
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-              fontStyle: FontStyle.italic,
-            ),
-          ),
-          SizedBox(height: 16),
-          ...supplementStatus.keys
-              .map((supplement) => _buildSupplementCheckbox(supplement))
-              .toList(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSupplementCheckbox(String supplement) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: Checkbox(
-              value: supplementStatus[supplement],
-              onChanged: (bool? value) {
-                setState(() {
-                  supplementStatus[supplement] = value ?? false;
-                });
-              },
-              activeColor: Colors.grey[800],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              supplement,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
-                decoration: supplementStatus[supplement]!
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
-              ),
-            ),
-          ),
-          Text(
-            supplementStatus[supplement]! ? "Taken" : "Not taken",
-            style: TextStyle(
-              fontSize: 14,
-              color: supplementStatus[supplement]!
-                  ? Colors.green[700]
-                  : Colors.red[700],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Custom Painter for Donut Chart (Nutrition)
-class DonutChartPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-    final innerRadius = radius * 0.6; // Size of the donut hole
-
-    // Define the colors as specified
-    final proteinColor = Colors.grey[800]!; // Dark grey
-    final carbsColor = Colors.grey[400]!; // Light grey
-    final vitaminsColor = Colors.grey; // Medium grey
-    final mineralsColor = Colors.black; // Black
-
-    // Sample data percentages (adjust as needed)
-    final proteinPercent = 0.35; // 35%
-    final carbsPercent = 0.40; // 40%
-    final vitaminsPercent = 0.15; // 15%
-    final mineralsPercent = 0.10; // 10%
-
-    // Paint configurations
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = radius - innerRadius;
-
-    // Starting angle is -pi/2 (top of the circle)
-    double startAngle = -pi / 2;
-
-    // Draw protein section
-    paint.color = proteinColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * proteinPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * proteinPercent;
-
-    // Draw carbs section
-    paint.color = carbsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * carbsPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * carbsPercent;
-
-    // Draw vitamins section
-    paint.color = vitaminsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * vitaminsPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * vitaminsPercent;
-
-    // Draw minerals section
-    paint.color = mineralsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * mineralsPercent,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-}
-
-// Custom Painter for Calories Balance Chart
-class CaloriesBalanceChartPainter extends CustomPainter {
-  final int consumed;
-  final int burned;
-
-  CaloriesBalanceChartPainter({
-    required this.consumed,
-    required this.burned,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-    final innerRadius = radius * 0.6; // Size of the donut hole
-
-    // Define the colors
-    final consumedColor = Colors.grey[800]!; // Dark grey for calories consumed
-    final burnedColor = Colors.black; // Black for calories burned
-
-    // Calculate percentages
-    final total = consumed + burned.toDouble();
-    final consumedPercent = consumed / total;
-    final burnedPercent = burned / total;
-
-    // Paint configurations
-    final paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = radius - innerRadius;
-
-    // Starting angle is -pi/2 (top of the circle)
-    double startAngle = -pi / 2;
-
-    // Draw consumed section
-    paint.color = consumedColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * consumedPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * consumedPercent;
-
-    // Draw burned section
-    paint.color = burnedColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * burnedPercent,
-      false,
-      paint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
