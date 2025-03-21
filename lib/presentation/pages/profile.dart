@@ -178,6 +178,19 @@ class _ProfileState extends State<Profile> {
                                 ),
                                 SizedBox(height: 10),
                                 WeightGainBarGraph(),
+
+                                SizedBox(
+                                    height:
+                                        30), // Add spacing between the graphs
+                                Text(
+                                  "Weight Loss Progress",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                WeightLossBarGraph(), // Your new component
                               ],
                             ),
                           ),
@@ -769,6 +782,186 @@ class BarGraphPainter extends CustomPainter {
 
     for (int i = 0; i < monthlyWeightGain.length; i++) {
       final barHeight = (monthlyWeightGain[i] / maxWeightGain) * height;
+      final barLeft = i * ((barWidth + barMargin) * 1.5);
+
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(
+            barLeft,
+            height - barHeight,
+            barWidth,
+            barHeight,
+          ),
+          Radius.circular(4),
+        ),
+        barPaint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+// Weight Loss Bar Graph Widget
+class WeightLossBarGraph extends StatelessWidget {
+  // Sample data - you can replace with actual data
+  final List<double> monthlyWeightLoss = [
+    1.2,
+    0.7,
+    1.5,
+    0.6,
+    1.1,
+    0.8,
+    1.3,
+    0.5,
+    0.9,
+    1.4,
+    0.7,
+    1.0
+  ];
+  final List<String> months = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    // Calculate the maximum weight loss for Y-axis scaling
+    double maxWeightLoss =
+        monthlyWeightLoss.reduce((curr, next) => curr > next ? curr : next);
+
+    return Container(
+      padding: EdgeInsets.all(16),
+      height: 250, // Graph height
+      width: MediaQuery.of(context).size.width * 0.85, // Graph width
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Weight Lost (kg) by Month",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey[800],
+            ),
+          ),
+          SizedBox(height: 16),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // Y-axis labels
+                Container(
+                  width: 30,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text("${maxWeightLoss.toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightLoss * 0.75).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightLoss * 0.5).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("${(maxWeightLoss * 0.25).toStringAsFixed(1)}",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                      Text("0.0",
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700])),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 8),
+                // Graph area
+                Expanded(
+                  child: Container(
+                    height: 180,
+                    child: CustomPaint(
+                      size: Size.infinite,
+                      painter: LossBarGraphPainter(
+                          monthlyWeightLoss: monthlyWeightLoss,
+                          maxWeightLoss: maxWeightLoss),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // X-axis labels
+          Container(
+            margin: EdgeInsets.only(left: 38), // Align with bars
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: months
+                  .map((month) => Expanded(
+                        child: Text(
+                          month,
+                          style:
+                              TextStyle(fontSize: 10, color: Colors.grey[700]),
+                          textAlign: TextAlign.center,
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Custom painter for the weight loss bar graph
+class LossBarGraphPainter extends CustomPainter {
+  final List<double> monthlyWeightLoss;
+  final double maxWeightLoss;
+
+  LossBarGraphPainter({
+    required this.monthlyWeightLoss,
+    required this.maxWeightLoss,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final barWidth = size.width / (monthlyWeightLoss.length * 1.5);
+    final barMargin = barWidth / 2;
+    final height = size.height;
+
+    // Drawing horizontal grid lines
+    final gridPaint = Paint()
+      ..color = Colors.grey[300]!
+      ..strokeWidth = 1;
+
+    for (int i = 0; i <= 4; i++) {
+      final y = height - (height * (i / 4));
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(size.width, y),
+        gridPaint,
+      );
+    }
+
+    // Drawing bars with fainter grey color
+    final barPaint = Paint()
+      ..color = Colors.grey[350]! // Fainter grey for weight loss
+      ..style = PaintingStyle.fill;
+
+    for (int i = 0; i < monthlyWeightLoss.length; i++) {
+      final barHeight = (monthlyWeightLoss[i] / maxWeightLoss) * height;
       final barLeft = i * ((barWidth + barMargin) * 1.5);
 
       canvas.drawRRect(
