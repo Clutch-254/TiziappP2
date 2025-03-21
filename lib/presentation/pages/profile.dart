@@ -80,6 +80,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
+               
                 Center(
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -116,6 +117,7 @@ class _ProfileState extends State<Profile> {
                                 3, Icons.bar_chart), // Bar graph icon
                           ],
                         ),
+
                         // Add the nutrition donut chart if the food icon is selected
                         if (_selectedIconIndex == 0)
                           Padding(
@@ -190,7 +192,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                 ),
                                 SizedBox(height: 10),
-                                WeightLossBarGraph(), // Your new component
+                                WeightLossBarGraph(),
                               ],
                             ),
                           ),
@@ -244,12 +246,14 @@ class _ProfileState extends State<Profile> {
                           return Expanded(
                             child: GestureDetector(
                               onTap: () {
-                                setState(() {
-                                  _selectedDate = day;
-                                  if (widget.onDateSelected != null) {
-                                    widget.onDateSelected!(day);
-                                  }
-                                });
+                                setState(
+                                  () {
+                                    _selectedDate = day;
+                                    if (widget.onDateSelected != null) {
+                                      widget.onDateSelected!(day);
+                                    }
+                                  },
+                                );
                               },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -293,6 +297,16 @@ class _ProfileState extends State<Profile> {
                                       ),
                                     ),
                                   ),
+
+                                  // Add this code right after the calendar container in your Profile build method
+
+                                  // Add this code right after the calendar container in your Profile build method
+// Locate this section in your code:
+// Container(
+//   padding: EdgeInsets.only(top: 8, bottom: 16),
+//   color: widget.backgroundColor,
+//   child: Column(...),
+// ),
                                 ],
                               ),
                             ),
