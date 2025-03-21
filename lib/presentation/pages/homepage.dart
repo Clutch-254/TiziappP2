@@ -14,6 +14,8 @@ class _HomepageState extends State<Homepage> {
   // Sets trainer2o to true by default
   bool trainer2o = true, nutritionist = false, gyms = false;
 
+  // We no longer need the dynamic title getter as we're using conditional widgets
+
   Stream? subItemStream;
   onLoad() async {
     subItemStream = await DatabaseMethods().getSubItem("Trainer");
@@ -24,41 +26,102 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 50.0,
             left: 20.0,
           ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Trainers",
-                    style: AppWidget.boldTextFieledStyle(),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 20.0),
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(8),
+              // Title row is only shown for the selected category
+              if (trainer2o) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Trainers",
+                          style: AppWidget.boldTextFieledStyle(),
+                        ),
+                      ),
                     ),
-                    child: Icon(
-                      Icons.shopping_cart_outlined,
-                      color: Colors.white,
+                    Container(
+                      margin: const EdgeInsets.only(right: 20.0),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
+                  ],
+                ),
+              ],
+              if (nutritionist) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Nutritionist",
+                          style: AppWidget.boldTextFieledStyle(),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20.0),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              if (gyms) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Fitness Institution",
+                          style: AppWidget.boldTextFieledStyle(),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 20.0),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const SizedBox(
                 height: 20.0,
               ),
               Container(
-                margin: EdgeInsets.only(right: 20.0),
+                margin: const EdgeInsets.only(right: 20.0),
                 child: showItem(),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30.0,
               ),
 
@@ -74,17 +137,17 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => const Productdetails(),
                             ),
                           );
                         },
                         child: Container(
-                          margin: EdgeInsets.all(5),
+                          margin: const EdgeInsets.all(5),
                           child: Material(
                             elevation: 5.0,
                             borderRadius: BorderRadius.circular(8),
                             child: Container(
-                              padding: EdgeInsets.all(14),
+                              padding: const EdgeInsets.all(14),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -101,7 +164,7 @@ class _HomepageState extends State<Homepage> {
                                     "Jina - Personal Trainer",
                                     style: AppWidget.smallBoldTextFieledStyle(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5.0,
                                   ),
                                   Text(
@@ -109,7 +172,7 @@ class _HomepageState extends State<Homepage> {
                                     style: AppWidget
                                         .smallSemiBoldTextFieledStyle(),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5.0,
                                   ),
                                   Text(
@@ -122,16 +185,16 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Container(
-                        margin: EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(4),
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(8),
                           child: Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -148,7 +211,7 @@ class _HomepageState extends State<Homepage> {
                                   "Poly n Mike - Couple's \nPersonal Trainers",
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -156,7 +219,7 @@ class _HomepageState extends State<Homepage> {
                                   style:
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -171,18 +234,18 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30.0,
                 ),
 
                 // Jin - Muay Thai Coach
                 Container(
-                  margin: EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(right: 20.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -195,7 +258,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -207,7 +270,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -218,7 +281,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -236,18 +299,18 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
 
                 // Sarah - Yoga Instructor
                 Container(
-                  margin: EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(right: 20.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -260,7 +323,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -272,7 +335,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -283,7 +346,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -301,18 +364,18 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
 
                 // David - Nutritionist
                 Container(
-                  margin: EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(right: 20.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -325,7 +388,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -337,7 +400,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -348,7 +411,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -366,18 +429,18 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
 
                 // Fitness Zone Gym
                 Container(
-                  margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
+                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -390,7 +453,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -402,7 +465,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -413,7 +476,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -441,12 +504,12 @@ class _HomepageState extends State<Homepage> {
                     children: [
                       // First horizontal nutritionist placeholder
                       Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(8),
                           child: Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -463,7 +526,7 @@ class _HomepageState extends State<Homepage> {
                                   "Kisha Wanjiku - Nutrition Expert",
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -471,7 +534,7 @@ class _HomepageState extends State<Homepage> {
                                   style:
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -483,17 +546,17 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
 
                       Container(
-                        margin: EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(4),
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(8),
                           child: Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -510,7 +573,7 @@ class _HomepageState extends State<Homepage> {
                                   "Malon Rivers - Diet Specialist",
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -518,7 +581,7 @@ class _HomepageState extends State<Homepage> {
                                   style:
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -533,17 +596,17 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30.0,
                 ),
 
                 Container(
-                  margin: EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(right: 20.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -556,7 +619,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -568,7 +631,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -579,7 +642,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -597,17 +660,17 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
 
                 Container(
-                  margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
+                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -620,7 +683,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -632,7 +695,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -643,7 +706,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -671,12 +734,12 @@ class _HomepageState extends State<Homepage> {
                     children: [
                       // First horizontal gym placeholder
                       Container(
-                        margin: EdgeInsets.all(5),
+                        margin: const EdgeInsets.all(5),
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(8),
                           child: Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -693,7 +756,7 @@ class _HomepageState extends State<Homepage> {
                                   "Gordon's Gym",
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -701,7 +764,7 @@ class _HomepageState extends State<Homepage> {
                                   style:
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -713,17 +776,17 @@ class _HomepageState extends State<Homepage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
 
                       Container(
-                        margin: EdgeInsets.all(4),
+                        margin: const EdgeInsets.all(4),
                         child: Material(
                           elevation: 5.0,
                           borderRadius: BorderRadius.circular(8),
                           child: Container(
-                            padding: EdgeInsets.all(14),
+                            padding: const EdgeInsets.all(14),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -740,7 +803,7 @@ class _HomepageState extends State<Homepage> {
                                   "Fitness Hub",
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -748,7 +811,7 @@ class _HomepageState extends State<Homepage> {
                                   style:
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5.0,
                                 ),
                                 Text(
@@ -763,18 +826,18 @@ class _HomepageState extends State<Homepage> {
                     ],
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30.0,
                 ),
 
                 // First vertical gym placeholder
                 Container(
-                  margin: EdgeInsets.only(right: 20.0),
+                  margin: const EdgeInsets.only(right: 20.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -787,7 +850,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -799,7 +862,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -810,7 +873,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -828,18 +891,18 @@ class _HomepageState extends State<Homepage> {
                   ),
                 ),
 
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
 
                 // Second vertical gym placeholder
                 Container(
-                  margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
+                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
                   child: Material(
                     elevation: 5.0,
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -852,7 +915,7 @@ class _HomepageState extends State<Homepage> {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20.0,
                           ),
                           Column(
@@ -864,7 +927,7 @@ class _HomepageState extends State<Homepage> {
                                   style: AppWidget.smallBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -875,7 +938,7 @@ class _HomepageState extends State<Homepage> {
                                       AppWidget.smallSemiBoldTextFieledStyle(),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 5.0,
                               ),
                               Container(
@@ -920,7 +983,7 @@ class _HomepageState extends State<Homepage> {
                 color: trainer2o ? Colors.grey : Colors.white,
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Image.asset(
                 "Images/trainer2o.png",
                 height: 40,
@@ -943,7 +1006,7 @@ class _HomepageState extends State<Homepage> {
             color: nutritionist ? Colors.grey : Colors.white,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Image.asset(
                 "Images/nutritionist.png",
                 height: 40,
@@ -966,7 +1029,7 @@ class _HomepageState extends State<Homepage> {
             color: gyms ? Colors.grey : Colors.white,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Image.asset(
                 "Images/gyms.png",
                 height: 40,

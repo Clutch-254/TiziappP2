@@ -38,27 +38,61 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Foods and Supplements",
-                    style: AppWidget.boldTextFieledStyle(),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 20.0),
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(8),
+              // Dynamic title section using conditional rendering
+              if (foods) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Foods",
+                          style: AppWidget.boldTextFieledStyle(),
+                        ),
+                      ),
                     ),
-                    child: Icon(
-                      Icons.shopping_cart_outlined,
-                      color: Colors.white,
+                    Container(
+                      margin: EdgeInsets.only(right: 20.0),
+                      padding: EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
+              if (supplements) ...[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          "Supplements",
+                          style: AppWidget.boldTextFieledStyle(),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(right: 20.0),
+                      padding: EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               SizedBox(
                 height: 20.0,
               ),

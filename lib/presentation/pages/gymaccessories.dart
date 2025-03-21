@@ -52,8 +52,11 @@ class _GymaccessoriesState extends State<Gymaccessories> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    width: 40, // Same width as the cart icon container
+                  ),
                   Text(
-                    "Equipment and Outfits",
+                    equipment ? "Equipment" : "Gymfits",
                     style: AppWidget.boldTextFieledStyle(),
                   ),
                   Container(
