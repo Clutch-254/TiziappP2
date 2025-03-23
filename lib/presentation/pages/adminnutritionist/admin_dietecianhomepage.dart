@@ -190,7 +190,8 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                           print('Clients button pressed');
                         },
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 0),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           foregroundColor: secondaryColor,
@@ -471,38 +472,6 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
             ),
           ],
         ),
-      ),
-      // LinkedIn-style bottom navigation
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: accentColor,
-        unselectedItemColor: secondaryColor,
-        currentIndex: 0, // Set a default selected index
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          // Handle navigation taps
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'Network',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.work),
-            label: 'Jobs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-        ],
       ),
     );
   }

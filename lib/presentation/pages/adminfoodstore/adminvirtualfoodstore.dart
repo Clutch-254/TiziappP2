@@ -733,38 +733,6 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
           ],
         ),
       ),
-      // Custom bottom navigation
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: accentColor,
-        unselectedItemColor: secondaryColor,
-        currentIndex: 0, // Set a default selected index
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          // Handle navigation taps
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart), // Orders icon
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline), // Plus icon
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory), // Inventory/stock icon
-            label: 'Inventory',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-        ],
-      ),
     );
   }
 
