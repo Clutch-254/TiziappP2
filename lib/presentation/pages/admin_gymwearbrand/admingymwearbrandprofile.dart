@@ -737,42 +737,7 @@ class _AdmingymwearbrandprofileState extends State<Admingymwearbrandprofile> {
           ],
         ),
       ),
-      // Bottom navigation bar with the requested icons
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: accentColor,
-        unselectedItemColor: secondaryColor,
-        currentIndex: 0, // Set a default selected index
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          // Handle navigation taps
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory),
-            label: 'Inventory',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.event),
-            label: 'Events',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Orders',
-          ),
-        ],
-      ),
+      // Bottom navigation bar has been removed
     );
   }
 
