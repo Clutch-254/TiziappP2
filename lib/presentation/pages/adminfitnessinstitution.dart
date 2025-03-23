@@ -44,21 +44,27 @@ class _AdminfitnessinstitutionState extends State {
     }
   ];
 
-  final List<Map<String, dynamic>> staff = [
+  // Replacing staff with licenses
+  final List<Map<String, dynamic>> licenses = [
     {
-      'name': 'John Kamau',
-      'position': 'Personal Trainer',
-      'specialization': 'Strength Training'
+      'title': 'Fitness Facility Operating License',
+      'issuer': 'Kenya Sports Authority',
+      'validUntil': 'December 2025'
     },
     {
-      'name': 'Sarah Wanjiru',
-      'position': 'Clinical Dietician',
-      'specialization': 'Sports Nutrition'
+      'title': 'Health and Safety Compliance Certificate',
+      'issuer': 'Nairobi County Health Department',
+      'validUntil': 'March 2026'
     },
     {
-      'name': 'David Odhiambo',
-      'position': 'Yoga Instructor',
-      'specialization': 'Meditation & Flexibility'
+      'title': 'Professional Fitness Training Accreditation',
+      'issuer': 'International Fitness Association - Kenya Chapter',
+      'validUntil': 'August 2025'
+    },
+    {
+      'title': 'Nutritional Advisory Services Permit',
+      'issuer': 'Kenya Nutritional Services Board',
+      'validUntil': 'October 2025'
     }
   ];
 
@@ -358,7 +364,7 @@ class _AdminfitnessinstitutionState extends State {
 
                   const SizedBox(height: 16),
 
-                  // Staff section
+                  // Licenses section (replacing Staff section)
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -374,7 +380,7 @@ class _AdminfitnessinstitutionState extends State {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'Key Staff',
+                                'Licenses & Certifications',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -389,48 +395,47 @@ class _AdminfitnessinstitutionState extends State {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...staff.map((person) => Padding(
+                          ...licenses.map((license) => Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Person avatar
+                                    // License icon
                                     Container(
                                       width: 40,
                                       height: 40,
                                       decoration: BoxDecoration(
                                         color: backgroundColor,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: borderColor),
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Icon(
-                                        Icons.person,
+                                        Icons.verified,
                                         color: secondaryColor,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    // Person details
+                                    // License details
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            person['name'],
+                                            license['title'],
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            person['position'],
+                                            'Issued by: ${license['issuer']}',
                                             style: TextStyle(
                                               color: secondaryColor,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Specialization: ${person['specialization']}',
+                                            'Valid until: ${license['validUntil']}',
                                             style: TextStyle(
                                               color: secondaryColor,
                                               fontSize: 12,
@@ -498,7 +503,7 @@ class _AdminfitnessinstitutionState extends State {
           ],
         ),
       ),
-      // Custom bottom navigation
+      // Updated bottom navigation with Staff button
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: accentColor,
         unselectedItemColor: secondaryColor,
@@ -514,14 +519,14 @@ class _AdminfitnessinstitutionState extends State {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.groups),
-            label: 'Clients', // Changed from Network to Clients
+            label: 'Clients',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline), // Added plus icon
+            icon: Icon(Icons.add_circle_outline),
             label: 'Add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_pin), // Added staff icon
+            icon: Icon(Icons.person_outline),
             label: 'Staff',
           ),
           BottomNavigationBarItem(

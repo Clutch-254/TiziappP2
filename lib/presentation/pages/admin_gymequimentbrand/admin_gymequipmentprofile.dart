@@ -1,133 +1,83 @@
 import 'package:flutter/material.dart';
 
-class Adminvirtualfoodstore extends StatefulWidget {
-  const Adminvirtualfoodstore({super.key});
+class AdminGymequipmentprofile extends StatefulWidget {
+  const AdminGymequipmentprofile({super.key});
 
   @override
-  State<Adminvirtualfoodstore> createState() => _AdminvirtualfoodstoreState();
+  State<AdminGymequipmentprofile> createState() => _AdminGymequipmentprofileState();
 }
 
-class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
-  // Sample food store data
-  final String storeName = "Healthy Bites Market";
-  final String businessType = "Organic Food & Nutrition Store";
+class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
+  // Sample gym equipment brand data
+  final String brandName = "PowerPro Fitness Equipment";
+  final String businessType = "Gym Equipment Manufacturer & Supplier";
   final String description =
-      "Established in 2018, Healthy Bites Market is a premium nutrition-focused food store "
-      "specializing in organic produce, whole foods, and healthy meal options. We offer a wide "
-      "selection of high-quality ingredients for health-conscious individuals, fitness enthusiasts, "
-      "and those with specific dietary needs. Our store features locally sourced organic produce, "
-      "protein-rich foods, and pre-prepared healthy meals designed by nutritionists "
-      "to support various fitness and health goals.";
+      "PowerPro Fitness Equipment is a leading manufacturer and supplier of premium gym equipment "
+      "established in 2010. We specialize in designing and producing high-quality strength training, "
+      "cardio, and functional training equipment for commercial and home gyms. Our products are "
+      "known for their durability, innovative design, and ergonomic features. We take pride in our "
+      "commitment to quality control and customer satisfaction, offering comprehensive warranties "
+      "and responsive after-sales service to fitness centers across East Africa.";
 
-  // Updated products list without supplements
-  final List<Map<String, dynamic>> products = [
+  final List<Map<String, dynamic>> productCategories = [
     {
-      'category': 'Organic Produce',
-      'details':
-          'Locally sourced fruits and vegetables from certified organic farms',
-      'icon': Icons.eco
+      'title': 'Strength Equipment',
+      'details': 'Free weights, weight machines, racks, and benches',
+      'icon': Icons.fitness_center
     },
     {
-      'category': 'Protein Foods',
-      'details':
-          'High-quality lean meats, plant proteins, and protein supplements',
-      'icon': Icons.egg_alt
+      'title': 'Cardio Equipment',
+      'details': 'Treadmills, ellipticals, bikes, and rowing machines',
+      'icon': Icons.directions_run
     },
     {
-      'category': 'Prepared Meals',
-      'details':
-          'Nutritionist-designed balanced meals for various dietary requirements',
-      'icon': Icons.lunch_dining
+      'title': 'Functional Training',
+      'details': 'Battle ropes, kettlebells, medicine balls, and TRX systems',
+      'icon': Icons.sports_gymnastics
+    },
+    {
+      'title': 'Accessories',
+      'details': 'Mats, resistance bands, foam rollers, and weight plates',
+      'icon': Icons.sports
     }
   ];
 
-  // New menu items
-  final List<Map<String, dynamic>> menuItems = [
+  final List<Map<String, dynamic>> certifications = [
     {
-      'name': 'Green Power Bowl',
-      'description':
-          'Organic kale, spinach, avocado, quinoa, grilled chicken, and lemon tahini dressing',
-      'type': 'Lunch/Dinner',
-      'icon': Icons.restaurant_menu
-    },
-    {
-      'name': 'Protein Breakfast Wrap',
-      'description':
-          'Organic eggs, beans, sweet potato, spinach and hot sauce in a whole grain wrap',
-      'type': 'Breakfast',
-      'icon': Icons.breakfast_dining
-    },
-    {
-      'name': 'Superfood Smoothie',
-      'description':
-          'Organic berries, spinach, banana, almond milk, and plant protein',
-      'type': 'Beverage',
-      'icon': Icons.blender
-    },
-    {
-      'name': 'Athlete\'s Lunch Box',
-      'description':
-          'Grilled chicken breast, brown rice, steamed vegetables, and homemade hummus',
-      'type': 'Lunch/Dinner',
-      'icon': Icons.lunch_dining
-    }
-  ];
-
-  // Add licenses section
-  final List<Map<String, dynamic>> licenses = [
-    {
-      'title': 'Food Handling & Safety Certificate',
-      'issuer': 'Kenya Bureau of Standards',
-      'validUntil': 'May 2026'
-    },
-    {
-      'title': 'Organic Food Retail License',
-      'issuer': 'Kenya Organic Agriculture Network',
+      'title': 'ISO 9001:2015 Quality Management',
+      'issuer': 'International Organization for Standardization',
       'validUntil': 'January 2026'
     },
     {
-      'title': 'Health Food Preparation Certification',
-      'issuer': 'Nairobi County Health Department',
-      'validUntil': 'March 2025'
+      'title': 'CE Certification for Equipment Safety',
+      'issuer': 'European Conformity Certification Body',
+      'validUntil': 'March 2027'
     },
     {
-      'title': 'Business Operation Permit',
-      'issuer': 'Nairobi City Council',
-      'validUntil': 'December 2025'
-    }
-  ];
-
-  final List<Map<String, dynamic>> suppliers = [
-    {
-      'name': 'Green Earth Farms',
-      'product': 'Organic Fruits & Vegetables',
-      'location': 'Kiambu County'
+      'title': 'Kenya Bureau of Standards Quality Mark',
+      'issuer': 'Kenya Bureau of Standards',
+      'validUntil': 'October 2025'
     },
     {
-      'name': 'Pure Protein Suppliers',
-      'product': 'Lean Meats & Protein Products',
-      'location': 'Nairobi'
-    },
-    {
-      'name': 'Vital Supplements Ltd',
-      'product': 'Vitamins & Nutritional Supplements',
-      'location': 'Mombasa'
+      'title': 'East African Community Certification',
+      'issuer': 'EAC Standards Commission',
+      'validUntil': 'April 2026'
     }
   ];
 
   @override
   Widget build(BuildContext context) {
-    // LinkedIn-inspired color scheme (grey)
-    final Color primaryColor = Colors.grey[700]!;
-    final Color secondaryColor = Colors.grey[500]!;
+    // LinkedIn-inspired color scheme (blue)
+    final Color primaryColor = Colors.blue[800]!;
+    final Color secondaryColor = Colors.blue[600]!;
     final Color backgroundColor = Colors.grey[100]!;
     final Color cardColor = Colors.white;
-    final Color accentColor = Colors.grey[800]!;
+    final Color accentColor = Colors.blue[900]!;
     final Color borderColor = Colors.grey[300]!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Food Store Profile'),
+        title: const Text('Gym Equipment Brand Profile'),
         backgroundColor: primaryColor,
         actions: [
           // Notifications icon
@@ -162,7 +112,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                   ),
                 ),
 
-                // Store logo positioned to overlap
+                // Brand logo positioned to overlap
                 Positioned(
                   left: 16,
                   top: 60, // Position to overlap with the cover image
@@ -176,7 +126,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                     ),
                     child: Center(
                       child: Icon(
-                        Icons.storefront,
+                        Icons.fitness_center,
                         size: 70,
                         color: primaryColor,
                       ),
@@ -228,7 +178,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                 children: [
                   // Name and headline - positioned below the profile image
                   Text(
-                    storeName,
+                    brandName,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -259,13 +209,13 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                         style: TextStyle(color: secondaryColor),
                       ),
                       const SizedBox(width: 16),
-                      Icon(Icons.shopping_bag, size: 16, color: secondaryColor),
+                      Icon(Icons.store, size: 16, color: secondaryColor),
                       const SizedBox(width: 4),
-                      // Orders button
+                      // Clients button
                       TextButton(
                         onPressed: () {
                           // Handle button press here
-                          print('Orders button pressed');
+                          print('Retailers button pressed');
                         },
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -275,7 +225,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                           foregroundColor: secondaryColor,
                         ),
                         child: Text(
-                          '78 monthly orders',
+                          '76 retailers',
                           style: TextStyle(
                             color: secondaryColor,
                             decoration: TextDecoration.underline,
@@ -329,7 +279,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
 
                   const SizedBox(height: 16),
 
-                  // Products section
+                  // Product Categories section (replacing Facilities)
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -360,12 +310,12 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...products.map((product) => Padding(
+                          ...productCategories.map((category) => Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Product category icon
+                                    // Category icon
                                     Container(
                                       width: 40,
                                       height: 40,
@@ -374,26 +324,26 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Icon(
-                                        product['icon'],
+                                        category['icon'],
                                         color: secondaryColor,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    // Product details
+                                    // Category details
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            product['category'],
+                                            category['title'],
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            product['details'],
+                                            category['details'],
                                             style: TextStyle(
                                               color: secondaryColor,
                                             ),
@@ -411,7 +361,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
 
                   const SizedBox(height: 16),
 
-                  // Menu section (New)
+                  // Certifications section (replacing Licenses)
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -427,7 +377,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'Featured Menu Items',
+                                'Certifications & Standards',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -442,104 +392,12 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...menuItems.map((item) => Padding(
+                          ...certifications.map((cert) => Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Menu item icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        item['icon'],
-                                        color: secondaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    // Menu item details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item['name'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            item['description'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Type: ${item['type']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                              fontStyle: FontStyle.italic,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Licenses section (New)
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: borderColor),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Licenses & Certifications',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
-                                constraints: const BoxConstraints(),
-                                padding: EdgeInsets.zero,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          ...licenses.map((license) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // License icon
+                                    // Certification icon
                                     Container(
                                       width: 40,
                                       height: 40,
@@ -553,119 +411,28 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    // License details
+                                    // Certification details
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            license['title'],
+                                            cert['title'],
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Issued by: ${license['issuer']}',
+                                            'Issued by: ${cert['issuer']}',
                                             style: TextStyle(
                                               color: secondaryColor,
                                             ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Valid until: ${license['validUntil']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  // Suppliers section
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: borderColor),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Key Suppliers',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
-                                constraints: const BoxConstraints(),
-                                padding: EdgeInsets.zero,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          ...suppliers.map((supplier) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Supplier avatar
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: borderColor),
-                                      ),
-                                      child: Icon(
-                                        Icons.business,
-                                        color: secondaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    // Supplier details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            supplier['name'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            supplier['product'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Location: ${supplier['location']}',
+                                            'Valid until: ${cert['validUntil']}',
                                             style: TextStyle(
                                               color: secondaryColor,
                                               fontSize: 12,
@@ -716,13 +483,59 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
                           ),
                           const SizedBox(height: 12),
                           _buildBusinessHoursItem(
-                              'Monday - Friday', '8:00 AM - 8:00 PM'),
+                              'Monday - Friday', '8:00 AM - 5:00 PM'),
                           _buildBusinessHoursItem(
-                              'Saturday', '9:00 AM - 6:00 PM'),
+                              'Saturday', '9:00 AM - 3:00 PM'),
                           _buildBusinessHoursItem(
-                              'Sunday', '10:00 AM - 4:00 PM'),
+                              'Sunday', 'Closed'),
                           _buildBusinessHoursItem(
-                              'Public Holidays', '10:00 AM - 3:00 PM'),
+                              'Public Holidays', 'Closed'),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Warranty Information section (new section)
+                  Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: borderColor),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Warranty Information',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.edit, color: secondaryColor),
+                                onPressed: () {},
+                                constraints: const BoxConstraints(),
+                                padding: EdgeInsets.zero,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          _buildWarrantyItem(
+                              'Strength Equipment', '5 years on frame, 2 years on parts'),
+                          _buildWarrantyItem(
+                              'Cardio Equipment', '3 years on motor, 2 years on electronics'),
+                          _buildWarrantyItem(
+                              'Functional Training', '2 years on materials and workmanship'),
+                          _buildWarrantyItem(
+                              'Accessories', '1 year limited warranty'),
                         ],
                       ),
                     ),
@@ -733,7 +546,7 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
           ],
         ),
       ),
-      // Custom bottom navigation
+      // Updated bottom navigation with the requested icons
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: accentColor,
         unselectedItemColor: secondaryColor,
@@ -744,24 +557,28 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
         },
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart), // Orders icon
-            label: 'Orders',
+            icon: Icon(Icons.inventory),
+            label: 'Inventory',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline), // Plus icon
+            icon: Icon(Icons.add_circle_outline),
             label: 'Add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inventory), // Inventory/stock icon
-            label: 'Inventory',
+            icon: Icon(Icons.shopping_bag),
+            label: 'Orders',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             label: 'Notifications',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.storefront),
+            label: 'Shop',
           ),
         ],
       ),
@@ -786,6 +603,39 @@ class _AdminvirtualfoodstoreState extends State<Adminvirtualfoodstore> {
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 14,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper method to build warranty items
+  Widget _buildWarrantyItem(String productType, String warranty) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.verified_user, size: 16, color: Colors.grey),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  productType,
+                  style: const TextStyle(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  warranty,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
