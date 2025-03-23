@@ -4,7 +4,8 @@ class AdminGymequipmentprofile extends StatefulWidget {
   const AdminGymequipmentprofile({super.key});
 
   @override
-  State<AdminGymequipmentprofile> createState() => _AdminGymequipmentprofileState();
+  State<AdminGymequipmentprofile> createState() =>
+      _AdminGymequipmentprofileState();
 }
 
 class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
@@ -486,10 +487,8 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                               'Monday - Friday', '8:00 AM - 5:00 PM'),
                           _buildBusinessHoursItem(
                               'Saturday', '9:00 AM - 3:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Sunday', 'Closed'),
-                          _buildBusinessHoursItem(
-                              'Public Holidays', 'Closed'),
+                          _buildBusinessHoursItem('Sunday', 'Closed'),
+                          _buildBusinessHoursItem('Public Holidays', 'Closed'),
                         ],
                       ),
                     ),
@@ -528,12 +527,12 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildWarrantyItem(
-                              'Strength Equipment', '5 years on frame, 2 years on parts'),
-                          _buildWarrantyItem(
-                              'Cardio Equipment', '3 years on motor, 2 years on electronics'),
-                          _buildWarrantyItem(
-                              'Functional Training', '2 years on materials and workmanship'),
+                          _buildWarrantyItem('Strength Equipment',
+                              '5 years on frame, 2 years on parts'),
+                          _buildWarrantyItem('Cardio Equipment',
+                              '3 years on motor, 2 years on electronics'),
+                          _buildWarrantyItem('Functional Training',
+                              '2 years on materials and workmanship'),
                           _buildWarrantyItem(
                               'Accessories', '1 year limited warranty'),
                         ],
@@ -546,42 +545,7 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
           ],
         ),
       ),
-      // Updated bottom navigation with the requested icons
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: accentColor,
-        unselectedItemColor: secondaryColor,
-        currentIndex: 0, // Set a default selected index
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          // Handle navigation taps
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inventory),
-            label: 'Inventory',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_bag),
-            label: 'Orders',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.storefront),
-            label: 'Shop',
-          ),
-        ],
-      ),
+      // Bottom navigation bar has been removed
     );
   }
 

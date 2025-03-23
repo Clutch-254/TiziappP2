@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/admin_dietecianhomepage.dart';
 import 'package:tiziappp2/presentation/pages/admin_gymequimentbrand/admin_gymequipmentprofile.dart';
+import 'package:tiziappp2/presentation/pages/admin_gymequimentbrand/bottomnavequip.dart';
 import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/admingymwearbrandprofile.dart';
 import 'package:tiziappp2/presentation/pages/admin_virtualtrainerhomepage.dart';
 import 'package:tiziappp2/presentation/pages/adminfitnessinstitution.dart';
@@ -54,7 +55,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const Admingymwearbrandprofile());
+        home: const Bottomnavequip());
   }
 }
 
