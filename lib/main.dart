@@ -16,6 +16,7 @@ import 'package:tiziappp2/presentation/pages/adminsupplementsstore/adminsuppleme
 import 'package:tiziappp2/presentation/pages/adminsupplementsstore/bottomnavsup.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/admin_virtualtrainerhomepage.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/bottomnavtrainer.dart';
+import 'package:tiziappp2/presentation/pages/contentscroll.dart';
 
 import 'package:tiziappp2/technicals/bottomnav.dart';
 
@@ -63,7 +64,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: Bottomnav(),
+      home: Contentscroll(),
     );
   }
 }
