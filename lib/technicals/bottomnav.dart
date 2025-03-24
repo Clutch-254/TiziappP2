@@ -1,10 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/cart.dart';
+import 'package:tiziappp2/presentation/pages/contentscroll.dart';
 import 'package:tiziappp2/presentation/pages/foodnsupplements.dart';
 import 'package:tiziappp2/presentation/pages/gymaccessories.dart';
 import 'package:tiziappp2/presentation/pages/homepage.dart';
 
+import 'package:flutter/material.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:tiziappp2/presentation/pages/profile.dart';
 
 class Bottomnav extends StatefulWidget {
@@ -24,6 +27,7 @@ class _BottomnavState extends State<Bottomnav> {
   late Profile profile;
   late Gymaccessories gymaccessories;
   late CartPage cart;
+  late Contentscroll contentscroll; // Added content scroll page
 
   @override
   void initState() {
@@ -31,9 +35,11 @@ class _BottomnavState extends State<Bottomnav> {
     foodnsupplements = Foodnsupplements();
     gymaccessories = Gymaccessories();
     cart = CartPage();
-
     profile = Profile();
-    pages = [homepage, foodnsupplements, gymaccessories, cart, profile];
+    contentscroll = Contentscroll(); // Initialize the content scroll page
+    
+    // Added contentscroll to pages array at index 3 (before cart)
+    pages = [homepage, foodnsupplements, gymaccessories, contentscroll, cart, profile];
 
     super.initState();
   }
@@ -44,7 +50,7 @@ class _BottomnavState extends State<Bottomnav> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,
         backgroundColor: Colors.white,
-        color: Colors.grey,
+        color: Colors.black, // Changed from grey to black for darker appearance
         animationDuration: Duration(milliseconds: 500),
         onTap: (int index) {
           setState(() {
@@ -62,6 +68,10 @@ class _BottomnavState extends State<Bottomnav> {
           ),
           Icon(
             Icons.fitness_center_outlined,
+            color: Colors.white,
+          ),
+          Icon(
+            Icons.video_collection_outlined, // Added content/video icon
             color: Colors.white,
           ),
           Icon(

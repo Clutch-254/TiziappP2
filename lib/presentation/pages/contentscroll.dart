@@ -13,6 +13,10 @@ class _ContentscrollState extends State<Contentscroll>
   late AnimationController _animationController;
   bool _isPanelVisible = false;
 
+  // Selected category state
+  String _selectedCategory = 'Brand'; // Default selected category
+  final List<String> _categories = ['Brand', 'Specialist', 'Influencer'];
+
   // Sample content data - replace with your actual content
   final List<Map<String, dynamic>> _contentItems = [
     {
@@ -87,29 +91,76 @@ class _ContentscrollState extends State<Contentscroll>
     });
   }
 
+  void _selectCategory(String category) {
+    setState(() {
+      _selectedCategory = category;
+      // Here you would typically filter content based on category
+      // For demo purposes, we're just changing the selected state
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Main content scrollable area
-          PageView.builder(
-            scrollDirection: Axis.vertical,
-            controller: _pageController,
-            itemCount: _contentItems.length,
-            itemBuilder: (context, index) {
-              final item = _contentItems[index];
-              return ContentPage(
-                username: item['username'],
-                description: item['description'],
-                likes: item['likes'],
-                comments: item['comments'],
-                backgroundColor: item['backgroundColor'],
-                onActionButtonTap: _toggleActionPanel,
-                currentPage: index + 1,
-                totalPages: _contentItems.length,
-              );
-            },
+          // Category selector at the top
+          Positioned(
+            top: MediaQuery.of(context).padding.top,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: 60,
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.7),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: _categories
+                    .map((category) => GestureDetector(
+                          onTap: () => _selectCategory(category),
+                          child: Text(
+                            category,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: _selectedCategory == category
+                                  ? FontWeight.w900 // Bold when selected
+                                  : FontWeight.w400, // Normal when not selected
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ),
+
+          // Main content scrollable area - adjusted for category header
+          Positioned(
+            top: MediaQuery.of(context).padding.top +
+                60, // Height of the category selector
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: PageView.builder(
+              scrollDirection: Axis.vertical,
+              controller: _pageController,
+              itemCount: _contentItems.length,
+              itemBuilder: (context, index) {
+                final item = _contentItems[index];
+                return ContentPage(
+                  username: item['username'],
+                  description: item['description'],
+                  likes: item['likes'],
+                  comments: item['comments'],
+                  backgroundColor: item['backgroundColor'],
+                  onActionButtonTap: _toggleActionPanel,
+                  currentPage: index + 1,
+                  totalPages: _contentItems.length,
+                );
+              },
+            ),
           ),
 
           // Slide-up action panel
