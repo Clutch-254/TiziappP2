@@ -4,7 +4,7 @@ class CartPage extends StatefulWidget {
   const CartPage({Key? key}) : super(key: key);
 
   @override
-  _CartPageState createState() => _CartPageState();
+  State<CartPage> createState() => _CartPageState();
 }
 
 class _CartPageState extends State<CartPage> {
@@ -96,11 +96,21 @@ class _CartPageState extends State<CartPage> {
     ),
   ];
 
+  void removeItem(int id) {
+    setState(() {
+      cartItems.removeWhere((item) => item.id == id);
+    });
+  }
+
+  int get totalCartValue {
+    return cartItems.fold(0, (sum, item) => sum + (item.price * item.quantity));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Cart",
           style: TextStyle(
             color: Colors.black,
@@ -109,29 +119,67 @@ class _CartPageState extends State<CartPage> {
         ),
         backgroundColor: Colors.white,
         elevation: 1,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Container(
         color: Colors.white,
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           children: [
             Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.6,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 25,
-                ),
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  return buildCartItem(cartItems[index]);
-                },
-              ),
+              child: cartItems.isEmpty
+                  ? const Center(
+                      child: Text(
+                        "Your cart is empty",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.6,
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 25,
+                      ),
+                      itemCount: cartItems.length,
+                      itemBuilder: (context, index) {
+                        return buildCartItem(cartItems[index]);
+                      },
+                    ),
             ),
-            SizedBox(height: 20),
-            buildCheckoutButton(),
+            const SizedBox(height: 20),
+            if (cartItems.isNotEmpty)
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Total:",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "Ksh ${totalCartValue}",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  buildCheckoutButton(),
+                ],
+              ),
           ],
         ),
       ),
@@ -145,11 +193,11 @@ class _CartPageState extends State<CartPage> {
       color: Colors.white,
       child: InkWell(
         onTap: () {
-          // Handle item tap
+          // Handle item tap - show details or edit quantity
         },
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -161,7 +209,7 @@ class _CartPageState extends State<CartPage> {
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 13),
+              const SizedBox(height: 10),
 
               // Image section
               Expanded(
@@ -173,67 +221,117 @@ class _CartPageState extends State<CartPage> {
                       item.image,
                       fit: BoxFit.cover,
                       width: double.infinity,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        color: Colors.grey[200],
+                        child: const Icon(Icons.image_not_supported, size: 50),
+                      ),
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 17),
+              const SizedBox(height: 10),
 
               // Item details section
               Expanded(
-                flex: 4,
+                flex: 5,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       item.name,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(height: 11),
+                    const SizedBox(height: 5),
                     Text(
                       "Ksh ${item.price}",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(height: 9),
-                    Text(
-                      "Qty: ${item.quantity} (Ksh ${item.price * item.quantity})",
-                      style: TextStyle(
-                        fontSize: 14,
-                      ),
-                    ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 5),
 
-                    // Add to cart or Remove button
-                    Expanded(
-                      child: Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle button action
+                    // Quantity controls
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (item.quantity > 1) {
+                                item.quantity--;
+                              }
+                            });
                           },
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Icon(Icons.remove, size: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
                           child: Text(
-                            "Remove",
-                            style: TextStyle(
-                              fontSize: 14,
+                            "${item.quantity}",
+                            style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
                             ),
                           ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[700],
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            minimumSize: Size(double.infinity, 50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              item.quantity++;
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5),
                             ),
+                            child: const Icon(Icons.add, size: 16),
+                          ),
+                        ),
+                        const Spacer(),
+                        Text(
+                          "Ksh ${item.price * item.quantity}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Remove button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => removeItem(item.id),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red[700],
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          "Remove",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -249,27 +347,54 @@ class _CartPageState extends State<CartPage> {
   }
 
   Widget buildCheckoutButton() {
-    return Container(
+    return SizedBox(
       width: double.infinity,
-      height: 65,
+      height: 55,
       child: ElevatedButton(
         onPressed: () {
           // Handle checkout
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Proceed to Checkout"),
+              content: Text("Total amount: Ksh $totalCartValue"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    // Navigate to checkout page or process payment
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Processing your order..."),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  child: const Text("Confirm"),
+                ),
+              ],
+            ),
+          );
         },
-        child: Text(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
           "CHECKOUT",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[800],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 18),
         ),
       ),
     );
