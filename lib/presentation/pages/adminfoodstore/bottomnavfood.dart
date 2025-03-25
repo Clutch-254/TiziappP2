@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:tiziappp2/presentation/pages/adminfoodstore/addfoodpage.dart';
@@ -69,4 +68,3 @@ class _BottomnavfoodState extends State<Bottomnavfood> {
     );
   }
 }
-

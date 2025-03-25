@@ -157,18 +157,6 @@ class _HomepageState extends State<Homepage> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20.0),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -184,18 +172,6 @@ class _HomepageState extends State<Homepage> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20.0),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -209,18 +185,6 @@ class _HomepageState extends State<Homepage> {
                           "Fitness Institution",
                           style: AppWidget.boldTextFieledStyle(),
                         ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(right: 20.0),
-                      padding: const EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -618,77 +582,6 @@ class _HomepageState extends State<Homepage> {
 
                 const SizedBox(
                   height: 20.0,
-                ),
-
-                // Fitness Zone Gym
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Productdetails(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
-                    child: Material(
-                      elevation: 5.0,
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.asset(
-                                "Images/Juma.png",
-                                height: 120,
-                                width: 120,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 20.0,
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: Text(
-                                    "Fitness Zone Gym",
-                                    style: AppWidget.smallBoldTextFieledStyle(),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: Text(
-                                    "Full Service Gym Facility",
-                                    style: AppWidget
-                                        .smallSemiBoldTextFieledStyle(),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Container(
-                                  width: MediaQuery.of(context).size.width / 2,
-                                  child: Text(
-                                    "\Ksh5,000 per month",
-                                    style: AppWidget.smallBoldTextFieledStyle(),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ],
 

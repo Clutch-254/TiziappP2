@@ -51,18 +51,6 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(right: 20.0),
-                      padding: EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -76,18 +64,6 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                           "Supplements",
                           style: AppWidget.boldTextFieledStyle(),
                         ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(right: 20.0),
-                      padding: EdgeInsets.all(3),
-                      decoration: BoxDecoration(
-                        color: Colors.black,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(
-                        Icons.shopping_cart_outlined,
-                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -169,14 +145,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                 width: 10,
               ),
               GestureDetector(
-                 onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Productdetails(),
+                    ),
+                  );
+                },
                 child: Container(
                   margin: EdgeInsets.all(4),
                   child: Material(
@@ -220,14 +196,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           height: 30.0,
         ),
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
@@ -283,14 +259,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           height: 20.0,
         ),
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
@@ -346,14 +322,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           height: 20.0,
         ),
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
             child: Material(
@@ -418,14 +394,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
             children: [
               // First supplement item
               GestureDetector(
-                 onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Productdetails(),
+                    ),
+                  );
+                },
                 child: Container(
                   margin: EdgeInsets.all(5),
                   child: Material(
@@ -468,14 +444,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                 width: 10,
               ),
               GestureDetector(
-                 onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Productdetails(),
+                    ),
+                  );
+                },
                 child: Container(
                   margin: EdgeInsets.all(4),
                   child: Material(
@@ -522,14 +498,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
 
         // Vertical list of supplements
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
@@ -585,14 +561,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           height: 20.0,
         ),
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
@@ -648,14 +624,14 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           height: 20.0,
         ),
         GestureDetector(
-           onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Productdetails(),
-      ),
-    );
-  },
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Productdetails(),
+              ),
+            );
+          },
           child: Container(
             margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
             child: Material(

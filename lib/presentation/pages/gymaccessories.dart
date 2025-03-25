@@ -59,18 +59,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
                     equipment ? "Equipment" : "Gymfits",
                     style: AppWidget.boldTextFieledStyle(),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(right: 20.0),
-                    padding: EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Icon(
-                      Icons.shopping_cart_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
+                  
                 ],
               ),
               SizedBox(
