@@ -335,45 +335,55 @@ class _HomepageState extends State<Homepage> {
                       const SizedBox(
                         width: 10,
                       ),
-                      Container(
-                        margin: const EdgeInsets.all(4),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "Images/PnM.png",
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Productdetails(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(4),
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.asset(
+                                      "Images/PnM.png",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Poly n Mike - Couple's \nPersonal Trainers",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Fitness Coaches",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "\Ksh14,000 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                              ],
+                                  Text(
+                                    "Poly n Mike - Couple's \nPersonal Trainers",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Fitness Coaches",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "\Ksh14,000 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -386,61 +396,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // Jin - Muay Thai Coach
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/jin_woo.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/jin_woo.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Jin - Muay Thai Coach",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Jin - Muay Thai Coach",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Muay Thai athlete",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh2,000 per session",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Muay Thai athlete",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh2,000 per session",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -451,61 +471,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // Sarah - Yoga Instructor
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/miley.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/miley.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Sarah - Yoga Instructor",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Sarah - Yoga Instructor",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Certified Yoga Expert",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh1,500 per session",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Certified Yoga Expert",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh1,500 per session",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -516,61 +546,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // David - Nutritionist
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/Juma.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/Juma.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "David - Nutritionist",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "David - Nutritionist",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Sports Nutrition Expert",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh3,000 per consultation",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Sports Nutrition Expert",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh3,000 per consultation",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -581,61 +621,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // Fitness Zone Gym
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/Juma.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/Juma.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Fitness Zone Gym",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Fitness Zone Gym",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Full Service Gym Facility",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh5,000 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Full Service Gym Facility",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh5,000 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -650,45 +700,55 @@ class _HomepageState extends State<Homepage> {
                   child: Row(
                     children: [
                       // First horizontal nutritionist placeholder
-                      Container(
-                        margin: const EdgeInsets.all(5),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "Images/kisha.png",
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Productdetails(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(5),
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.asset(
+                                      "Images/kisha.png",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Kisha Wanjiku - Nutrition Expert",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Sports Nutritionist",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "\Ksh2,500 per session",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                              ],
+                                  Text(
+                                    "Kisha Wanjiku - Nutrition Expert",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Sports Nutritionist",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "\Ksh2,500 per session",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -697,45 +757,55 @@ class _HomepageState extends State<Homepage> {
                         width: 10,
                       ),
 
-                      Container(
-                        margin: const EdgeInsets.all(4),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "Images/malon.png",
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Productdetails(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(4),
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.asset(
+                                      "Images/malon.png",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Malon Rivers - Diet Specialist",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Clinical Nutritionist",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "\Ksh3,500 per consultation",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                              ],
+                                  Text(
+                                    "Malon Rivers - Diet Specialist",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Clinical Nutritionist",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "\Ksh3,500 per consultation",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -747,61 +817,71 @@ class _HomepageState extends State<Homepage> {
                   height: 30.0,
                 ),
 
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/Juma.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/Juma.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Juma Waweru - Weight Management",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Juma Waweru - Weight Management",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Weight Loss Specialist",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh2,800 per session",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Weight Loss Specialist",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh2,800 per session",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -811,61 +891,71 @@ class _HomepageState extends State<Homepage> {
                   height: 20.0,
                 ),
 
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/Jina_Trainer.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/Jina_Trainer.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Jina Wickets - Performance Nutrition",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Jina Wickets - Performance Nutrition",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Athletic Performance Specialist",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh4,000 per consultation",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Athletic Performance Specialist",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh4,000 per consultation",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -880,45 +970,55 @@ class _HomepageState extends State<Homepage> {
                   child: Row(
                     children: [
                       // First horizontal gym placeholder
-                      Container(
-                        margin: const EdgeInsets.all(5),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "Images/gordon.png",
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Productdetails(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(5),
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.asset(
+                                      "Images/gordon.png",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Gordon's Gym",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Modern Fitness Center",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "\Ksh4,500 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                              ],
+                                  Text(
+                                    "Gordon's Gym",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Modern Fitness Center",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "\Ksh4,500 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -927,45 +1027,55 @@ class _HomepageState extends State<Homepage> {
                         width: 10,
                       ),
 
-                      Container(
-                        margin: const EdgeInsets.all(4),
-                        child: Material(
-                          elevation: 5.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.asset(
-                                    "Images/Zumba.png",
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Productdetails(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(4),
+                          child: Material(
+                            elevation: 5.0,
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.asset(
+                                      "Images/Zumba.png",
+                                      height: 150,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  "Fitness Hub",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Premium Gym Facility",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
-                                ),
-                                const SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "\Ksh6,000 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
-                                ),
-                              ],
+                                  Text(
+                                    "Fitness Hub",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Premium Gym Facility",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "\Ksh6,000 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -978,61 +1088,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // First vertical gym placeholder
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/Tizilogin.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/Tizilogin.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Tizi CrossFit Zone",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Tizi CrossFit Zone",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "CrossFit & Functional Training",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh7,000 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "CrossFit & Functional Training",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh7,000 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -1043,61 +1163,71 @@ class _HomepageState extends State<Homepage> {
                 ),
 
                 // Second vertical gym placeholder
-                Container(
-                  margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/FC.png",
-                              height: 120,
-                              width: 120,
-                              fit: BoxFit.cover,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Productdetails(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 20.0, bottom: 30.0),
+                    child: Material(
+                      elevation: 5.0,
+                      borderRadius: BorderRadius.circular(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.asset(
+                                "Images/FC.png",
+                                height: 120,
+                                width: 120,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 20.0,
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Flex Fitness",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                            const SizedBox(
+                              width: 20.0,
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Flex Fitness",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "Boutique Gym & Studio Classes",
-                                  style:
-                                      AppWidget.smallSemiBoldTextFieledStyle(),
+                                const SizedBox(
+                                  height: 5.0,
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: Text(
-                                  "\Ksh5,500 per month",
-                                  style: AppWidget.smallBoldTextFieledStyle(),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "Boutique Gym & Studio Classes",
+                                    style: AppWidget
+                                        .smallSemiBoldTextFieledStyle(),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                        ],
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  child: Text(
+                                    "\Ksh5,500 per month",
+                                    style: AppWidget.smallBoldTextFieledStyle(),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
