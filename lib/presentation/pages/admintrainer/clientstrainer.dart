@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiziappp2/presentation/pages/admintrainer/clientnopage.dart';
 
 class Clientstrainer extends StatefulWidget {
   const Clientstrainer({super.key});
@@ -48,14 +49,15 @@ class _ClientstrainerState extends State<Clientstrainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   _buildStatItem('Total Clients', '15', Icons.people),
-                  _buildStatItem('Active', '12', Icons.check_circle, Colors.green),
+                  _buildStatItem(
+                      'Active', '12', Icons.check_circle, Colors.green),
                   _buildStatItem('Today', '5', Icons.today, primaryGrey),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 30),
-            
+
             // Main navigation buttons
             Expanded(
               child: GridView.count(
@@ -67,7 +69,12 @@ class _ClientstrainerState extends State<Clientstrainer> {
                     'All Clients',
                     Icons.people,
                     'View and manage all your clients',
-                    () {/* Navigation will be added later */},
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Clientnopage()),
+                      );
+                    },
                   ),
                   _buildMenuButton(
                     'Workouts',
@@ -102,9 +109,9 @@ class _ClientstrainerState extends State<Clientstrainer> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
-            
+
             // Action buttons at bottom
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -148,7 +155,8 @@ class _ClientstrainerState extends State<Clientstrainer> {
     );
   }
 
-  Widget _buildStatItem(String title, String value, IconData icon, [Color? color]) {
+  Widget _buildStatItem(String title, String value, IconData icon,
+      [Color? color]) {
     return Column(
       children: [
         Icon(
