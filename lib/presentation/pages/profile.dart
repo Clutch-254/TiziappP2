@@ -115,6 +115,9 @@ class _ProfileState extends State<Profile> {
                             SizedBox(width: 40),
                             _buildIconButton(
                                 3, Icons.bar_chart), // Bar graph icon
+                                 SizedBox(width: 40),
+                            _buildIconButton(
+                                4, Icons.videocam),
                           ],
                         ),
 
@@ -298,15 +301,8 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ),
 
-                                  // Add this code right after the calendar container in your Profile build method
+                                 
 
-                                  // Add this code right after the calendar container in your Profile build method
-// Locate this section in your code:
-// Container(
-//   padding: EdgeInsets.only(top: 8, bottom: 16),
-//   color: widget.backgroundColor,
-//   child: Column(...),
-// ),
                                 ],
                               ),
                             ),

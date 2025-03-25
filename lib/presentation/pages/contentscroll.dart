@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class Contentscroll extends StatefulWidget {
   const Contentscroll({super.key});
@@ -12,10 +14,16 @@ class _ContentscrollState extends State<Contentscroll>
   final PageController _pageController = PageController();
   late AnimationController _animationController;
   bool _isPanelVisible = false;
+  bool _isMediaPickerVisible = false;
 
   // Selected category state
   String _selectedCategory = 'Brand'; // Default selected category
   final List<String> _categories = ['Brand', 'Specialist', 'Influencer'];
+
+  // Image picker
+  final ImagePicker _picker = ImagePicker();
+  File? _mediaFile;
+  bool _isVideo = false;
 
   // Sample content data - replace with your actual content
   final List<Map<String, dynamic>> _contentItems = [
@@ -80,6 +88,7 @@ class _ContentscrollState extends State<Contentscroll>
         _animationController.forward();
       } else {
         _animationController.reverse();
+        _isMediaPickerVisible = false; // Hide media picker when panel closes
       }
     });
   }
@@ -88,6 +97,7 @@ class _ContentscrollState extends State<Contentscroll>
     setState(() {
       _isPanelVisible = false;
       _animationController.reverse();
+      _isMediaPickerVisible = false;
     });
   }
 
@@ -97,6 +107,115 @@ class _ContentscrollState extends State<Contentscroll>
       // Here you would typically filter content based on category
       // For demo purposes, we're just changing the selected state
     });
+  }
+
+  void _toggleMediaPicker() {
+    setState(() {
+      _isMediaPickerVisible = !_isMediaPickerVisible;
+    });
+  }
+
+  Future<void> _takePicture() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      setState(() {
+        _mediaFile = File(photo.path);
+        _isVideo = false;
+        _isMediaPickerVisible = false; // Hide picker after selection
+        _showPostPreview();
+      });
+    }
+  }
+
+  Future<void> _recordVideo() async {
+    final XFile? video = await _picker.pickVideo(source: ImageSource.camera);
+    if (video != null) {
+      setState(() {
+        _mediaFile = File(video.path);
+        _isVideo = true;
+        _isMediaPickerVisible = false; // Hide picker after selection
+        _showPostPreview();
+      });
+    }
+  }
+
+  Future<void> _chooseFromGallery() async {
+    final XFile? media = await _picker.pickMedia();
+    if (media != null) {
+      setState(() {
+        _mediaFile = File(media.path);
+        _isVideo = media.name.toLowerCase().endsWith('.mp4') ||
+            media.name.toLowerCase().endsWith('.mov') ||
+            media.name.toLowerCase().endsWith('.avi');
+        _isMediaPickerVisible = false; // Hide picker after selection
+        _showPostPreview();
+      });
+    }
+  }
+
+  void _showPostPreview() {
+    // This would typically show a preview and allow adding description, tags, etc.
+    // For now, we'll just show a basic dialog
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Post Preview'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (_mediaFile != null)
+              Container(
+                height: 200,
+                width: 200,
+                decoration: BoxDecoration(
+                  image: _isVideo
+                      ? null
+                      : DecorationImage(
+                          image: FileImage(_mediaFile!),
+                          fit: BoxFit.cover,
+                        ),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey.shade200,
+                ),
+                child: _isVideo
+                    ? Icon(Icons.video_file,
+                        size: 50, color: Colors.grey.shade800)
+                    : null,
+              ),
+            SizedBox(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                hintText: 'Add a description...',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Here you would implement the post upload logic
+              // For demo purposes, we'll just close the dialog
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Your post has been uploaded!'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            child: Text('Post'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -206,24 +325,75 @@ class _ContentscrollState extends State<Contentscroll>
                                 borderRadius: BorderRadius.circular(2.5),
                               ),
                             ),
-                            // Empty space for alignment
-                            const SizedBox(width: 48),
+                            // Plus button for media capture
+                            IconButton(
+                              icon: const Icon(Icons.add_circle_outline,
+                                  color: Colors.white, size: 30),
+                              onPressed: _toggleMediaPicker,
+                            ),
                           ],
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: _buildActionPanelContent(),
+                      // Media picker options
+                      if (_isMediaPickerVisible)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildMediaOption(
+                                  Icons.camera_alt, 'Take Photo', _takePicture),
+                              _buildMediaOption(
+                                  Icons.videocam, 'Record Video', _recordVideo),
+                              _buildMediaOption(Icons.photo_library, 'Gallery',
+                                  _chooseFromGallery),
+                            ],
                           ),
                         ),
-                      ),
+                      if (!_isMediaPickerVisible)
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: _buildActionPanelContent(),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               );
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMediaOption(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 30,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+            ),
           ),
         ],
       ),
@@ -338,7 +508,6 @@ class _ContentscrollState extends State<Contentscroll>
                   comment,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
                   ),
                 ),
               ],
