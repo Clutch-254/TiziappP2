@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/clientnopage.dart';
+import 'package:tiziappp2/presentation/pages/admintrainer/scheduletra.dart';
+import 'package:tiziappp2/presentation/pages/profile.dart';
 
 class Clientstrainer extends StatefulWidget {
   const Clientstrainer({super.key});
@@ -92,13 +94,24 @@ class _ClientstrainerState extends State<Clientstrainer> {
                     'Schedule',
                     Icons.calendar_today,
                     'Manage training sessions',
-                    () {/* Navigation will be added later */},
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Scheduletra()),
+                      );
+                    },
                   ),
                   _buildMenuButton(
                     'Nutrition Plans',
                     Icons.restaurant_menu,
                     'Manage meal plans and nutrition',
-                    () {/* Navigation will be added later */},
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NutritionInfoSection()),
+                      );
+                    },
                   ),
                   _buildMenuButton(
                     'Messaging',
