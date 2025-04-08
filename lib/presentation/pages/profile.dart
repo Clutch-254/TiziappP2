@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ),
-               
+
                 Center(
                   child: Padding(
                     padding: EdgeInsets.only(
@@ -115,9 +115,8 @@ class _ProfileState extends State<Profile> {
                             SizedBox(width: 40),
                             _buildIconButton(
                                 3, Icons.bar_chart), // Bar graph icon
-                                 SizedBox(width: 40),
-                            _buildIconButton(
-                                4, Icons.videocam),
+                            SizedBox(width: 40),
+                            _buildIconButton(4, Icons.videocam),
                           ],
                         ),
 
@@ -198,6 +197,12 @@ class _ProfileState extends State<Profile> {
                                 WeightLossBarGraph(),
                               ],
                             ),
+                          ),
+                        // Show media gallery if the camera icon is selected
+                        if (_selectedIconIndex == 4)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: MediaGallerySection(),
                           ),
                       ],
                     ),
@@ -300,9 +305,6 @@ class _ProfileState extends State<Profile> {
                                       ),
                                     ),
                                   ),
-
-                                 
-
                                 ],
                               ),
                             ),
@@ -310,6 +312,54 @@ class _ProfileState extends State<Profile> {
                         }).toList(),
                       ),
                     ],
+                  ),
+                ),
+                // Add settings icon in the top right corner
+                Positioned(
+                  top: MediaQuery.of(context).size.height /
+                      5, // Position it right below the calendar
+                  right: 70, // Position it to the left of the message icon
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colors.grey[800],
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        // Add settings functionality here
+                        print("Settings icon pressed");
+                      },
+                      tooltip: "Settings",
+                    ),
+                  ),
+                ),
+                // Message icon in the top right under the calendar
+                Positioned(
+                  top: MediaQuery.of(context).size.height /
+                      5, // Position it right below the calendar
+                  right: 16,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.message,
+                        color: Colors.grey[800],
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        // Add message functionality here
+                        print("Message icon pressed");
+                      },
+                      tooltip: "Messages",
+                    ),
                   ),
                 ),
               ],
@@ -366,6 +416,300 @@ class _ProfileState extends State<Profile> {
 
   bool _isThursday(DateTime date) {
     return date.weekday == DateTime.thursday;
+  }
+}
+
+// Media Gallery Section for photos and videos
+class MediaGallerySection extends StatefulWidget {
+  @override
+  _MediaGallerySectionState createState() => _MediaGallerySectionState();
+}
+
+class _MediaGallerySectionState extends State<MediaGallerySection>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  // Sample data for images
+  final List<Map<String, dynamic>> _mediaItems = [
+    {
+      'type': 'image',
+      'title': 'Week 1 Progress',
+      'date': 'Jan 05, 2025',
+      'likes': 24,
+      'comments': 5,
+    },
+    {
+      'type': 'video',
+      'title': 'Deadlift Form Check',
+      'date': 'Jan 12, 2025',
+      'duration': '0:45',
+      'likes': 38,
+      'comments': 12,
+    },
+    {
+      'type': 'image',
+      'title': 'Month 2 Progress',
+      'date': 'Feb 28, 2025',
+      'likes': 56,
+      'comments': 8,
+    },
+    {
+      'type': 'video',
+      'title': 'Squat PR 315lbs',
+      'date': 'Feb 05, 2025',
+      'duration': '1:20',
+      'likes': 72,
+      'comments': 15,
+    },
+    {
+      'type': 'image',
+      'title': 'Month 3 Progress',
+      'date': 'Mar 30, 2025',
+      'likes': 43,
+      'comments': 7,
+    },
+    {
+      'type': 'video',
+      'title': 'Bench Press Form',
+      'date': 'Mar 10, 2025',
+      'duration': '0:55',
+      'likes': 35,
+      'comments': 9,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "My Progress Gallery",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add_circle_outline, color: Colors.grey[800]),
+                onPressed: () {
+                  // Add new media
+                  print("Add new media");
+                },
+                tooltip: "Add new",
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            border: Border(
+              bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+            ),
+          ),
+          child: TabBar(
+            controller: _tabController,
+            labelColor: Colors.grey[800],
+            unselectedLabelColor: Colors.grey[500],
+            indicatorColor: Colors.grey[800],
+            tabs: [
+              Tab(text: "All"),
+              Tab(text: "Videos"),
+            ],
+          ),
+        ),
+        SizedBox(height: 16),
+        // Grid of media items
+        Container(
+          height: 500, // Fixed height for the grid
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              // All tab
+              _buildMediaGrid(_mediaItems),
+              // Videos tab
+              _buildMediaGrid(_mediaItems
+                  .where((item) => item['type'] == 'video')
+                  .toList()),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMediaGrid(List<Map<String, dynamic>> items) {
+    return GridView.builder(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 0.8,
+      ),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return _buildMediaItem(item);
+      },
+    );
+  }
+
+  Widget _buildMediaItem(Map<String, dynamic> item) {
+    bool isVideo = item['type'] == 'video';
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Media preview (placeholder)
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                child: Container(
+                  height: 120,
+                  width: double.infinity,
+                  color: isVideo ? Colors.grey[400] : Colors.grey[300],
+                  child: Center(
+                    child: Icon(
+                      isVideo ? Icons.videocam : Icons.photo,
+                      size: 40,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+              if (isVideo)
+                Positioned(
+                  right: 8,
+                  bottom: 8,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      item['duration'],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      // View media
+                      print(
+                          "View ${isVideo ? 'video' : 'image'}: ${item['title']}");
+                    },
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(12)),
+                    child: isVideo
+                        ? Center(
+                            child: Icon(
+                              Icons.play_circle_outline,
+                              size: 50,
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                          )
+                        : Container(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // Media info
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['title'],
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.grey[800],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  item['date'],
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                ),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(Icons.favorite, size: 16, color: Colors.red[400]),
+                    SizedBox(width: 4),
+                    Text(
+                      "${item['likes']}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Icon(Icons.comment, size: 16, color: Colors.grey[600]),
+                    SizedBox(width: 4),
+                    Text(
+                      "${item['comments']}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -635,6 +979,7 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
 
 // Weight Gain Bar Graph Widget
 class WeightGainBarGraph extends StatelessWidget {
+  // Sample data - you can replace with actual data
   // Sample data - you can replace with actual data
   final List<double> monthlyWeightGain = [
     0.8,

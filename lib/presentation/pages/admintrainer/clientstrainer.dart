@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/clientnopage.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/messagetrainer.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/nutritionplan.dart';
+import 'package:tiziappp2/presentation/pages/admintrainer/progresstracking.dart';
 import 'package:tiziappp2/presentation/pages/admintrainer/scheduletra.dart';
 import 'package:tiziappp2/presentation/pages/profile.dart';
 
@@ -90,7 +91,13 @@ class _ClientstrainerState extends State<Clientstrainer> {
                     'Progress Tracking',
                     Icons.show_chart,
                     'Track client progress and goals',
-                    () {/* Navigation will be added later */},
+                    () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Progresstracking()),
+                      );
+                    },
                   ),
                   _buildMenuButton(
                     'Schedule',
