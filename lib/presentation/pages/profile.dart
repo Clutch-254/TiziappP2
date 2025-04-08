@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tiziappp2/presentation/pages/notificationsus.dart';
 import 'dart:math' show pi;
+
+import 'package:tiziappp2/presentation/pages/settingsus.dart';
 
 class Profile extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
@@ -331,8 +334,10 @@ class _ProfileState extends State<Profile> {
                         size: 26,
                       ),
                       onPressed: () {
-                        // Add settings functionality here
-                        print("Settings icon pressed");
+                        Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Settinguser()),
+            );
                       },
                       tooltip: "Settings",
                     ),
@@ -355,8 +360,10 @@ class _ProfileState extends State<Profile> {
                         size: 26,
                       ),
                       onPressed: () {
-                        // Add message functionality here
-                        print("Message icon pressed");
+                       Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Notificationsus()),
+            );
                       },
                       tooltip: "Messages",
                     ),
