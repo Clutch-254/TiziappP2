@@ -19,11 +19,16 @@ class Profile extends StatefulWidget {
   _ProfileState createState() => _ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   late DateTime _selectedDate;
   late List<DateTime> _weekDays;
   late PageController _pageController;
   int _selectedIconIndex = 0; // Set the food icon as the default selected icon
+
+  // Animation controller for the AI assistant drawer
+  late AnimationController _drawerAnimationController;
+  late Animation<double> _drawerAnimation;
+  bool _isDrawerOpen = false;
 
   @override
   void initState() {
@@ -31,11 +36,23 @@ class _ProfileState extends State<Profile> {
     _selectedDate = DateTime.now();
     _pageController = PageController(initialPage: 0);
     _generateWeekDays(DateTime.now());
+
+    // Initialize the drawer animation controller
+    _drawerAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+
+    _drawerAnimation = CurvedAnimation(
+      parent: _drawerAnimationController,
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _drawerAnimationController.dispose();
     super.dispose();
   }
 
@@ -56,323 +73,415 @@ class _ProfileState extends State<Profile> {
     });
   }
 
+  // Toggle the AI drawer
+  void _toggleDrawer() {
+    setState(() {
+      _isDrawerOpen = !_isDrawerOpen;
+      if (_isDrawerOpen) {
+        _drawerAnimationController.forward();
+      } else {
+        _drawerAnimationController.reverse();
+      }
+    });
+  }
+
+  // Show music dialog
+  void _showMusicDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MusicPlayerDialog();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
+      body: Stack(
+        children: [
+          // Main Content
+          SingleChildScrollView(
+            child: Column(
               children: [
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 3),
-                    child: Material(
-                      elevation: 10.0,
-                      borderRadius: BorderRadius.circular(60),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
-                        child: Image.asset(
-                          "Images/Juma.png",
-                          height: 90,
-                          width: 90,
-                          fit: BoxFit.cover,
+                Stack(
+                  children: [
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 3),
+                        child: Material(
+                          elevation: 10.0,
+                          borderRadius: BorderRadius.circular(60),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Image.asset(
+                              "Images/Juma.png",
+                              height: 90,
+                              width: 90,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
 
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 3 - 40),
-                    child: Text(
-                      "Max Achebi",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 3 - 40),
+                        child: Text(
+                          "Max Achebi",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height / 3 + 100),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 3 + 100),
+                        child: Column(
                           children: [
-                            _buildIconButton(0, Icons.fastfood), // Food icon
-                            SizedBox(width: 40),
-                            _buildIconButton(
-                                1, Icons.access_time), // Clock icon
-                            SizedBox(width: 40),
-                            _buildIconButton(
-                                2, Icons.contacts), // Phonebook icon
-                            SizedBox(width: 40),
-                            _buildIconButton(
-                                3, Icons.bar_chart), // Bar graph icon
-                            SizedBox(width: 40),
-                            _buildIconButton(4, Icons.videocam),
-                          ],
-                        ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildIconButton(
+                                    0, Icons.fastfood), // Food icon
+                                SizedBox(width: 40),
+                                _buildIconButton(
+                                    1, Icons.access_time), // Clock icon
+                                SizedBox(width: 40),
+                                _buildIconButton(
+                                    2, Icons.contacts), // Phonebook icon
+                                SizedBox(width: 40),
+                                _buildIconButton(
+                                    3, Icons.bar_chart), // Bar graph icon
+                                SizedBox(width: 40),
+                                _buildIconButton(4, Icons.videocam),
+                              ],
+                            ),
 
-                        // Add the nutrition donut chart if the food icon is selected
-                        if (_selectedIconIndex == 0)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Column(
-                              children: [
-                                NutritionInfoSection(),
-                                SizedBox(height: 30),
-                                CaloriesBalanceSection(),
-                                SizedBox(height: 30),
-                                SupplementIntakeSection(),
-                                SizedBox(height: 50),
-                              ],
-                            ),
-                          ),
-                        // Show today's routine if the clock icon is selected
-                        if (_selectedIconIndex == 1)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Today's Routine",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                            // Add the nutrition donut chart if the food icon is selected
+                            if (_selectedIconIndex == 0)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: Column(
+                                  children: [
+                                    NutritionInfoSection(),
+                                    SizedBox(height: 30),
+                                    CaloriesBalanceSection(),
+                                    SizedBox(height: 30),
+                                    SupplementIntakeSection(),
+                                    SizedBox(height: 50),
+                                  ],
                                 ),
-                                SizedBox(height: 10),
-                                WorkoutRoutine(selectedDate: _selectedDate),
-                              ],
-                            ),
-                          ),
-                        // Show trainer, nutritionist, and gym sections if the phonebook icon is selected
-                        if (_selectedIconIndex == 2)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Column(
-                              children: [
-                                TrainerSection(),
-                                SizedBox(height: 20),
-                                NutritionistSection(),
-                                SizedBox(height: 20),
-                                GymSection(),
-                              ],
-                            ),
-                          ),
-                        // Show weight gain bar graph if the bar graph icon is selected
-                        if (_selectedIconIndex == 3)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Weight Gain Progress",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                WeightGainBarGraph(),
-
-                                SizedBox(
-                                    height:
-                                        30), // Add spacing between the graphs
-                                Text(
-                                  "Weight Loss Progress",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-                                WeightLossBarGraph(),
-                              ],
-                            ),
-                          ),
-                        // Show media gallery if the camera icon is selected
-                        if (_selectedIconIndex == 4)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: MediaGallerySection(),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.only(top: 8, bottom: 16),
-                  color: widget.backgroundColor,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            IconButton(
-                              icon:
-                                  Icon(Icons.chevron_left, color: Colors.grey),
-                              onPressed: () => _navigateToWeek(-1),
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
-                            ),
-                            Text(
-                              DateFormat('MMMM yyyy').format(_weekDays[0]),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey,
                               ),
-                            ),
-                            IconButton(
-                              icon:
-                                  Icon(Icons.chevron_right, color: Colors.grey),
-                              onPressed: () => _navigateToWeek(1),
-                              padding: EdgeInsets.zero,
-                              constraints: BoxConstraints(),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: _weekDays.map((day) {
-                          bool isToday = _isToday(day);
-                          bool isSelected = _isSameDay(day, _selectedDate);
-
-                          return Expanded(
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(
-                                  () {
-                                    _selectedDate = day;
-                                    if (widget.onDateSelected != null) {
-                                      widget.onDateSelected!(day);
-                                    }
-                                  },
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    DateFormat('E').format(day).substring(0, 3),
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500,
-                                      color: isSelected
-                                          ? Colors.grey
-                                          : Colors.grey[600],
-                                    ),
-                                  ),
-                                  SizedBox(height: 6),
-                                  Container(
-                                    width: 32,
-                                    height: 32,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isSelected
-                                          ? Colors.grey
-                                          : isToday
-                                              ? Colors.grey.withOpacity(0.1)
-                                              : Colors.transparent,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        day.day.toString(),
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: isToday || isSelected
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          color: isSelected
-                                              ? Colors.white
-                                              : isToday
-                                                  ? Colors.grey
-                                                  : Colors.black87,
-                                        ),
+                            // Show today's routine if the clock icon is selected
+                            if (_selectedIconIndex == 1)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Today's Routine",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    SizedBox(height: 10),
+                                    WorkoutRoutine(selectedDate: _selectedDate),
+                                  ],
+                                ),
                               ),
+                            // Show trainer, nutritionist, and gym sections if the phonebook icon is selected
+                            if (_selectedIconIndex == 2)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: Column(
+                                  children: [
+                                    TrainerSection(),
+                                    SizedBox(height: 20),
+                                    NutritionistSection(),
+                                    SizedBox(height: 20),
+                                    GymSection(),
+                                  ],
+                                ),
+                              ),
+                            // Show weight gain bar graph if the bar graph icon is selected
+                            if (_selectedIconIndex == 3)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "Weight Gain Progress",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    WeightGainBarGraph(),
+
+                                    SizedBox(
+                                        height:
+                                            30), // Add spacing between the graphs
+                                    Text(
+                                      "Weight Loss Progress",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+                                    WeightLossBarGraph(),
+                                  ],
+                                ),
+                              ),
+                            // Show media gallery if the camera icon is selected
+                            if (_selectedIconIndex == 4)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: MediaGallerySection(),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(top: 8, bottom: 16),
+                      color: widget.backgroundColor,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.chevron_left,
+                                      color: Colors.grey),
+                                  onPressed: () => _navigateToWeek(-1),
+                                  padding: EdgeInsets.zero,
+                                  constraints: BoxConstraints(),
+                                ),
+                                Text(
+                                  DateFormat('MMMM yyyy').format(_weekDays[0]),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.chevron_right,
+                                      color: Colors.grey),
+                                  onPressed: () => _navigateToWeek(1),
+                                  padding: EdgeInsets.zero,
+                                  constraints: BoxConstraints(),
+                                ),
+                              ],
                             ),
-                          );
-                        }).toList(),
+                          ),
+                          SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: _weekDays.map((day) {
+                              bool isToday = _isToday(day);
+                              bool isSelected = _isSameDay(day, _selectedDate);
+
+                              return Expanded(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(
+                                      () {
+                                        _selectedDate = day;
+                                        if (widget.onDateSelected != null) {
+                                          widget.onDateSelected!(day);
+                                        }
+                                      },
+                                    );
+                                  },
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        DateFormat('E')
+                                            .format(day)
+                                            .substring(0, 3),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: isSelected
+                                              ? Colors.grey
+                                              : Colors.grey[600],
+                                        ),
+                                      ),
+                                      SizedBox(height: 6),
+                                      Container(
+                                        width: 32,
+                                        height: 32,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isSelected
+                                              ? Colors.grey
+                                              : isToday
+                                                  ? Colors.grey.withOpacity(0.1)
+                                                  : Colors.transparent,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            day.day.toString(),
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: isToday || isSelected
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              color: isSelected
+                                                  ? Colors.white
+                                                  : isToday
+                                                      ? Colors.grey
+                                                      : Colors.black87,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                // Add settings icon in the top right corner
-                Positioned(
-                  top: MediaQuery.of(context).size.height /
-                      5, // Position it right below the calendar
-                  right: 70, // Position it to the left of the message icon
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      shape: BoxShape.circle,
                     ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.settings,
-                        color: Colors.grey[800],
-                        size: 26,
+
+                    // Music button (new)
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 5,
+                      left: 16,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.music_note, // Music icon
+                            color: Colors.grey[800],
+                            size: 26,
+                          ),
+                          onPressed: _showMusicDialog,
+                          tooltip: "Music Player",
+                        ),
                       ),
-                      onPressed: () {
-                        Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Settinguser()),
-            );
-                      },
-                      tooltip: "Settings",
                     ),
-                  ),
-                ),
-                // Message icon in the top right under the calendar
-                Positioned(
-                  top: MediaQuery.of(context).size.height /
-                      5, // Position it right below the calendar
-                  right: 16,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.message,
-                        color: Colors.grey[800],
-                        size: 26,
+
+                    // AI Assistant icon (robot) - moved to the right of Music button
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 5,
+                      left: 70, // Moved to make room for music button
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.smart_toy_outlined, // Robot icon
+                            color: Colors.grey[800],
+                            size: 26,
+                          ),
+                          onPressed: _toggleDrawer,
+                          tooltip: "AI Assistant",
+                        ),
                       ),
-                      onPressed: () {
-                       Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const Notificationsus()),
-            );
-                      },
-                      tooltip: "Messages",
                     ),
-                  ),
+
+                    // Settings icon in the top right corner
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 5,
+                      right: 70,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.settings,
+                            color: Colors.grey[800],
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Settinguser()),
+                            );
+                          },
+                          tooltip: "Settings",
+                        ),
+                      ),
+                    ),
+                    // Message icon in the top right under the calendar
+                    Positioned(
+                      top: MediaQuery.of(context).size.height / 5,
+                      right: 16,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.message,
+                            color: Colors.grey[800],
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const Notificationsus()),
+                            );
+                          },
+                          tooltip: "Messages",
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+
+          // AI Assistant Drawer (slides from left)
+          AnimatedBuilder(
+            animation: _drawerAnimation,
+            builder: (context, child) {
+              return Positioned(
+                left:
+                    _drawerAnimation.value * 300 - 300, // Slide from -300 to 0
+                top: 0,
+                bottom: 0,
+                width: 300,
+                child: AIAssistantDrawer(
+                  onClose: _toggleDrawer,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
@@ -423,6 +532,732 @@ class _ProfileState extends State<Profile> {
 
   bool _isThursday(DateTime date) {
     return date.weekday == DateTime.thursday;
+  }
+}
+
+// AI Assistant Drawer Widget with enhanced functionality
+class AIAssistantDrawer extends StatefulWidget {
+  final VoidCallback onClose;
+
+  const AIAssistantDrawer({Key? key, required this.onClose}) : super(key: key);
+
+  @override
+  _AIAssistantDrawerState createState() => _AIAssistantDrawerState();
+}
+
+class _AIAssistantDrawerState extends State<AIAssistantDrawer> {
+  TextEditingController _messageController = TextEditingController();
+  List<Map<String, dynamic>> _chatMessages = [];
+  bool _isLoading = false;
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Add a welcome message
+    _chatMessages.add({
+      'isUser': false,
+      'message': "Hi, I'm Tizi AI. How can I help you today?",
+      'timestamp': DateTime.now(),
+    });
+  }
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // Method to send a message
+  void _sendMessage() {
+    if (_messageController.text.trim().isEmpty) return;
+
+    // Add user message to chat
+    setState(() {
+      _chatMessages.add({
+        'isUser': true,
+        'message': _messageController.text,
+        'timestamp': DateTime.now(),
+      });
+
+      // Simulate AI thinking
+      _isLoading = true;
+    });
+
+    // Clear input field
+    _messageController.clear();
+
+    // Scroll to bottom
+    _scrollToBottom();
+
+    // Simulate AI response after a short delay
+    Future.delayed(Duration(seconds: 1), () {
+      String userMessage =
+          _chatMessages.last['message'].toString().toLowerCase();
+      String aiResponse = _generateAIResponse(userMessage);
+
+      setState(() {
+        _chatMessages.add({
+          'isUser': false,
+          'message': aiResponse,
+          'timestamp': DateTime.now(),
+        });
+        _isLoading = false;
+      });
+
+      // Scroll to bottom again after response
+      _scrollToBottom();
+    });
+  }
+
+  // Helper method to generate AI responses
+  String _generateAIResponse(String userMessage) {
+    if (userMessage.contains('workout') || userMessage.contains('exercise')) {
+      return "Based on your profile, I'd recommend focusing on compound exercises today. Would you like me to suggest some specific exercises?";
+    } else if (userMessage.contains('diet') ||
+        userMessage.contains('nutrition')) {
+      return "Your nutrition records show you're at 1850 calories today. Would you like some meal suggestions?";
+    } else if (userMessage.contains('progress') ||
+        userMessage.contains('weight')) {
+      return "Looking at your progress charts, you're on track with your goals. Keep up the good work!";
+    } else {
+      return "I understand you're asking about \"$userMessage\". How can I assist you further?";
+    }
+  }
+
+  // Scroll to the bottom of the chat
+  void _scrollToBottom() {
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      child: SafeArea(
+        child: Column(
+          children: [
+            // Header with title and close button
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Tizi AI",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Colors.grey[600]),
+                    onPressed: widget.onClose,
+                  ),
+                ],
+              ),
+            ),
+            Divider(color: Colors.grey[300]),
+
+            // Chat messages area
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.all(16),
+                itemCount: _chatMessages.length + (_isLoading ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (_isLoading && index == _chatMessages.length) {
+                    return _buildLoadingBubble();
+                  }
+
+                  final message = _chatMessages[index];
+                  final isUser = message['isUser'] as bool;
+
+                  return _buildChatBubble(
+                    message: message['message'] as String,
+                    isUser: isUser,
+                    timestamp: message['timestamp'] as DateTime,
+                  );
+                },
+              ),
+            ),
+
+            // Input area
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 5,
+                    offset: Offset(0, -2),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _messageController,
+                      decoration: InputDecoration(
+                        hintText: "Ask something...",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      onSubmitted: (_) => _sendMessage(),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  IconButton(
+                    icon: Icon(Icons.send, color: Colors.grey[800]),
+                    onPressed: _sendMessage,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Chat bubble widget
+  Widget _buildChatBubble({
+    required String message,
+    required bool isUser,
+    required DateTime timestamp,
+  }) {
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: isUser ? Colors.grey[800] : Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              message,
+              style: TextStyle(
+                color: isUser ? Colors.white : Colors.black,
+                fontSize: 16,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              DateFormat('h:mm a').format(timestamp),
+              style: TextStyle(
+                color: isUser ? Colors.white70 : Colors.grey[600],
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Loading bubble widget
+  Widget _buildLoadingBubble() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.only(bottom: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Tizi AI is typing...",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Music Player Dialog
+class MusicPlayerDialog extends StatefulWidget {
+  @override
+  _MusicPlayerDialogState createState() => _MusicPlayerDialogState();
+}
+
+class _MusicPlayerDialogState extends State<MusicPlayerDialog>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  TextEditingController _searchController = TextEditingController();
+  bool _isPlaying = false;
+  String _currentTrack = "No track selected";
+
+  // Sample music library data
+  final List<Map<String, dynamic>> _musicLibrary = [
+    {
+      'title': 'Workout Energy Boost',
+      'artist': 'Fitness Beats',
+      'duration': '3:45',
+      'isPlaylist': false,
+    },
+    {
+      'title': 'Cardio Session Mix',
+      'artist': 'Running Tracks',
+      'duration': '4:12',
+      'isPlaylist': false,
+    },
+    {
+      'title': 'Power Lifting Anthems',
+      'artist': 'Gym Heroes',
+      'duration': '3:30',
+      'isPlaylist': true,
+      'tracks': 12,
+    },
+    {
+      'title': 'Meditation & Stretching',
+      'artist': 'Zen Fitness',
+      'duration': '5:20',
+      'isPlaylist': false,
+    },
+    {
+      'title': 'HIIT Training Mix',
+      'artist': 'Interval Masters',
+      'duration': '2:45',
+      'isPlaylist': false,
+    },
+    {
+      'title': 'Workout Motivation',
+      'artist': 'Fitness Gurus',
+      'duration': '4:05',
+      'isPlaylist': true,
+      'tracks': 8,
+    },
+    {
+      'title': 'Cool Down Session',
+      'artist': 'Recovery Beats',
+      'duration': '6:10',
+      'isPlaylist': false,
+    },
+  ];
+
+  List<Map<String, dynamic>> _filteredMusic = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _filteredMusic = List.from(_musicLibrary);
+
+    _searchController.addListener(() {
+      _filterMusic();
+    });
+  }
+
+  void _filterMusic() {
+    if (_searchController.text.isEmpty) {
+      setState(() {
+        _filteredMusic = List.from(_musicLibrary);
+      });
+    } else {
+      setState(() {
+        _filteredMusic = _musicLibrary
+            .where((music) =>
+                music['title']
+                    .toLowerCase()
+                    .contains(_searchController.text.toLowerCase()) ||
+                music['artist']
+                    .toLowerCase()
+                    .contains(_searchController.text.toLowerCase()))
+            .toList();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      child: contentBox(context),
+    );
+  }
+
+  Widget contentBox(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.9,
+      height: MediaQuery.of(context).size.height * 0.7,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        children: [
+          // Header with close button
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Music Player",
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey[600]),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+
+          // Tab Bar
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              border: Border(
+                bottom: BorderSide(color: Colors.grey[300]!, width: 1),
+              ),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              labelColor: Colors.grey[800],
+              unselectedLabelColor: Colors.grey[500],
+              indicatorColor: Colors.grey[800],
+              tabs: [
+                Tab(text: "My Library"),
+                Tab(text: "Search"),
+                Tab(text: "Add Music"),
+              ],
+            ),
+          ),
+
+          // Tab content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                // My Library Tab
+                _buildLibraryTab(),
+
+                // Search Tab
+                _buildSearchTab(),
+
+                // Add Music Tab
+                _buildAddMusicTab(),
+              ],
+            ),
+          ),
+
+          // Player controls at the bottom
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                top: BorderSide(color: Colors.grey[300]!, width: 1),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 5,
+                  offset: Offset(0, -2),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    // Track info
+                    Expanded(
+                      child: Text(
+                        _currentTrack,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.grey[800],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+
+                    // Controls
+                    IconButton(
+                      icon: Icon(Icons.skip_previous, color: Colors.grey[600]),
+                      onPressed: () {
+                        // Previous track functionality
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        _isPlaying
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_fill,
+                        color: Colors.grey[800],
+                        size: 40,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPlaying = !_isPlaying;
+                        });
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.skip_next, color: Colors.grey[600]),
+                      onPressed: () {
+                        // Next track functionality
+                      },
+                    ),
+                  ],
+                ),
+
+                // Progress bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: LinearProgressIndicator(
+                    value: 0.3, // Sample progress value
+                    backgroundColor: Colors.grey[300],
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.grey[700]!),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // My Library Tab
+  Widget _buildLibraryTab() {
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      itemCount: _musicLibrary.length,
+      itemBuilder: (context, index) {
+        final music = _musicLibrary[index];
+        return _buildMusicListItem(music);
+      },
+    );
+  }
+
+  // Search Tab
+  Widget _buildSearchTab() {
+    return Column(
+      children: [
+        // Search input
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: "Search music...",
+              prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.grey[400]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.grey[400]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide(color: Colors.grey[700]!),
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 0),
+              filled: true,
+              fillColor: Colors.grey[100],
+            ),
+          ),
+        ),
+
+        // Search results
+        Expanded(
+          child: _filteredMusic.isEmpty
+              ? Center(
+                  child: Text(
+                    "No results found",
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  itemCount: _filteredMusic.length,
+                  itemBuilder: (context, index) {
+                    final music = _filteredMusic[index];
+                    return _buildMusicListItem(music);
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
+  // Add Music Tab
+  Widget _buildAddMusicTab() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.add_circle_outline,
+          size: 80,
+          color: Colors.grey[400],
+        ),
+        SizedBox(height: 20),
+        Text(
+          "Add Music from Your Device",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
+          ),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton.icon(
+          icon: Icon(Icons.folder_open),
+          label: Text("Browse Files"),
+          onPressed: () {
+            // File browsing functionality
+            print("Browse music files");
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey[800],
+            foregroundColor: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        TextButton(
+          onPressed: () {
+            // Import from other apps functionality
+            print("Import from other apps");
+          },
+          child: Text(
+            "Import from other apps",
+            style: TextStyle(
+              color: Colors.grey[700],
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper method to build a music item in the list
+  Widget _buildMusicListItem(Map<String, dynamic> music) {
+    final isPlaylist = music['isPlaylist'] ?? false;
+
+    return ListTile(
+      leading: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(
+          isPlaylist ? Icons.playlist_play : Icons.music_note,
+          color: Colors.grey[700],
+          size: 30,
+        ),
+      ),
+      title: Text(
+        music['title'],
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          color: Colors.grey[800],
+        ),
+      ),
+      subtitle: Text(
+        isPlaylist
+            ? "${music['tracks']} tracks · ${music['artist']}"
+            : "${music['duration']} · ${music['artist']}",
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey[600],
+        ),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.play_circle_outline, color: Colors.grey[700]),
+            onPressed: () {
+              setState(() {
+                _isPlaying = true;
+                _currentTrack = "${music['title']} - ${music['artist']}";
+              });
+              // Play music functionality
+              print("Play: ${music['title']}");
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.more_vert, color: Colors.grey[600]),
+            onPressed: () {
+              // Show more options for this music
+              print("More options for: ${music['title']}");
+            },
+          ),
+        ],
+      ),
+      onTap: () {
+        setState(() {
+          _currentTrack = "${music['title']} - ${music['artist']}";
+          _isPlaying = true;
+        });
+        // Select music functionality
+        print("Selected: ${music['title']}");
+      },
+    );
   }
 }
 
@@ -986,7 +1821,6 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
 
 // Weight Gain Bar Graph Widget
 class WeightGainBarGraph extends StatelessWidget {
-  // Sample data - you can replace with actual data
   // Sample data - you can replace with actual data
   final List<double> monthlyWeightGain = [
     0.8,

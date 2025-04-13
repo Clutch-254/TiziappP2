@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/presentation/pages/surveyuser.dart';
 
@@ -34,30 +33,18 @@ class _SettinguserState extends State<Settinguser> {
                 ),
               ),
               SizedBox(height: 12),
-              _buildSettingsCard(
-                Icons.account_circle_outlined,
-                "Personal Information",
-                "Update your personal details"
-              ),
-              _buildSettingsCard(
-                Icons.lock_outline,
-                "Privacy & Security",
-                "Control your privacy settings"
-              ),
-              _buildSettingsCard(
-                Icons.language_outlined,
-                "Language",
-                "Change your preferred language"  
-              ),
-              _buildSettingsCard(
-                Icons.query_stats,
-                "Onboarding Survey",
-                "Personalize your meditation & yoga recommendations"
-              ),
-              
+              _buildSettingsCard(Icons.account_circle_outlined,
+                  "Personal Information", "Update your personal details"),
+              _buildSettingsCard(Icons.lock_outline, "Privacy & Security",
+                  "Control your privacy settings"),
+              _buildSettingsCard(Icons.language_outlined, "Language",
+                  "Change your preferred language"),
+              _buildSettingsCard(Icons.query_stats, "Onboarding Survey",
+                  "Personalize your meditation & yoga recommendations"),
+
               SizedBox(height: 24),
               Text(
-                "App Settings", 
+                "App Settings",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -65,22 +52,13 @@ class _SettinguserState extends State<Settinguser> {
                 ),
               ),
               SizedBox(height: 12),
+              _buildSettingsCard(Icons.help_outline, "Help & Support",
+                  "Get assistance and answers to your questions"),
+              _buildSettingsCard(Icons.star_outline, "Rate Our App",
+                  "If you enjoy our app, please give us a rating"),
               _buildSettingsCard(
-                Icons.help_outline,
-                "Help & Support",
-                "Get assistance and answers to your questions"
-              ),
-              _buildSettingsCard(
-                Icons.star_outline,
-                "Rate Our App",
-                "If you enjoy our app, please give us a rating"
-              ),
-              _buildSettingsCard(
-                Icons.info_outline,
-                "About",
-                "Learn more about our app"
-              ),
-              
+                  Icons.info_outline, "About", "Learn more about our app"),
+
               SizedBox(height: 20),
               Container(
                 width: double.infinity,
@@ -92,7 +70,7 @@ class _SettinguserState extends State<Settinguser> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF634FBD),  
+                    backgroundColor: Color(0xFF634FBD),
                     padding: EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -101,14 +79,14 @@ class _SettinguserState extends State<Settinguser> {
                   child: Text(
                     "Answer Survey",
                     style: TextStyle(
-                      fontSize: 16, 
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ),
-              
+
               SizedBox(height: 20),
               // Logout button
               Container(
@@ -116,9 +94,8 @@ class _SettinguserState extends State<Settinguser> {
                 child: ElevatedButton(
                   onPressed: () {
                     // Logout functionality would be implemented here
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Logout functionality would go here'))
-                    );
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Logout functionality would go here')));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red.shade400,
@@ -131,7 +108,7 @@ class _SettinguserState extends State<Settinguser> {
                     "Log Out",
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,  
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
@@ -144,14 +121,14 @@ class _SettinguserState extends State<Settinguser> {
       ),
     );
   }
-  
+
   // Helper method to build settings cards
   Widget _buildSettingsCard(IconData icon, String title, String subtitle) {
     return Card(
       elevation: 0,
       margin: EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12), 
+        borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: Colors.grey.shade200),
       ),
       child: ListTile(
@@ -181,7 +158,7 @@ class _SettinguserState extends State<Settinguser> {
         ),
         trailing: Icon(
           Icons.arrow_forward_ios,
-          size: 16, 
+          size: 16,
           color: Colors.grey,
         ),
         onTap: () {
@@ -195,21 +172,20 @@ class _SettinguserState extends State<Settinguser> {
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('$title settings would open here'))
-            );
+                SnackBar(content: Text('$title settings would open here')));
           }
         },
       ),
     );
   }
-  
-  // Example of a dialog for personal information  
+
+  // Example of a dialog for personal information
   void _showPersonalInfoDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Personal Information"), 
+          title: Text("Personal Information"),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -231,7 +207,7 @@ class _SettinguserState extends State<Settinguser> {
                 TextField(
                   decoration: InputDecoration(
                     labelText: "Phone Number",
-                    border: OutlineInputBorder(),    
+                    border: OutlineInputBorder(),
                   ),
                 ),
               ],
@@ -248,8 +224,7 @@ class _SettinguserState extends State<Settinguser> {
               onPressed: () {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Information updated'))
-                );
+                    SnackBar(content: Text('Information updated')));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF634FBD),
