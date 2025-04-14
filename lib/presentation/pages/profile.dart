@@ -707,6 +707,25 @@ class _AIAssistantDrawerState extends State<AIAssistantDrawer> {
               ),
               child: Row(
                 children: [
+                  // Plus button for media options
+                  Container(
+                    margin: EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.add, color: Colors.grey[800]),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => MediaOptionsSheet(),
+                          isScrollControlled: true,
+                        );
+                      },
+                    ),
+                  ),
                   Expanded(
                     child: TextField(
                       controller: _messageController,
@@ -797,6 +816,131 @@ class _AIAssistantDrawerState extends State<AIAssistantDrawer> {
                 fontSize: 14,
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Media Options Bottom Sheet
+class MediaOptionsSheet extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 12),
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          // Options
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: [
+                _buildOption(
+                  context,
+                  icon: Icons.camera_alt,
+                  title: "Take Photo",
+                  onTap: () {
+                    // Implement camera functionality
+                    Navigator.pop(context);
+                  },
+                ),
+                SizedBox(height: 16),
+                _buildOption(
+                  context,
+                  icon: Icons.videocam,
+                  title: "Record Video",
+                  onTap: () {
+                    // Implement video recording functionality
+                    Navigator.pop(context);
+                  },
+                ),
+                SizedBox(height: 16),
+                _buildOption(
+                  context,
+                  icon: Icons.photo_library,
+                  title: "Choose from Gallery",
+                  onTap: () {
+                    // Implement gallery picker functionality
+                    Navigator.pop(context);
+                  },
+                ),
+                SizedBox(height: 16),
+                _buildOption(
+                  context,
+                  icon: Icons.mic,
+                  title: "Voice Recording",
+                  onTap: () {
+                    // Implement voice recording functionality
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOption(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.grey[800], size: 24),
+            ),
+            SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[800],
+              ),
+            ),
+            Spacer(),
+            Icon(Icons.chevron_right, color: Colors.grey[600]),
           ],
         ),
       ),

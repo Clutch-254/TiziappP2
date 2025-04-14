@@ -49,6 +49,7 @@ dependencies:
   video_player: ^2.9.3
   flutter_feather_icons: ^2.0.0
   line_icons: ^2.0.1
+  sliding_up_panel: ^2.0.0+1
 
 
   # The following adds the Cupertino Icons font to your application.
