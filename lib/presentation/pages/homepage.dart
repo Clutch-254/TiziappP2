@@ -248,7 +248,25 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name: "Jina - Personal Trainer",
+                                  description:
+                                      "I am a passionate and highly motivated personal trainer based in Kenya, dedicated to helping clients achieve their fitness goals through customized workout plans, nutritional guidance, and ongoing support. \n\n"
+                                      "Known for my energetic coaching style and commitment to results, I empowers individuals of all fitness levels to build strength, improve mobility, and boost confidence—both in and out of the gym.",
+                                  nutritionalValue: "N/A",
+                                  price: 1000.0,
+                                  imageAsset: "Images/Jina_Trainer.png",
+                                  deliveryTime: 0,
+                                  qualifications:
+                                      '- Certified Personal Trainer (CPT)\n'
+                                      '- Certified Nutrition Coach\n'
+                                      '- CPR & First Aid Certified\n'
+                                      '- Specializes in strength training, HIIT, weight loss, and mobility work\n\n',
+                                  location: 'Nairobi, Kenya',
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -304,7 +322,28 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name:
+                                      "Poly n Mike - Couple's \nPersonal Trainers",
+                                  description:
+                                      "Poly n Mike – Couple's Personal Trainers – are a dynamic fitness duo based in Kenya, specializing in partner-based coaching and personalized training for individuals, couples, and groups. \n\n"
+                                      "With a strong focus on teamwork, accountability, and motivation, they deliver results-driven programs that combine strength, cardio, and mobility training for all fitness levels. \n\n"
+                                      "Known for their infectious energy, real connection with clients, and passion for healthy living, Poly and Mike make fitness fun, challenging, and sustainable.",
+                                  nutritionalValue: "N/A",
+                                  price: 14000.0,
+                                  imageAsset: "Images/PnM.png",
+                                  deliveryTime: 0,
+                                  qualifications:
+                                      "- Certified Fitness & Strength Coaches\n"
+                                      "- Group Training & Partner Workout Specialists\n"
+                                      "- CPR & First Aid Certified\n"
+                                      "- Experts in weight loss, body recomposition, and functional fitness\n\n",
+                                  location:
+                                      "Train out of Iron Core Fitness Center, Westlands, Nairobi, Kenya",
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -365,7 +404,25 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Jin - Muay Thai Coach",
+                            description:
+                                "Jin is a skilled and disciplined Muay Thai coach based in Kenya, known for blending traditional Thai techniques with modern fight conditioning. \n\n"
+                                "With a strong background in competitive combat sports and years of coaching experience, Jin helps students develop striking precision, endurance, and mental toughness—whether you're training for fitness, self-defense, or the ring. \n\n"
+                                "His sessions emphasize discipline, technique, and flow, making them ideal for beginners and advanced fighters alike.",
+                            nutritionalValue: "N/A",
+                            price: 1000.0,
+                            imageAsset: "Images/jin_woo.png",
+                            deliveryTime: 0,
+                            qualifications: "- Certified Muay Thai Instructor\n"
+                                "- Former Amateur Muay Thai Competitor\n"
+                                "- First Aid & Sports Injury Certified\n"
+                                "- Specializes in pad work, sparring drills, and fight conditioning\n\n",
+                            location: "Nakuru Fight Club, Nakuru, Kenya",
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -440,7 +497,23 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Sarah - Yoga Instructor",
+                            description:
+                                "Akinyi is a passionate yoga instructor with over 5 years of experience guiding students in physical and spiritual wellness. "
+                                "She combines traditional Hatha techniques with dynamic Vinyasa flows to help students improve flexibility, strength, and mindfulness. "
+                                "Her sessions are inclusive, calming, and tailored for all levels.",
+                            nutritionalValue: "N/A",
+                            price: 1000.0,
+                            imageAsset: "Images/miley.png",
+                            deliveryTime: 0,
+                            qualifications:
+                                'Certified Yoga Instructor (RYT 200), Specialization in Hatha and Vinyasa Yoga, First Aid Certified',
+                            location: 'Nairobi, Kenya',
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -515,7 +588,23 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "David - Nutritionist",
+                            description:
+                                "David is a dedicated nutritionist with over 7 years of experience in clinical and sports nutrition. "
+                                "He offers personalized diet plans, wellness coaching, and nutrition education to help clients achieve sustainable health goals. "
+                                "David believes in a holistic approach to health, combining science-based strategies with practical lifestyle changes.",
+                            nutritionalValue: "N/A",
+                            price: 3000.0,
+                            imageAsset: "Images/Juma.png",
+                            deliveryTime: 0,
+                            qualifications:
+                                '"Certified Clinical Nutritionist, BSc in Nutrition and Dietetics, Member of Kenya Nutritionists and Dieticians Institute (KNDI)',
+                            location: '',
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -598,7 +687,23 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name: "Kisha Wanjiku - Nutrition Expert",
+                                  description:
+                                      "Kisha is a compassionate wellness coach focused on empowering individuals to lead balanced, healthy lives. "
+                                      "With a background in nutrition, mindfulness, and holistic health, she offers personalized coaching that addresses both physical and emotional well-being. "
+                                      "Her warm, supportive approach has helped countless clients make meaningful lifestyle transformations.",
+                                  nutritionalValue: "N/A",
+                                  price: 2500.0,
+                                  imageAsset: "Images/kisha.png",
+                                  deliveryTime: 0,
+                                  qualifications:
+                                      '"Certified Holistic Wellness Coach, Diploma in Nutrition and Wellness, Mental Health Advocate',
+                                  location: 'Kisumu, Kenya',
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -655,7 +760,23 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name: "Malon Rivers - Diet Specialist",
+                                  description:
+                                      "Certified Personal Trainer (NASM-CPT), Strength & Conditioning Specialist, BSc in Exercise Science",
+                                  nutritionalValue: "N/A",
+                                  price: 1000.0,
+                                  imageAsset: "Images/malon.png",
+                                  deliveryTime: 0,
+                                  qualifications:
+                                      'Malone is a results-driven fitness trainer with a passion for helping clients unlock their full potential. \n'
+                                      'With over 8 years of experience, he specializes in strength training, athletic performance, and sustainable lifestyle changes.\n'
+                                      'Known for his motivational coaching style and customized training plans, Malone supports clients of all levels on their fitness journey.',
+                                  location: 'Austin, Texas, USA',
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -715,7 +836,23 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Juma Waweru - Weight Management",
+                            description:
+                                "John is a seasoned martial arts instructor with over a decade of experience in Taekwondo and self-defense training. "
+                                "He focuses on discipline, physical fitness, and mental resilience, offering classes for both beginners and advanced students. "
+                                "John's training sessions are engaging, empowering, and rooted in respect, tradition, and personal growth.",
+                            nutritionalValue: "N/A",
+                            price: 2800.0,
+                            imageAsset: "Images/Juma.png",
+                            deliveryTime: 0,
+                            qualifications:
+                                'Black Belt in Taekwondo (4th Dan), Certified Self-Defense Instructor, National Sports Council Accredited Coach',
+                            location: '',
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -789,7 +926,20 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Jina - Personal Trainer",
+                            description:
+                                "Professional personal trainer specializing in strength and conditioning.",
+                            nutritionalValue: "N/A",
+                            price: 4000.0,
+                            imageAsset: "Images/Jina_Trainer.png",
+                            deliveryTime: 0,
+                            qualifications: '',
+                            location: '',
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -868,7 +1018,23 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name: "Gordon's Gym",
+                                  description:
+                                      "Gordon's Gym is a premier fitness center committed to helping you achieve your health and strength goals. "
+                                      "Equipped with state-of-the-art machines, free weights, and functional training zones, we cater to all fitness levels — from beginners to professional athletes. "
+                                      "Our certified trainers, personalized programs, and vibrant fitness community make every workout count. "
+                                      "Join us and become part of a movement that transforms bodies and empowers lives.",
+                                  nutritionalValue: "N/A",
+                                  price: 1000.0,
+                                  imageAsset: "Images/gordon.png",
+                                  deliveryTime: 0,
+                                  qualifications: '',
+                                  location: 'Westlands, Nairobi, Kenya',
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -925,7 +1091,22 @@ class _HomepageState extends State<Homepage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Productdetails(),
+                              builder: (context) => Productdetails(
+                                product: Product(
+                                  id: 1,
+                                  name: "Fitness Hub",
+                                  description:
+                                      "Fitness Hub is a dynamic training space built for results, energy, and community. "
+                                      "Whether you're into weightlifting, cardio, HIIT, or group classes, we’ve got the gear and guidance to match your goals. "
+                                      "Our expert trainers, clean facilities, and motivating environment make Fitness Hub the go-to destination for anyone serious about getting fit, staying healthy, and having fun along the way.",
+                                  nutritionalValue: "N/A",
+                                  price: 6000.0,
+                                  imageAsset: "Images/Zumba.png",
+                                  deliveryTime: 0,
+                                  qualifications: '',
+                                  location: 'Karen, Nairobi, Kenya',
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -986,7 +1167,23 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Tizi CrossFit Zone",
+                            description:
+                                "Tizi CrossFit Zone is the ultimate destination for high-intensity training and functional fitness. "
+                                "Our workouts are designed to challenge your limits and build real strength, endurance, and agility. "
+                                "Led by certified CrossFit coaches, every session is packed with energy, community spirit, and progress you can feel. "
+                                "Whether you're a beginner or a seasoned athlete, Tizi is where sweat meets results.",
+                            nutritionalValue: "N/A",
+                            price: 1000.0,
+                            imageAsset: "Images/Tizilogin.png",
+                            deliveryTime: 0,
+                            qualifications: '',
+                            location: 'Lavington, Nairobi, Kenya',
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -1061,7 +1258,23 @@ class _HomepageState extends State<Homepage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Productdetails(),
+                        builder: (context) => Productdetails(
+                          product: Product(
+                            id: 1,
+                            name: "Flex Fitness",
+                            description:
+                                "Flex Fitness is where dedication meets transformation. "
+                                "From strength training and hypertrophy to functional workouts and personal coaching, we offer everything you need to level up your fitness game. "
+                                "Our facility features top-tier equipment, elite trainers, and an environment built to push you beyond your limits. "
+                                "At Flex Fitness, it’s not just about looking strong — it’s about being strong.",
+                            nutritionalValue: "N/A",
+                            price: 1000.0,
+                            imageAsset: "Images/FC.png",
+                            deliveryTime: 0,
+                            qualifications: '',
+                            location: 'Upper Hill, Nairobi, Kenya"',
+                          ),
+                        ),
                       ),
                     );
                   },

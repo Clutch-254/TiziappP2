@@ -50,6 +50,7 @@ dependencies:
   flutter_feather_icons: ^2.0.0
   line_icons: ^2.0.1
   sliding_up_panel: ^2.0.0+1
+  shared_preferences: ^2.1.0
 
 
   # The following adds the Cupertino Icons font to your application.

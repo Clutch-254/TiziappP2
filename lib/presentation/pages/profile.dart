@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tiziappp2/presentation/pages/notificationsus.dart';
 import 'dart:math' show pi;
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tiziappp2/presentation/pages/settingsus.dart';
 
@@ -29,6 +32,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   late AnimationController _drawerAnimationController;
   late Animation<double> _drawerAnimation;
   bool _isDrawerOpen = false;
+  File? _profileImage;
+  final _picker = ImagePicker();
+
+  String _userName = "user_profile";
 
   @override
   void initState() {
@@ -47,6 +54,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       parent: _drawerAnimationController,
       curve: Curves.easeInOut,
     );
+    _loadSavedName();
   }
 
   @override
@@ -63,6 +71,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     _weekDays = List.generate(7, (index) {
       return startOfWeek.add(Duration(days: index));
     });
+  }
+
+  Future<void> _loadSavedName() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('user_name') ?? "user_profile";
+    });
+  }
+
+  Future<void> _saveName(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user_name', name);
   }
 
   void _navigateToWeek(int direction) {
@@ -95,6 +115,196 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
   }
 
+// Update the _showNameEditDialog method to save the name
+  void _showNameEditDialog() {
+    TextEditingController _nameController =
+        TextEditingController(text: _userName);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Edit Profile Name"),
+          content: TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              hintText: "Enter your name",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final newName = _nameController.text.trim().isNotEmpty
+                    ? _nameController.text.trim()
+                    : "user_profile";
+
+                setState(() {
+                  _userName = newName;
+                });
+
+                _saveName(newName);
+                Navigator.pop(context);
+              },
+              child: Text("Save"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey[800],
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle bar
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              // Options
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    _buildImagePickerOption(
+                      context,
+                      icon: Icons.camera_alt,
+                      title: "Take Photo",
+                      onTap: () {
+                        _getImageFromCamera();
+                        Navigator.pop(context);
+                      },
+                    ),
+                    SizedBox(height: 16),
+                    _buildImagePickerOption(
+                      context,
+                      icon: Icons.photo_library,
+                      title: "Choose from Gallery",
+                      onTap: () {
+                        _getImageFromGallery();
+                        Navigator.pop(context);
+                      },
+                    ),
+                    if (_profileImage != null) ...[
+                      SizedBox(height: 16),
+                      _buildImagePickerOption(
+                        context,
+                        icon: Icons.delete,
+                        title: "Remove Photo",
+                        onTap: () {
+                          setState(() {
+                            _profileImage = null;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildImagePickerOption(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.grey[800], size: 24),
+            ),
+            SizedBox(width: 16),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey[800],
+              ),
+            ),
+            Spacer(),
+            Icon(Icons.chevron_right, color: Colors.grey[600]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _getImageFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _getImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,16 +320,30 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       child: Container(
                         margin: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height / 3),
-                        child: Material(
-                          elevation: 10.0,
-                          borderRadius: BorderRadius.circular(60),
-                          child: ClipRRect(
+                        child: GestureDetector(
+                          onTap: _showImagePickerOptions,
+                          child: Material(
+                            elevation: 10.0,
                             borderRadius: BorderRadius.circular(60),
-                            child: Image.asset(
-                              "Images/Juma.png",
-                              height: 90,
-                              width: 90,
-                              fit: BoxFit.cover,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(60),
+                              child: Container(
+                                height: 90,
+                                width: 90,
+                                color: Colors.grey[200],
+                                child: _profileImage != null
+                                    ? Image.file(
+                                        _profileImage!,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Center(
+                                        child: Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.grey[800],
+                                          size: 40,
+                                        ),
+                                      ),
+                              ),
                             ),
                           ),
                         ),
@@ -130,17 +354,40 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       child: Padding(
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height / 3 - 40),
-                        child: Text(
-                          "Max Achebi",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _userName,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            // Edit icon button
+                            GestureDetector(
+                              onTap: _showNameEditDialog,
+                              child: Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.edit,
+                                  size: 18,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+
                     Center(
                       child: Padding(
                         padding: EdgeInsets.only(
