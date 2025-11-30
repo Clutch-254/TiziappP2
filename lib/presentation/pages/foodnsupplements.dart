@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../technicals/widgets/database.dart';
 import '../../technicals/widgets/supportwidget.dart';
 import '../productdetails.dart';
+import '../widgets/display_image.dart';
 
 class Foodnsupplements extends StatefulWidget {
   const Foodnsupplements({super.key});
@@ -15,9 +17,10 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
   // Set foods to true by default to auto-select it when page opens
   bool foods = true, supplements = false;
 
-  Stream? gymItemStream;
+  Future? gymItemStream; // Changed to Future
+  
   onFitLoad() async {
-    gymItemStream = await DatabaseMethods().getGymItem("Foods");
+    gymItemStream = DatabaseMethods().getLocalItems("Foods");
     setState(() {});
   }
 
@@ -90,394 +93,84 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
 
   // Widget to display food content
   Widget showFoodContent() {
-    return Column(
-      children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Productdetails(
-                        product: Product(
-                          id: 1,
-                          name: "Grilled steak and fried potatoes",
-                          description:
-                              "A hearty 300-gram portion of juicy, medium-rare steak—tender, flavorful,\n and seared to perfection—rests beside 200 grams of golden, crispy fried potatoes.\n The steak boasts a smoky char and rich marbling, while the potatoes are crunchy on the outside,\n fluffy inside, and lightly seasoned with salt and herbs for a savory finish.",
-                          nutritionalValue:
-                              "A hearty 300-gram portion of juicy, medium-rare steak—tender, flavorful, and seared to perfection—rests beside 200 grams of golden, crispy fried potatoes. \n\n"
-                              "Macronutrients:\n"
-                              "Steak: ~660 kcal, 62g protein, 45g fat, 0g carbs\n"
-                              "Fried Potatoes: ~480 kcal, 5g protein, 25g fat, 55g carbs\n\n"
-                              "Micronutrients:\n"
-                              "Steak: Rich in iron, zinc, vitamin B12, and niacin\n"
-                              "Fried Potatoes: Contains potassium, vitamin C, vitamin B6, and magnesium\n\n"
-                              "Total: ~1140 kcal, 67g protein, 70g fat, 55g carbs",
-                          price: 750.0,
-                          imageAsset: "Images/steak_potato.png",
-                          deliveryTime: 45,
-                          qualifications: '',
-                          location: '',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(5),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/steak_potato.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
+    return FutureBuilder(
+      future: gymItemStream,
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Column(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(snapshot.data.length, (index) {
+                        var ds = snapshot.data[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Productdetails(
+                                  product: Product(
+                                    id: 1, // You might want to use ds['id'] or a field from DB
+                                    name: ds["Name"],
+                                    description: ds["Detail"],
+                                    nutritionalValue: "N/A",
+                                    price: double.parse(ds["Price"]),
+                                    imageAsset: ds["Image"],
+                                    deliveryTime: 0,
+                                    qualifications: '',
+                                    location: '',
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(5),
+                            child: Material(
+                              elevation: 5.0,
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: EdgeInsets.all(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: DisplayImage(
+                                        imagePath: ds["Image"],
+                                        height: 150,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Text(
+                                      ds["Name"],
+                                      style: AppWidget.smallBoldTextFieledStyle(),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text(
+                                      "\Ksh" + ds["Price"],
+                                      style: AppWidget.smallBoldTextFieledStyle(),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                          Text(
-                            "Grilled steak and\n fried potatoes",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            "\Ksh750",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ],
-                      ),
+                        );
+                      }),
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Productdetails(
-                        product: Product(
-                          id: 1,
-                          name: "Fruit Salad",
-                          description:
-                              "A refreshing fruit salad made with 100g of grapes, 100g of pineapple chunks, 100g of sliced strawberries, and 100g of kiwi fruit. \n"
-                              "Each fruit brings its own vibrant color, juicy texture, and natural sweetness—grapes add a burst of crispness, pineapples provide a tangy kick, strawberries offer a mellow sweetness, and kiwi brings a tropical zest. \n\n",
-                          nutritionalValue: "Macronutrients:\n"
-                              "Total (approx.): ~240 kcal, 2g protein, 0.8g fat, 60g carbs (mostly natural sugars and fiber) \n\n"
-                              "Micronutrients:\n"
-                              "Grapes: High in antioxidants (resveratrol), vitamin K, and vitamin C\n"
-                              "Pineapple: Rich in vitamin C, manganese, and bromelain (a digestive enzyme)\n"
-                              "Strawberries: Packed with vitamin C, folate, and antioxidants\n"
-                              "Kiwi: Excellent source of vitamin C, vitamin K, and potassium",
-                          price: 400.0,
-                          imageAsset: "Images/fruitsalad.png",
-                          deliveryTime: 0,
-                          qualifications: '',
-                          location: '',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(4),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/fruitsalad.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Text(
-                            "Fruit Salad",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            "\Ksh400",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ],
-                      ),
-                    ),
+                  SizedBox(
+                    height: 30.0,
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 30.0,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Rice and beef stew",
-                    description:
-                        "A warm, hearty meal featuring 200g of steamed white rice paired with 250g of savory beef stew. \n"
-                        "The rice is fluffy and mild, serving as the perfect base for the rich, slow-cooked beef stew—tender chunks of beef simmered with tomatoes, onions, garlic, and a blend of aromatic spices for deep flavor. \n\n",
-                    nutritionalValue: "Macronutrients:\n"
-                        "White Rice (200g): ~260 kcal, 5g protein, 0.5g fat, 57g carbs\n"
-                        "Beef Stew (250g): ~400 kcal, 35g protein, 25g fat, 10g carbs\n\n"
-                        "Micronutrients:\n"
-                        "Rice: Contains small amounts of B vitamins (especially B1 and B3), iron, and magnesium\n"
-                        "Beef Stew: Rich in iron, zinc, vitamin B12, and selenium from beef; vitamin C and lycopene from tomatoes; antioxidants and anti-inflammatory compounds from garlic and onions",
-                    price: 550.0,
-                    imageAsset: "Images/beefrice.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(
-                        "Images/beefrice.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Rice and beef stew",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh550",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // First additional food placeholder
-        SizedBox(
-          height: 20.0,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Fish n Chips",
-                    description:
-                        "A classic dish featuring 200g of battered and deep-fried white fish served with 200g of crispy golden potato fries. \n"
-                        "The fish is flaky and tender on the inside with a crunchy, seasoned outer crust, while the fries are perfectly crisp on the outside and soft within, lightly salted for a satisfying finish. \n",
-                    nutritionalValue: "Macronutrients:\n"
-                        "Fried Fish (200g): ~400 kcal, 30g protein, 25g fat, 15g carbs\n"
-                        "Potato Fries (200g): ~480 kcal, 5g protein, 25g fat, 55g carbs\n\n"
-                        "Micronutrients:\n"
-                        "Fried Fish: Good source of omega-3 fatty acids (if using oily fish like cod or haddock), vitamin D, B12, and selenium\n"
-                        "Potato Fries: Provide potassium, vitamin C, vitamin B6, and some fiber depending on preparation",
-                    price: 600.0,
-                    imageAsset: "Images/fishchip.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(
-                        "Images/fishchip.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Fish n Chips",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh600",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        // Second additional food placeholder
-        SizedBox(
-          height: 20.0,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Steak and Potatoes",
-                    description:
-                        "A hearty meal featuring 300g of seared, medium-rare steak served with 200g of crispy fried potatoes. \n\n"
-                        "The steak is juicy and tender with a rich, smoky char, while the potatoes are golden, crunchy on the outside, and fluffy inside—seasoned with salt and herbs for extra flavor. \n",
-                    nutritionalValue: "Macronutrients:\n"
-                        "Steak (300g): ~660 kcal, 62g protein, 45g fat, 0g carbs\n"
-                        "Fried Potatoes (200g): ~480 kcal, 5g protein, 25g fat, 55g carbs\n\n"
-                        "Micronutrients:\n"
-                        "Steak: Excellent source of iron, zinc, vitamin B12, and niacin\n"
-                        "Fried Potatoes: Provide potassium, vitamin C, vitamin B6, and magnesium",
-                    price: 450.0,
-                    imageAsset: "Images/steak_potato.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image.asset(
-                        "Images/steak_potato.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Steak and Potatoes",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh450",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+                ],
+              )
+            : CircularProgressIndicator();
+      },
     );
   }
 

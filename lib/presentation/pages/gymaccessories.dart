@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../technicals/widgets/database.dart';
 import '../../technicals/widgets/supportwidget.dart';
 import '../productdetails.dart';
+import '../widgets/display_image.dart';
 
 class Gymaccessories extends StatefulWidget {
   const Gymaccessories({super.key});
@@ -18,9 +20,11 @@ class _GymaccessoriesState extends State<Gymaccessories> {
   // ScrollController for implementing scroll functionality
   ScrollController _scrollController = ScrollController();
 
-  Stream? fitItemStream;
+  Future? fitItemStream; // Keeping the name similar for minimal diff, but it's a Future now
+  
   onTheLoad() async {
-    fitItemStream = await DatabaseMethods().getFitItem("Equipment");
+    fitItemStream = DatabaseMethods().getLocalItems("Fitness Equipment");
+    setState(() {});
   }
 
   @override
@@ -152,377 +156,85 @@ class _GymaccessoriesState extends State<Gymaccessories> {
 
   // Function to show equipment items
   Widget showEquipmentItems() {
-    return Column(
-      children: [
-        // Horizontal scrolling items
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Productdetails(
-                        product: Product(
-                          id: 1,
-                          name: "5 kilogram dumbbells",
-                          description:
-                              "A pair of solid 5kg dumbbells, built from durable cast iron with a fixed-weight design that cannot be dismantled. \n\n"
-                              "Each dumbbell features a compact, balanced structure with a textured grip handle for secure and comfortable use during workouts. \n\n"
-                              "Ideal for strength training, toning, and home fitness routines—perfect for exercises like curls, presses, rows, and shoulder raises. \n\n"
-                              "Low-maintenance and sturdy, these fixed-weight dumbbells offer simplicity, safety, and consistency in every session.",
-                          nutritionalValue: "N/A",
-                          price: 2500.0,
-                          imageAsset: "Images/5kgdumb.png",
-                          deliveryTime: 0,
-                          qualifications: '',
-                          location: '',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(5),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/5kgdumb.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
+    return FutureBuilder(
+      future: fitItemStream, // We will rename this variable to fitItemFuture in the next step or just assign the future to it
+      builder: (context, AsyncSnapshot snapshot) {
+        return snapshot.hasData
+            ? Column(
+                children: [
+                  // Horizontal scrolling items
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(snapshot.data.length, (index) {
+                        var ds = snapshot.data[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Productdetails(
+                                  product: Product(
+                                    id: 1, // You might want to use ds['id'] or a field from DB
+                                    name: ds["Name"],
+                                    description: ds["Detail"],
+                                    nutritionalValue: "N/A",
+                                    price: double.parse(ds["Price"]),
+                                    imageAsset: ds["Image"],
+                                    deliveryTime: 0,
+                                    qualifications: '',
+                                    location: '',
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.all(5),
+                            child: Material(
+                              elevation: 5.0,
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: EdgeInsets.all(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: DisplayImage(
+                                        imagePath: ds["Image"],
+                                        height: 150,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Text(
+                                      ds["Name"],
+                                      style: AppWidget.smallBoldTextFieledStyle(),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text(
+                                      "\Ksh" + ds["Price"],
+                                      style: AppWidget.smallBoldTextFieledStyle(),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                          Text(
-                            "5 kilogram dumbbells",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            "\Ksh2500",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ],
-                      ),
+                        );
+                      }),
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Productdetails(
-                        product: Product(
-                          id: 1,
-                          name: "Smith Machine",
-                          description:
-                              "A heavy-duty Smith Machine designed for safe and controlled weight training, featuring a fixed barbell guided by vertical steel rails. \n\n"
-                              "Built with a sturdy steel frame, it includes safety catches and adjustable hooks, allowing for secure racking at various heights—ideal for squats, bench presses, shoulder presses, and more. \n\n"
-                              "Perfect for home or commercial gyms, the Smith Machine offers added stability and reduced injury risk, making it great for beginners and advanced lifters alike. \n\n"
-                              "Compatible with Olympic weight plates and often includes a pull-up bar, plate storage, and additional cable or pulley attachments depending on the model.",
-                          nutritionalValue: "N/A",
-                          price: 120000.0,
-                          imageAsset: "Images/smith.png",
-                          deliveryTime: 0,
-                          qualifications: '',
-                          location: '',
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.all(4),
-                  child: Material(
-                    elevation: 5.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(14),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              "Images/smith.png",
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Text(
-                            "Smith Machine",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          Text(
-                            "\Ksh120,000",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ],
-                      ),
-                    ),
+                  SizedBox(
+                    height: 30.0,
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 30.0,
-        ),
-
-        // List items below
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Excalibur Punching Bag",
-                    description:
-                        "The Excalibur Punching Bag is a high-quality, heavy-duty training bag designed for boxing, kickboxing, and martial arts workouts. \n\n"
-                        "Made from durable synthetic leather with reinforced stitching, it can withstand intense strikes, kicks, and combinations. \n\n"
-                        "Typically weighing between 30–50kg and measuring around 100–120cm in height, it provides a realistic training experience for power, speed, and endurance. \n\n"
-                        "Includes strong hanging straps or chains for secure mounting and shock absorption. Ideal for home gyms, boxing clubs, or combat sports training setups.",
-                    nutritionalValue: "N/A",
-                    price: 20000.0,
-                    imageAsset: "Images/punchb.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        "Images/punchb.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Excalibur Punching Bag",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh20,000",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        SizedBox(
-          height: 30.0,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Premium Kettlebell Set",
-                    description:
-                        "The Premium Kettlebell Set includes a range of high-quality kettlebells, typically from 4kg to 24kg, crafted for durability, balance, and performance. \n\n"
-                        "Each kettlebell features a smooth, powder-coated cast iron body for enhanced grip and comfort, with color-coded weights for easy identification. \n\n"
-                        "Ideal for functional training, strength building, and cardio workouts—perfect for swings, goblet squats, Turkish get-ups, and presses. \n\n"
-                        "The flat base ensures stability for floor exercises and storage, making this set a versatile and space-efficient addition to any home or professional gym.",
-                    nutritionalValue: "N/A",
-                    price: 15000.0,
-                    imageAsset: "Images/kettle.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        "Images/kettle.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Premium Kettlebell Set",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh15,000",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        SizedBox(
-          height: 30.0,
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Productdetails(
-                  product: Product(
-                    id: 1,
-                    name: "Resistance band",
-                    description:
-                        "A versatile and durable resistance band designed for strength training, mobility work, rehabilitation, and stretching. \n\n"
-                        "Made from high-quality latex or rubber, it offers consistent tension and elasticity—available in varying resistance levels from light to heavy. \n\n"
-                        "Perfect for full-body workouts, targeting muscles through controlled resistance during exercises like squats, rows, presses, and stretches. \n\n"
-                        "Lightweight, portable, and easy to store, making it ideal for home workouts, travel, or gym use.",
-                    nutritionalValue: "N/A",
-                    price: 3500.0,
-                    imageAsset: "Images/resist.png",
-                    deliveryTime: 0,
-                    qualifications: '',
-                    location: '',
-                  ),
-                ),
-              ),
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
-            child: Material(
-              elevation: 5.0,
-              borderRadius: BorderRadius.circular(8),
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
-                      child: Image.asset(
-                        "Images/resist.png",
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "Resistance band",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5.0,
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: Text(
-                            "\Ksh3,500",
-                            style: AppWidget.smallBoldTextFieledStyle(),
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+                ],
+              )
+            : CircularProgressIndicator();
+      },
     );
   }
 

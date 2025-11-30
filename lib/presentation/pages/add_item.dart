@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
@@ -40,32 +40,31 @@ class _AddItemState extends State<AddItem> {
         namecontroller.text != "" &&
         pricecontroller.text != "" &&
         detailcontroller.text != "") {
+      
+      // Get the application documents directory
+      final directory = await getApplicationDocumentsDirectory();
+      
+      // Create a unique filename
       String addId = randomAlphaNumeric(10);
-
-      Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child("blogImage").child(addId);
-      final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
-
-      var downloadUrl = await (await task).ref.getDownloadURL();
+      String fileName = '$addId.jpg';
+      
+      // Copy the file to the documents directory
+      final String localPath = '${directory.path}/$fileName';
+      await selectedImage!.copy(localPath);
 
       Map<String, dynamic> addItem = {
-        "Image": downloadUrl,
+        "Image": localPath,
         "Name": namecontroller.text,
         "Price": pricecontroller.text,
         "Detail": detailcontroller.text,
       };
       await DatabaseMethods().addFitItem(addItem, value!).then((value) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             backgroundColor: Colors.orangeAccent,
             content: Text(
-              "Food item has been added",
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-          ),
-        );
+              "Item has been added locally",
+              style: TextStyle(fontSize: 18.0),
+            )));
       });
     }
   }
