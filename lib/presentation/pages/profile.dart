@@ -480,11 +480,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 padding: const EdgeInsets.only(top: 30.0),
                                 child: Column(
                                   children: [
-                                    TrainerSection(),
-                                    SizedBox(height: 20),
-                                    NutritionistSection(),
-                                    SizedBox(height: 20),
-                                    GymSection(),
+                                    SubscriptionsSection(),
                                   ],
                                 ),
                               ),
@@ -2277,94 +2273,146 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
   Widget _buildSupplementCheckbox(String supplement) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: Checkbox(
-              value: supplementStatus[supplement],
-              onChanged: (bool? value) async {
-                if (value != null) {
-                  await _nutritionService.toggleSupplement(supplement, value);
-                  setState(() {
-                    supplementStatus[supplement] = value;
-                  });
-                }
-              },
-              activeColor: Colors.grey[800],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+      child: GestureDetector(
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Remove Supplement"),
+              content: Text("Do you want to remove '$supplement' from your list?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await _nutritionService.removeSupplement(supplement);
+                    _loadData();
+                    Navigator.pop(context);
+                  },
+                  child: Text("Remove", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Row(
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: Checkbox(
+                value: supplementStatus[supplement],
+                onChanged: (bool? value) async {
+                  if (value != null) {
+                    await _nutritionService.toggleSupplement(supplement, value);
+                    setState(() {
+                      supplementStatus[supplement] = value;
+                    });
+                  }
+                },
+                activeColor: Colors.grey[800],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ),
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              supplement,
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                supplement,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[800],
+                  decoration: supplementStatus[supplement]!
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+            ),
+            Text(
+              supplementStatus[supplement]! ? "Taken" : "Not taken",
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 14,
+                color: supplementStatus[supplement]!
+                    ? Colors.green[700]
+                    : Colors.grey[600],
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
-                decoration: supplementStatus[supplement]!
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
               ),
             ),
-          ),
-          Text(
-            supplementStatus[supplement]! ? "Taken" : "Not taken",
-            style: TextStyle(
-              fontSize: 14,
-              color: supplementStatus[supplement]!
-                  ? Colors.green[700]
-                  : Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 // Weight Gain Bar Graph Widget
-class WeightGainBarGraph extends StatelessWidget {
-  // Sample data - you can replace with actual data
-  final List<double> monthlyWeightGain = [
-    0.8,
-    1.2,
-    0.5,
-    0.9,
-    1.5,
-    0.7,
-    1.0,
-    1.3,
-    0.4,
-    0.6,
-    1.1,
-    0.9
-  ];
-  final List<String> months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+class WeightGainBarGraph extends StatefulWidget {
+  @override
+  _WeightGainBarGraphState createState() => _WeightGainBarGraphState();
+}
+
+class _WeightGainBarGraphState extends State<WeightGainBarGraph> {
+  final NutritionService _nutritionService = NutritionService();
+  List<double> monthlyWeightGain = [];
+  List<String> months = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWeightGainData();
+  }
+
+  Future<void> _loadWeightGainData() async {
+    try {
+      final gainData = await _nutritionService.getMonthlyWeightGainData();
+      final monthLabels = _nutritionService.getMonthLabels();
+      
+      if (mounted) {
+        setState(() {
+          monthlyWeightGain = gainData;
+          months = monthLabels;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading weight gain data: $e');
+      if (mounted) {
+        setState(() {
+          monthlyWeightGain = List.filled(12, 0.0);
+          months = _nutritionService.getMonthLabels();
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Container(
+        padding: EdgeInsets.all(16),
+        height: 250,
+        width: MediaQuery.of(context).size.width * 0.85,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Colors.grey[800],
+          ),
+        ),
+      );
+    }
+
     // Calculate the maximum weight gain for Y-axis scaling
-    double maxWeightGain =
-        monthlyWeightGain.reduce((curr, next) => curr > next ? curr : next);
+    double maxWeightGain = monthlyWeightGain.isEmpty
+        ? 1.0
+        : monthlyWeightGain.reduce((curr, next) => curr > next ? curr : next);
+    
+    // Ensure minimum scale
+    if (maxWeightGain < 0.1) maxWeightGain = 1.0;
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -2509,42 +2557,69 @@ class BarGraphPainter extends CustomPainter {
 }
 
 // Weight Loss Bar Graph Widget
-class WeightLossBarGraph extends StatelessWidget {
-  // Sample data - you can replace with actual data
-  final List<double> monthlyWeightLoss = [
-    1.2,
-    0.7,
-    1.5,
-    0.6,
-    1.1,
-    0.8,
-    1.3,
-    0.5,
-    0.9,
-    1.4,
-    0.7,
-    1.0
-  ];
-  final List<String> months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec'
-  ];
+class WeightLossBarGraph extends StatefulWidget {
+  @override
+  _WeightLossBarGraphState createState() => _WeightLossBarGraphState();
+}
+
+class _WeightLossBarGraphState extends State<WeightLossBarGraph> {
+  final NutritionService _nutritionService = NutritionService();
+  List<double> monthlyWeightLoss = [];
+  List<String> months = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWeightLossData();
+  }
+
+  Future<void> _loadWeightLossData() async {
+    try {
+      final lossData = await _nutritionService.getMonthlyWeightLossData();
+      final monthLabels = _nutritionService.getMonthLabels();
+      
+      if (mounted) {
+        setState(() {
+          monthlyWeightLoss = lossData;
+          months = monthLabels;
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading weight loss data: $e');
+      if (mounted) {
+        setState(() {
+          monthlyWeightLoss = List.filled(12, 0.0);
+          months = _nutritionService.getMonthLabels();
+          isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Container(
+        padding: EdgeInsets.all(16),
+        height: 250,
+        width: MediaQuery.of(context).size.width * 0.85,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Colors.grey[800],
+          ),
+        ),
+      );
+    }
+
     // Calculate the maximum weight loss for Y-axis scaling
-    double maxWeightLoss =
-        monthlyWeightLoss.reduce((curr, next) => curr > next ? curr : next);
+    double maxWeightLoss = monthlyWeightLoss.isEmpty
+        ? 1.0
+        : monthlyWeightLoss.reduce((curr, next) => curr > next ? curr : next);
+    
+    // Ensure minimum scale
+    if (maxWeightLoss < 0.1) maxWeightLoss = 1.0;
 
     return Container(
       padding: EdgeInsets.all(16),
@@ -2699,44 +2774,79 @@ class WorkoutRoutine extends StatefulWidget {
 }
 
 class _WorkoutRoutineState extends State<WorkoutRoutine> {
-  // Map to track workout status
-  Map<String, bool> workoutStatus = {};
+  final NutritionService _nutritionService = NutritionService();
+  List<Map<String, dynamic>> workouts = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeWorkoutStatus();
+    _loadWorkouts();
   }
 
-  void _initializeWorkoutStatus() {
-    if (_isMonday(widget.selectedDate) || _isThursday(widget.selectedDate)) {
-      workoutStatus = {
-        "Preacher Curl 3 x 14": false,
-        "Bench Press 3 x 14": false,
-        "Hammer Curl 3 x 14": false,
-        "Peck Deck": false,
-        "Lateral Raises": false,
-        "Inclined Dumbbell Press": false,
-        "Cardio 45 mins": false,
-      };
-    } else if (_isTuesday(widget.selectedDate) ||
-        _isFriday(widget.selectedDate)) {
-      workoutStatus = {
-        "Barbell Squats 3 x 14": false,
-        "Quad Extension 3 x 14": false,
-        "Romanian Deadlifts 3 x 14": false,
-        "Hamstring Curls 3 x 14": false,
-        "Upper Back Dumbbell Row 3 x 14": false,
-        "Lat Dumbbell Row 3 x 14": false,
-        "Elbow Extension 3 x 14": false,
-        "Skull Crushers 3 x 14": false,
-        "Cardio 45 mins": false,
-      };
-    } else {
-      workoutStatus = {
-        "Rest Day": false,
-      };
+  @override
+  void didUpdateWidget(WorkoutRoutine oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedDate != widget.selectedDate) {
+      _loadWorkouts();
     }
+  }
+
+  Future<void> _loadWorkouts() async {
+    final loadedWorkouts = await _nutritionService.getWorkoutRoutines(widget.selectedDate);
+    if (mounted) {
+      setState(() {
+        workouts = loadedWorkouts;
+      });
+    }
+  }
+
+  void _showAddWorkoutDialog() {
+    final nameController = TextEditingController();
+    final durationController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Add Workout"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: "Workout Name (e.g., Bench Press)"),
+            ),
+            TextField(
+              controller: durationController,
+              decoration: InputDecoration(labelText: "Duration/Sets (e.g., 3 x 12)"),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.isNotEmpty) {
+                await _nutritionService.addWorkoutRoutine(
+                  date: widget.selectedDate,
+                  workoutName: nameController.text,
+                  duration: durationController.text,
+                );
+                _loadWorkouts();
+                Navigator.pop(context);
+              }
+            },
+            child: Text("Add"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -2744,52 +2854,104 @@ class _WorkoutRoutineState extends State<WorkoutRoutine> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (workoutStatus.keys.first == "Rest Day")
-          Text(
-            "Rest Day",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Todays Routine",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.add_circle, color: Colors.black),
+              onPressed: _showAddWorkoutDialog,
+              tooltip: "Add Workout",
+            ),
+          ],
+        ),
+        if (workouts.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text(
+              "No workouts planned for this day.",
+              style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
             ),
           )
         else
-          ...workoutStatus.keys
-              .map((workout) => _buildWorkoutCheckbox(workout))
-              .toList(),
+          ...workouts.map((workout) => _buildWorkoutCheckbox(workout)).toList(),
       ],
     );
   }
 
-  Widget _buildWorkoutCheckbox(String workout) {
+  Widget _buildWorkoutCheckbox(Map<String, dynamic> workout) {
+    final isCompleted = (workout['isCompleted'] as int) == 1;
+    final id = workout['id'] as int;
+    final name = "${workout['workoutName']} ${workout['duration']}";
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: Row(
-        children: [
-          Checkbox(
-            value: workoutStatus[workout],
-            onChanged: (bool? value) {
-              setState(() {
-                workoutStatus[workout] = value ?? false;
-              });
-            },
-            activeColor: Colors.grey[800],
-          ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              workout,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
-                decoration: workoutStatus[workout]!
-                    ? TextDecoration.lineThrough
-                    : TextDecoration.none,
+      child: GestureDetector(
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Remove Workout"),
+              content: Text("Remove '$name' from routine?"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await _nutritionService.removeWorkoutRoutine(id);
+                    _loadWorkouts();
+                    Navigator.pop(context);
+                  },
+                  child: Text("Remove", style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+          );
+        },
+        child: Row(
+          children: [
+            SizedBox(
+              width: 24,
+              height: 24,
+              child: Checkbox(
+                value: isCompleted,
+                onChanged: (bool? value) async {
+                  if (value != null) {
+                    await _nutritionService.toggleWorkoutCompletion(id, value);
+                    _loadWorkouts();
+                  }
+                },
+                activeColor: Colors.grey[800],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ),
-          ),
-        ],
+            SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                name,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.grey[800],
+                  decoration: isCompleted
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -3491,6 +3653,180 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
           ],
         ),
       ],
+    );
+  }
+}
+
+class SubscriptionsSection extends StatefulWidget {
+  @override
+  _SubscriptionsSectionState createState() => _SubscriptionsSectionState();
+}
+
+class _SubscriptionsSectionState extends State<SubscriptionsSection> {
+  final NutritionService _nutritionService = NutritionService();
+  List<Map<String, dynamic>> trainers = [];
+  List<Map<String, dynamic>> nutritionists = [];
+  List<Map<String, dynamic>> gyms = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSubscriptions();
+  }
+
+  Future<void> _loadSubscriptions() async {
+    final loadedTrainers = await _nutritionService.getSubscriptions('Trainer');
+    final loadedNutritionists = await _nutritionService.getSubscriptions('Nutritionist');
+    final loadedGyms = await _nutritionService.getSubscriptions('Gym');
+
+    if (mounted) {
+      setState(() {
+        trainers = loadedTrainers;
+        nutritionists = loadedNutritionists;
+        gyms = loadedGyms;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildCategorySection("Trainers", trainers),
+        SizedBox(height: 20),
+        _buildCategorySection("Nutritionists", nutritionists),
+        SizedBox(height: 20),
+        _buildCategorySection("Gyms", gyms),
+      ],
+    );
+  }
+
+  Widget _buildCategorySection(String title, List<Map<String, dynamic>> items) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[800],
+          ),
+        ),
+        SizedBox(height: 10),
+        if (items.isEmpty)
+          Text(
+            "No active $title subscriptions.",
+            style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+          )
+        else
+          ...items.map((item) => _buildSubscriptionCard(item)).toList(),
+      ],
+    );
+  }
+
+  Widget _buildSubscriptionCard(Map<String, dynamic> item) {
+    final id = item['id'] as int;
+    final name = item['name'] as String;
+    final imagePath = item['imagePath'] as String;
+    final description = item['description'] as String;
+    final price = item['price'] as double;
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              imagePath,
+              width: 60,
+              height: 60,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 60,
+                height: 60,
+                color: Colors.grey[300],
+                child: Icon(Icons.person, color: Colors.grey[600]),
+              ),
+            ),
+          ),
+          SizedBox(width: 15),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  description,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey[600],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "Ksh${price.toStringAsFixed(0)}/month",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete_outline, color: Colors.red[400]),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text("Cancel Subscription"),
+                  content: Text("Are you sure you want to cancel your subscription to $name?"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text("Keep"),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        await _nutritionService.removeSubscription(id);
+                        _loadSubscriptions();
+                        Navigator.pop(context);
+                      },
+                      child: Text("Cancel", style: TextStyle(color: Colors.red)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

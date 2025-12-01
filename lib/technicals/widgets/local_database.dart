@@ -19,7 +19,7 @@ class LocalDatabase {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 4,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
@@ -133,6 +133,19 @@ CREATE TABLE ResetConfig (
     await db.insert('Supplements', {'name': 'Creatine Monohydrate'});
     await db.insert('Supplements', {'name': 'Protein Powder'});
     await db.insert('Supplements', {'name': 'Pre-Workout Supplement'});
+
+    // Monthly Weight Tracking
+    await db.execute('''
+CREATE TABLE MonthlyWeightTracking (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  month $textType,
+  weightChange REAL NOT NULL,
+  totalCaloriesConsumed INTEGER NOT NULL,
+  totalCaloriesBurned INTEGER NOT NULL,
+  calorieBalance INTEGER NOT NULL,
+  UNIQUE(month)
+)
+''');
   }
 
   Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -224,6 +237,48 @@ CREATE TABLE ResetConfig (
       await db.insert('Supplements', {'name': 'Creatine Monohydrate'});
       await db.insert('Supplements', {'name': 'Protein Powder'});
       await db.insert('Supplements', {'name': 'Pre-Workout Supplement'});
+    }
+
+    if (oldVersion < 3) {
+      // Migration for version 3: Subscriptions and WorkoutRoutines
+      await db.execute('''
+CREATE TABLE Subscriptions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT,
+  name TEXT,
+  imagePath TEXT,
+  startDate TEXT,
+  price REAL,
+  description TEXT
+)
+''');
+
+      await db.execute('''
+CREATE TABLE WorkoutRoutines (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  date TEXT,
+  workoutName TEXT,
+  duration TEXT,
+  isCompleted INTEGER
+)
+''');
+    }
+
+    if (oldVersion < 4) {
+      // Migration for version 4: MonthlyWeightTracking
+      const textType = 'TEXT NOT NULL';
+      
+      await db.execute('''
+CREATE TABLE MonthlyWeightTracking (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  month $textType,
+  weightChange REAL NOT NULL,
+  totalCaloriesConsumed INTEGER NOT NULL,
+  totalCaloriesBurned INTEGER NOT NULL,
+  calorieBalance INTEGER NOT NULL,
+  UNIQUE(month)
+)
+''');
     }
   }
 

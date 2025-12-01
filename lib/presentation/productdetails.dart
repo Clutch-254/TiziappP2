@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
+import 'package:tiziappp2/technicals/services/nutrition_service.dart';
 
 // Product Model - Shared between files
 class Product {
@@ -530,6 +531,74 @@ class Productdetails extends StatefulWidget {
 
 class _ProductdetailsState extends State<Productdetails> {
   int x = 1;
+  final NutritionService _nutritionService = NutritionService();
+  bool isSubscribed = false;
+  bool isService = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfService();
+    _checkSubscriptionStatus();
+  }
+  
+  void _checkIfService() {
+    // Determine if this is a service (Trainer, Nutritionist, Gym) based on name or description
+    // This is a heuristic since we don't have a type field yet
+    final name = widget.product.name.toLowerCase();
+    if (name.contains('trainer') || 
+        name.contains('nutrition') || 
+        name.contains('gym') || 
+        name.contains('coach') ||
+        name.contains('instructor')) {
+      setState(() {
+        isService = true;
+      });
+    }
+  }
+
+  Future<void> _checkSubscriptionStatus() async {
+    if (!isService) return;
+    final subscribed = await _nutritionService.isSubscribed(widget.product.name);
+    if (mounted) {
+      setState(() {
+        isSubscribed = subscribed;
+      });
+    }
+  }
+
+  Future<void> _handleSubscription() async {
+    if (isSubscribed) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("You are already subscribed to this service.")),
+      );
+      return;
+    }
+
+    String type = 'Trainer';
+    final name = widget.product.name.toLowerCase();
+    if (name.contains('nutrition')) {
+      type = 'Nutritionist';
+    } else if (name.contains('gym')) {
+      type = 'Gym';
+    }
+
+    await _nutritionService.addSubscription(
+      type: type,
+      name: widget.product.name,
+      imagePath: widget.product.imageAsset,
+      price: widget.product.price,
+      description: widget.product.description,
+    );
+
+    setState(() {
+      isSubscribed = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Subscribed successfully!")),
+    );
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -588,50 +657,52 @@ class _ProductdetailsState extends State<Productdetails> {
                   ),
                 ),
                 Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    if (x > 1) {
-                      --x;
-                    }
-                    setState(() {});
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Icon(
-                      Icons.remove,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 20.0,
-                ),
-                Text(
-                  x.toString(),
-                  style: AppWidget.smallBoldTextFieledStyle(),
-                ),
-                SizedBox(
-                  width: 20.0,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    ++x;
-                    setState(() {});
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Icon(
-                      Icons.add,
-                      color: Colors.white,
+                if (!isService) ...[
+                  GestureDetector(
+                    onTap: () {
+                      if (x > 1) {
+                        --x;
+                      }
+                      setState(() {});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Icon(
+                        Icons.remove,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  Text(
+                    x.toString(),
+                    style: AppWidget.smallBoldTextFieledStyle(),
+                  ),
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      ++x;
+                      setState(() {});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             SizedBox(
@@ -686,7 +757,7 @@ class _ProductdetailsState extends State<Productdetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Total Price:",
+                        isService ? "Price:" : "Total Price:",
                         style: AppWidget.smallBoldTextFieledStyle(),
                       ),
                       Text(
@@ -695,33 +766,48 @@ class _ProductdetailsState extends State<Productdetails> {
                       ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          "Add to cart",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
+                  GestureDetector(
+                    onTap: () {
+                      if (isService) {
+                        _handleSubscription();
+                      } else {
+                        // Existing Add to Cart logic (placeholder)
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Added to Cart")),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: isSubscribed ? Colors.grey : Colors.black,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            isService 
+                              ? (isSubscribed ? "Subscribed" : "Subscribe") 
+                              : "Add to cart",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Poppins',
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            color: Colors.black,
+                          SizedBox(width: 10),
+                          Container(
+                            padding: EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: isSubscribed ? Colors.grey : Colors.black,
+                            ),
+                            child: Icon(
+                              isService ? Icons.check_circle : Icons.shopping_cart_outlined,
+                              color: Colors.white,
+                            ),
                           ),
-                          child: Icon(
-                            Icons.shopping_cart_outlined,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
