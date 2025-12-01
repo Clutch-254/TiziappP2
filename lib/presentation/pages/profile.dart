@@ -7,6 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:tiziappp2/presentation/pages/settingsus.dart';
+import 'package:tiziappp2/technicals/services/nutrition_service.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class Profile extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
@@ -55,6 +58,33 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       curve: Curves.easeInOut,
     );
     _loadSavedName();
+    _loadSavedProfilePicture();
+  }
+
+  Future<void> _loadSavedProfilePicture() async {
+    final prefs = await SharedPreferences.getInstance();
+    final imagePath = prefs.getString('profile_image_path');
+    if (imagePath != null) {
+      final file = File(imagePath);
+      if (await file.exists()) {
+        setState(() {
+          _profileImage = file;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveProfilePicture(File image) async {
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = path.basename(image.path);
+    final savedImage = await image.copy('${appDir.path}/$fileName');
+    
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('profile_image_path', savedImage.path);
+    
+    setState(() {
+      _profileImage = savedImage;
+    });
   }
 
   @override
@@ -219,7 +249,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         context,
                         icon: Icons.delete,
                         title: "Remove Photo",
-                        onTap: () {
+                        onTap: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.remove('profile_image_path');
                           setState(() {
                             _profileImage = null;
                           });
@@ -290,18 +322,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Future<void> _getImageFromCamera() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+      _saveProfilePicture(File(pickedFile.path));
     }
   }
 
   Future<void> _getImageFromGallery() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
-      });
+      _saveProfilePicture(File(pickedFile.path));
     }
   }
 
@@ -1948,6 +1976,20 @@ class _MediaGallerySectionState extends State<MediaGallerySection>
 
 // Custom Painter for Donut Chart (Nutrition)
 class DonutChartPainter extends CustomPainter {
+  final double proteins;
+  final double carbs;
+  final double fats;
+  final double vitamins;
+  final double minerals;
+
+  DonutChartPainter({
+    this.proteins = 0,
+    this.carbs = 0,
+    this.fats = 0,
+    this.vitamins = 0,
+    this.minerals = 0,
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
@@ -1957,14 +1999,19 @@ class DonutChartPainter extends CustomPainter {
     // Define the colors as specified
     final proteinColor = Colors.grey[800]!; // Dark grey
     final carbsColor = Colors.grey[400]!; // Light grey
+    final fatsColor = Colors.grey[600]!; // Medium grey
     final vitaminsColor = Colors.grey; // Medium grey
     final mineralsColor = Colors.black; // Black
 
-    // Sample data percentages (adjust as needed)
-    final proteinPercent = 0.35; // 35%
-    final carbsPercent = 0.40; // 40%
-    final vitaminsPercent = 0.15; // 15%
-    final mineralsPercent = 0.10; // 10%
+    // Calculate total
+    final total = proteins + carbs + fats + vitamins + minerals;
+    
+    // Calculate percentages (avoid division by zero)
+    final proteinPercent = total > 0 ? proteins / total : 0.0;
+    final carbsPercent = total > 0 ? carbs / total : 0.0;
+    final fatsPercent = total > 0 ? fats / total : 0.0;
+    final vitaminsPercent = total > 0 ? vitamins / total : 0.0;
+    final mineralsPercent = total > 0 ? minerals / total : 0.0;
 
     // Paint configurations
     final paint = Paint()
@@ -1974,48 +2021,83 @@ class DonutChartPainter extends CustomPainter {
     // Starting angle is -pi/2 (top of the circle)
     double startAngle = -pi / 2;
 
+    // If total is 0, draw a placeholder ring
+    if (total == 0) {
+      paint.color = Colors.grey[200]!;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        0,
+        2 * pi,
+        false,
+        paint,
+      );
+      return;
+    }
+
     // Draw protein section
-    paint.color = proteinColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * proteinPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * proteinPercent;
+    if (proteinPercent > 0) {
+      paint.color = proteinColor;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        startAngle,
+        2 * pi * proteinPercent,
+        false,
+        paint,
+      );
+      startAngle += 2 * pi * proteinPercent;
+    }
 
     // Draw carbs section
-    paint.color = carbsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * carbsPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * carbsPercent;
+    if (carbsPercent > 0) {
+      paint.color = carbsColor;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        startAngle,
+        2 * pi * carbsPercent,
+        false,
+        paint,
+      );
+      startAngle += 2 * pi * carbsPercent;
+    }
+
+    // Draw fats section
+    if (fatsPercent > 0) {
+      paint.color = fatsColor;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        startAngle,
+        2 * pi * fatsPercent,
+        false,
+        paint,
+      );
+      startAngle += 2 * pi * fatsPercent;
+    }
 
     // Draw vitamins section
-    paint.color = vitaminsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * vitaminsPercent,
-      false,
-      paint,
-    );
-    startAngle += 2 * pi * vitaminsPercent;
+    if (vitaminsPercent > 0) {
+      paint.color = vitaminsColor;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        startAngle,
+        2 * pi * vitaminsPercent,
+        false,
+        paint,
+      );
+      startAngle += 2 * pi * vitaminsPercent;
+    }
 
     // Draw minerals section
-    paint.color = mineralsColor;
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
-      startAngle,
-      2 * pi * mineralsPercent,
-      false,
-      paint,
-    );
+    if (mineralsPercent > 0) {
+      paint.color = mineralsColor;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
+        startAngle,
+        2 * pi * mineralsPercent,
+        false,
+        paint,
+      );
+      startAngle += 2 * pi * mineralsPercent;
+    }
   }
 
   @override
@@ -2093,36 +2175,57 @@ class SupplementIntakeSection extends StatefulWidget {
 }
 
 class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
-  // Map to track supplement intake status
-  Map<String, bool> supplementStatus = {
-    "Creatine Monohydrate": false,
-    "Protein Powder": false,
-    "Pre-Workout Supplement": false,
-    "Other Supplements": false,
-  };
+  final NutritionService _nutritionService = NutritionService();
+  Map<String, bool> supplementStatus = {};
 
   @override
   void initState() {
     super.initState();
-    // Check if we need to reset checkboxes based on last reset date
-    _checkAndResetDailyStatus();
+    _loadData();
   }
 
-  // Method to check if we need to reset checkboxes (every 24 hours)
-  void _checkAndResetDailyStatus() {
-    DateTime now = DateTime.now();
-    DateTime lastReset = now; // This would be retrieved from storage
-
-    // If it's a new day, reset all checkboxes
-    if (now.day != lastReset.day ||
-        now.month != lastReset.month ||
-        now.year != lastReset.year) {
+  Future<void> _loadData() async {
+    final status = await _nutritionService.getTodaySupplementStatus();
+    if (mounted) {
       setState(() {
-        supplementStatus.forEach((key, value) {
-          supplementStatus[key] = false;
-        });
+        supplementStatus = status;
       });
     }
+  }
+
+  void _showAddSupplementDialog() {
+    final nameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Add Supplement"),
+        content: TextField(
+          controller: nameController,
+          decoration: InputDecoration(labelText: "Supplement Name"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.isNotEmpty) {
+                await _nutritionService.addCustomSupplement(nameController.text);
+                _loadData();
+                Navigator.pop(context);
+              }
+            },
+            child: Text("Add"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -2133,13 +2236,23 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Supplement Intake",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[800],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Supplement Intake",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add_circle, color: Colors.black),
+                onPressed: _showAddSupplementDialog,
+                tooltip: "Add Supplement",
+              ),
+            ],
           ),
           SizedBox(height: 16),
           Text(
@@ -2151,6 +2264,8 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
             ),
           ),
           SizedBox(height: 16),
+          if (supplementStatus.isEmpty)
+            Text("No supplements added yet.", style: TextStyle(color: Colors.grey)),
           ...supplementStatus.keys
               .map((supplement) => _buildSupplementCheckbox(supplement))
               .toList(),
@@ -2169,10 +2284,13 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
             height: 24,
             child: Checkbox(
               value: supplementStatus[supplement],
-              onChanged: (bool? value) {
-                setState(() {
-                  supplementStatus[supplement] = value ?? false;
-                });
+              onChanged: (bool? value) async {
+                if (value != null) {
+                  await _nutritionService.toggleSupplement(supplement, value);
+                  setState(() {
+                    supplementStatus[supplement] = value;
+                  });
+                }
               },
               activeColor: Colors.grey[800],
               shape: RoundedRectangleBorder(
@@ -2200,7 +2318,7 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
               fontSize: 14,
               color: supplementStatus[supplement]!
                   ? Colors.green[700]
-                  : Colors.red[700],
+                  : Colors.grey[600],
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -2789,104 +2907,254 @@ class GymSection extends StatelessWidget {
 }
 
 // Nutrition Info Section
-class NutritionInfoSection extends StatelessWidget {
-  final int totalCalories = 1850;
-  final double proteins = 85.2;
-  final double carbs = 210.5;
-  final double vitamins = 750.8; // in mg
-  final double minerals = 15.4; // in g
+class NutritionInfoSection extends StatefulWidget {
+  @override
+  _NutritionInfoSectionState createState() => _NutritionInfoSectionState();
+}
+
+class _NutritionInfoSectionState extends State<NutritionInfoSection> {
+  final NutritionService _nutritionService = NutritionService();
+  
+  int totalCalories = 0;
+  double proteins = 0.0;
+  double carbs = 0.0;
+  double fats = 0.0;
+  double vitamins = 0.0;
+  double minerals = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNutritionData();
+  }
+
+  Future<void> _loadNutritionData() async {
+    await _nutritionService.checkAndResetDaily();
+    final data = await _nutritionService.getTodayNutrition();
+    if (mounted) {
+      setState(() {
+        totalCalories = data['totalCalories'] ?? 0;
+        proteins = data['proteins'] ?? 0.0;
+        carbs = data['carbs'] ?? 0.0;
+        fats = data['fats'] ?? 0.0;
+        vitamins = data['vitamins'] ?? 0.0;
+        minerals = data['minerals'] ?? 0.0;
+      });
+    }
+  }
+
+  void _showAddFoodDialog() {
+    final nameController = TextEditingController();
+    final caloriesController = TextEditingController();
+    final proteinController = TextEditingController();
+    final carbsController = TextEditingController();
+    final fatsController = TextEditingController();
+    final vitaminsController = TextEditingController();
+    final mineralsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Add Food Entry"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: "Food Name"),
+              ),
+              TextField(
+                controller: caloriesController,
+                decoration: InputDecoration(labelText: "Calories (kcal)"),
+                keyboardType: TextInputType.number,
+              ),
+              TextField(
+                controller: proteinController,
+                decoration: InputDecoration(labelText: "Protein (g)"),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              TextField(
+                controller: carbsController,
+                decoration: InputDecoration(labelText: "Carbs (g)"),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              TextField(
+                controller: fatsController,
+                decoration: InputDecoration(labelText: "Fats (g)"),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              TextField(
+                controller: vitaminsController,
+                decoration: InputDecoration(labelText: "Vitamins (mg)"),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+              TextField(
+                controller: mineralsController,
+                decoration: InputDecoration(labelText: "Minerals (g)"),
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.isNotEmpty && caloriesController.text.isNotEmpty) {
+                await _nutritionService.addFoodEntry(
+                  name: nameController.text,
+                  calories: int.tryParse(caloriesController.text) ?? 0,
+                  proteins: double.tryParse(proteinController.text) ?? 0.0,
+                  carbs: double.tryParse(carbsController.text) ?? 0.0,
+                  fats: double.tryParse(fatsController.text) ?? 0.0,
+                  vitamins: double.tryParse(vitaminsController.text) ?? 0.0,
+                  minerals: double.tryParse(mineralsController.text) ?? 0.0,
+                );
+                _loadNutritionData();
+                Navigator.pop(context);
+              }
+            },
+            child: Text("Add"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          // Left side with donut chart
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Calories Consumed",
+                "Nutrition Overview",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey[800],
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                "$totalCalories kcal",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[900],
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: 100,
-                height: 100,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CustomPaint(
-                      painter: DonutChartPainter(),
-                      size: Size(100, 100),
-                    ),
-                    Text(
-                      "Daily",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildLegendItem('Protein', Colors.grey[800]!),
-                    _buildLegendItem('Carbs', Colors.grey[400]!),
-                    _buildLegendItem('Vitamins', Colors.grey),
-                    _buildLegendItem('Minerals', Colors.black),
-                  ],
-                ),
+              IconButton(
+                icon: Icon(Icons.add_circle, color: Colors.black),
+                onPressed: _showAddFoodDialog,
+                tooltip: "Add Food",
               ),
             ],
           ),
-
-          SizedBox(width: 40),
-
-          // Right side with nutrition details
-          Column(
+          SizedBox(height: 16),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Nutrition Details",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+              // Left side with donut chart
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Calories Consumed",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "$totalCalories kcal",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CustomPaint(
+                          painter: DonutChartPainter(
+                            proteins: proteins,
+                            carbs: carbs,
+                            fats: fats,
+                            vitamins: vitamins,
+                            minerals: minerals,
+                          ),
+                          size: Size(100, 100),
+                        ),
+                        Text(
+                          "Daily",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLegendItem('Protein', Colors.grey[800]!),
+                        _buildLegendItem('Carbs', Colors.grey[400]!),
+                        _buildLegendItem('Fats', Colors.grey[600]!),
+                        _buildLegendItem('Vitamins', Colors.grey),
+                        _buildLegendItem('Minerals', Colors.black),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(width: 40),
+
+              // Right side with nutrition details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Nutrition Details",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    _buildNutrientInfo("Proteins", "${proteins.toStringAsFixed(1)} g",
+                        Colors.grey[800]!),
+                    SizedBox(height: 12),
+                    _buildNutrientInfo("Carbohydrates",
+                        "${carbs.toStringAsFixed(1)} g", Colors.grey[400]!),
+                    SizedBox(height: 12),
+                    _buildNutrientInfo("Fats",
+                        "${fats.toStringAsFixed(1)} g", Colors.grey[600]!),
+                    SizedBox(height: 12),
+                    _buildNutrientInfo(
+                        "Vitamins", "${vitamins.toStringAsFixed(1)} mg", Colors.grey),
+                    SizedBox(height: 12),
+                    _buildNutrientInfo(
+                        "Minerals", "${minerals.toStringAsFixed(1)} g", Colors.black),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              _buildNutrientInfo("Proteins", "${proteins.toStringAsFixed(1)} g",
-                  Colors.grey[800]!),
-              SizedBox(height: 12),
-              _buildNutrientInfo("Carbohydrates",
-                  "${carbs.toStringAsFixed(1)} g", Colors.grey[400]!),
-              SizedBox(height: 12),
-              _buildNutrientInfo(
-                  "Vitamins", "${vitamins.toStringAsFixed(1)} mg", Colors.grey),
-              SizedBox(height: 12),
-              _buildNutrientInfo(
-                  "Minerals", "${minerals.toStringAsFixed(1)} g", Colors.black),
             ],
           ),
         ],
@@ -2956,108 +3224,214 @@ class NutritionInfoSection extends StatelessWidget {
 }
 
 // Calories Balance Section
-class CaloriesBalanceSection extends StatelessWidget {
-  final int caloriesConsumed = 1850;
-  final int caloriesBurned = 1350;
-  final int netCalories = 500; // consumed - burned
+class CaloriesBalanceSection extends StatefulWidget {
+  @override
+  _CaloriesBalanceSectionState createState() => _CaloriesBalanceSectionState();
+}
+
+class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
+  final NutritionService _nutritionService = NutritionService();
+  
+  int caloriesConsumed = 0;
+  int caloriesBurned = 0;
+  int netCalories = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final nutrition = await _nutritionService.getTodayNutrition();
+    final burned = await _nutritionService.getTodayCaloriesBurned();
+    
+    if (mounted) {
+      setState(() {
+        caloriesConsumed = nutrition['totalCalories'] ?? 0;
+        caloriesBurned = burned;
+        netCalories = caloriesConsumed - caloriesBurned;
+      });
+    }
+  }
+
+  void _showLogWorkoutDialog() {
+    final typeController = TextEditingController();
+    final caloriesController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Log Workout"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: typeController,
+              decoration: InputDecoration(labelText: "Workout Type"),
+            ),
+            TextField(
+              controller: caloriesController,
+              decoration: InputDecoration(labelText: "Calories Burned"),
+              keyboardType: TextInputType.number,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (typeController.text.isNotEmpty && caloriesController.text.isNotEmpty) {
+                await _nutritionService.logWorkout(
+                  type: typeController.text,
+                  calories: int.tryParse(caloriesController.text) ?? 0,
+                );
+                _loadData();
+                Navigator.pop(context);
+              }
+            },
+            child: Text("Log"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
         children: [
-          // Left side with donut chart
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "Calories Balance",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey[800],
                 ),
               ),
-              SizedBox(height: 8),
-              Text(
-                "Net: $netCalories kcal",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[900],
-                ),
-              ),
-              SizedBox(height: 8),
-              Container(
-                width: 100,
-                height: 100,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CustomPaint(
-                      painter: CaloriesBalanceChartPainter(
-                        consumed: caloriesConsumed,
-                        burned: caloriesBurned,
-                      ),
-                      size: Size(100, 100),
-                    ),
-                    Text(
-                      "Daily",
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildLegendItem('Consumed', Colors.grey[800]!),
-                    _buildLegendItem('Burned', Colors.black),
-                  ],
-                ),
+              IconButton(
+                icon: Icon(Icons.fitness_center, color: Colors.black),
+                onPressed: _showLogWorkoutDialog,
+                tooltip: "Log Workout",
               ),
             ],
           ),
-
-          SizedBox(width: 40),
-
-          // Right side with calorie balance details
-          Column(
+          SizedBox(height: 16),
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Energy Balance",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+              // Left side with donut chart
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Net Balance",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "$netCalories kcal",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[900],
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    width: 100,
+                    height: 100,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CustomPaint(
+                          painter: CaloriesBalanceChartPainter(
+                            consumed: caloriesConsumed,
+                            burned: caloriesBurned,
+                          ),
+                          size: Size(100, 100),
+                        ),
+                        Text(
+                          "Daily",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildLegendItem('Consumed', Colors.grey[800]!),
+                        _buildLegendItem('Burned', Colors.black),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(width: 40),
+
+              // Right side with calorie balance details
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Energy Balance",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    _buildCalorieInfo(
+                        "Consumed", "$caloriesConsumed kcal", Colors.grey[800]!),
+                    SizedBox(height: 12),
+                    _buildCalorieInfo("Burned", "$caloriesBurned kcal", Colors.black),
+                    SizedBox(height: 12),
+                    Divider(color: Colors.grey[400]),
+                    SizedBox(height: 12),
+                    Text(
+                      netCalories > 0 ? "Surplus" : "Deficit",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: netCalories > 0 ? Colors.green : Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 16),
-              _buildCalorieInfo(
-                  "Consumed", "$caloriesConsumed kcal", Colors.grey[800]!),
-              SizedBox(height: 12),
-              _buildCalorieInfo("Burned", "$caloriesBurned kcal", Colors.black),
-              SizedBox(height: 12),
-              Divider(color: Colors.grey[400]),
-              SizedBox(height: 12),
-              _buildCalorieInfo("Net Balance", "$netCalories kcal",
-                  netCalories > 0 ? Colors.green[700]! : Colors.red[700]!,
-                  isHighlighted: true),
             ],
           ),
         ],
       ),
     );
   }
+
 
   Widget _buildLegendItem(String text, Color color) {
     return Row(

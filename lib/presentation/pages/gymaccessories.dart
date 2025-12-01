@@ -30,6 +30,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
   @override
   void initState() {
     super.initState();
+    onTheLoad(); // Load equipment data
     // This ensures the equipment button is selected by default
     equipment = true;
     gymoutfits = false;
@@ -54,11 +55,8 @@ class _GymaccessoriesState extends State<Gymaccessories> {
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 40, // Same width as the cart icon container
-                  ),
                   Text(
                     equipment ? "Equipment" : "Gymfits",
                     style: AppWidget.boldTextFieledStyle(),

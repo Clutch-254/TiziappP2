@@ -5,6 +5,7 @@ import 'package:tiziappp2/technicals/widgets/supportwidget.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
+import 'dart:io';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -52,6 +53,10 @@ class _HomepageState extends State<Homepage> {
     LocationPermission permission;
 
     // Test if location services are enabled.
+    if (!Platform.isAndroid && !Platform.isIOS) {
+      return;
+    }
+
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       // Location services are not enabled, don't continue
