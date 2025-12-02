@@ -10,6 +10,8 @@ import 'package:tiziappp2/presentation/pages/settingsus.dart';
 import 'package:tiziappp2/technicals/services/nutrition_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:tiziappp2/technicals/services/post_service.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class Profile extends StatefulWidget {
   final Function(DateTime)? onDateSelected;
@@ -39,6 +41,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   final _picker = ImagePicker();
 
   String _userName = "user_profile";
+  final PostService _postService = PostService();
+  List<Map<String, dynamic>> _myPosts = [];
+  bool _isLoadingPosts = true;
 
   @override
   void initState() {
@@ -59,6 +64,204 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
     _loadSavedName();
     _loadSavedProfilePicture();
+    _loadPosts();
+  }
+
+  Future<void> _loadPosts() async {
+    setState(() => _isLoadingPosts = true);
+    try {
+      final posts = await _postService.getMyPosts();
+      if (mounted) {
+        setState(() {
+          _myPosts = posts;
+          _isLoadingPosts = false;
+        });
+      }
+    } catch (e) {
+      print("Error loading posts: $e");
+      if (mounted) setState(() => _isLoadingPosts = false);
+    }
+  }
+
+  Future<void> _createPost() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Create New Post",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildOption(Icons.camera_alt, "Camera", () => _pickMedia(ImageSource.camera, false)),
+                _buildOption(Icons.videocam, "Video", () => _pickMedia(ImageSource.camera, true)),
+                _buildOption(Icons.photo_library, "Gallery", () => _pickMedia(ImageSource.gallery, false)),
+              ],
+            ),
+            SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOption(IconData icon, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pop(context);
+        onTap();
+      },
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, size: 30, color: Colors.blue),
+          ),
+          SizedBox(height: 8),
+          Text(label, style: TextStyle(fontWeight: FontWeight.w500)),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _pickMedia(ImageSource source, bool isVideo) async {
+    try {
+      final XFile? file = isVideo 
+          ? await _picker.pickVideo(source: source)
+          : await _picker.pickImage(source: source);
+
+      if (file != null) {
+        _showPostDialog(File(file.path), isVideo);
+      }
+    } catch (e) {
+      print("Error picking media: $e");
+    }
+  }
+
+  void _showPostDialog(File file, bool isVideo) {
+    final captionController = TextEditingController();
+    String privacy = 'public';
+    String? thumbnailPath;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: Text("New Post"),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: isVideo
+                      ? Icon(Icons.play_circle_outline, color: Colors.white, size: 50)
+                      : Image.file(file, fit: BoxFit.contain),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: captionController,
+                  decoration: InputDecoration(
+                    hintText: "Write a caption...",
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Text("Privacy: "),
+                    DropdownButton<String>(
+                      value: privacy,
+                      items: [
+                        DropdownMenuItem(value: 'public', child: Text("Public")),
+                        DropdownMenuItem(value: 'private', child: Text("Gym Bros Only")),
+                      ],
+                      onChanged: (val) => setState(() => privacy = val!),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  // Generate thumbnail for video
+                  if (isVideo) {
+                    final uint8list = await VideoThumbnail.thumbnailData(
+                      video: file.path,
+                      imageFormat: ImageFormat.JPEG,
+                      maxWidth: 200,
+                      quality: 75,
+                    );
+                    if (uint8list != null) {
+                      final tempDir = await getTemporaryDirectory();
+                      final thumbFile = await File('${tempDir.path}/thumb_${DateTime.now().millisecondsSinceEpoch}.jpg').create();
+                      await thumbFile.writeAsBytes(uint8list);
+                      thumbnailPath = thumbFile.path;
+                    }
+                  }
+
+                  // Save media
+                  final savedPath = await _postService.saveMediaFile(
+                    file, 
+                    isVideo ? 'video' : 'image'
+                  );
+
+                  // Create post
+                  await _postService.createPost(
+                    mediaPath: savedPath,
+                    mediaType: isVideo ? 'video' : 'image',
+                    caption: captionController.text,
+                    privacy: privacy,
+                    thumbnailPath: thumbnailPath,
+                  );
+
+                  Navigator.pop(context);
+                  _loadPosts(); // Refresh list
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Post created successfully!")),
+                  );
+                } catch (e) {
+                  print("Error creating post: $e");
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error creating post")),
+                  );
+                }
+              },
+              child: Text("Post"),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _loadSavedProfilePicture() async {
@@ -1685,6 +1888,9 @@ class MediaGallerySection extends StatefulWidget {
 class _MediaGallerySectionState extends State<MediaGallerySection>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final PostService _postService = PostService();
+  List<Map<String, dynamic>> _myPosts = [];
+  bool _isLoadingPosts = true;
 
   // Sample data for images
   final List<Map<String, dynamic>> _mediaItems = [
@@ -1739,6 +1945,28 @@ class _MediaGallerySectionState extends State<MediaGallerySection>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _loadPosts();
+  }
+
+  Future<void> _loadPosts() async {
+    setState(() => _isLoadingPosts = true);
+    try {
+      final posts = await _postService.getMyPosts();
+      if (mounted) {
+        setState(() {
+          _myPosts = posts;
+          _isLoadingPosts = false;
+        });
+      }
+    } catch (e) {
+      print("Error loading posts: $e");
+      if (mounted) setState(() => _isLoadingPosts = false);
+    }
+  }
+
+  Future<void> _createPost() async {
+    // Implementation for creating posts
+    // This can be added later if needed
   }
 
   @override
@@ -1767,10 +1995,7 @@ class _MediaGallerySectionState extends State<MediaGallerySection>
               ),
               IconButton(
                 icon: Icon(Icons.add_circle_outline, color: Colors.grey[800]),
-                onPressed: () {
-                  // Add new media
-                  print("Add new media");
-                },
+                onPressed: _createPost,
                 tooltip: "Add new",
               ),
             ],
@@ -1799,17 +2024,19 @@ class _MediaGallerySectionState extends State<MediaGallerySection>
         // Grid of media items
         Container(
           height: 500, // Fixed height for the grid
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              // All tab
-              _buildMediaGrid(_mediaItems),
-              // Videos tab
-              _buildMediaGrid(_mediaItems
-                  .where((item) => item['type'] == 'video')
-                  .toList()),
-            ],
-          ),
+          child: _isLoadingPosts
+              ? Center(child: CircularProgressIndicator())
+              : TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // All tab
+                    _buildMediaGrid(_myPosts),
+                    // Videos tab
+                    _buildMediaGrid(_myPosts
+                        .where((item) => item['mediaType'] == 'video')
+                        .toList()),
+                  ],
+                ),
         ),
       ],
     );
@@ -1833,138 +2060,58 @@ class _MediaGallerySectionState extends State<MediaGallerySection>
   }
 
   Widget _buildMediaItem(Map<String, dynamic> item) {
-    bool isVideo = item['type'] == 'video';
+    bool isVideo = item['mediaType'] == 'video';
+    final mediaPath = item['mediaPath'];
+    final thumbnailPath = item['thumbnailPath'];
+    final file = File(mediaPath);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Media preview (placeholder)
-          Stack(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                child: Container(
-                  height: 120,
-                  width: double.infinity,
-                  color: isVideo ? Colors.grey[400] : Colors.grey[300],
-                  child: Center(
-                    child: Icon(
-                      isVideo ? Icons.videocam : Icons.photo,
-                      size: 40,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+    return GestureDetector(
+      onTap: () {
+        // Show full screen view or delete option
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: isVideo 
+              ? Icon(Icons.play_circle_outline, size: 50) 
+              : Image.file(file),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  await _postService.deletePost(item['id']);
+                  Navigator.pop(context);
+                  _loadPosts();
+                },
+                child: Text("Delete", style: TextStyle(color: Colors.red)),
               ),
-              if (isVideo)
-                Positioned(
-                  right: 8,
-                  bottom: 8,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      item['duration'],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              Positioned.fill(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      // View media
-                      print(
-                          "View ${isVideo ? 'video' : 'image'}: ${item['title']}");
-                    },
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(12)),
-                    child: isVideo
-                        ? Center(
-                            child: Icon(
-                              Icons.play_circle_outline,
-                              size: 50,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          )
-                        : Container(),
-                  ),
-                ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text("Close"),
               ),
             ],
           ),
-          // Media info
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['title'],
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Colors.grey[800],
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
+          image: !isVideo && file.existsSync()
+              ? DecorationImage(image: FileImage(file), fit: BoxFit.cover)
+              : null,
+        ),
+        child: isVideo
+            ? Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (thumbnailPath != null && File(thumbnailPath).existsSync())
+                    Image.file(File(thumbnailPath), fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                  Container(
+                    color: Colors.black26,
+                    child: Icon(Icons.play_circle_fill, color: Colors.white, size: 40),
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(height: 4),
-                Text(
-                  item['date'],
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.favorite, size: 16, color: Colors.red[400]),
-                    SizedBox(width: 4),
-                    Text(
-                      "${item['likes']}",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                    SizedBox(width: 12),
-                    Icon(Icons.comment, size: 16, color: Colors.grey[600]),
-                    SizedBox(width: 4),
-                    Text(
-                      "${item['comments']}",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[700],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+                ],
+              )
+            : null,
       ),
     );
   }

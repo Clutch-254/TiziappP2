@@ -603,11 +603,12 @@ class _ProductdetailsState extends State<Productdetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        margin: EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0, bottom: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
@@ -715,39 +716,139 @@ class _ProductdetailsState extends State<Productdetails> {
             SizedBox(
               height: 15.0,
             ),
-            Text(
-              "Nutritional Value:",
-              style: AppWidget.boldTextFieledStyle(),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text(
-              widget.product.nutritionalValue,
-              style: AppWidget.smallBoldTextFieledStyle(),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            Row(
-              children: [
-                Text(
-                  "Delivery Time:",
-                  style: AppWidget.smallBoldTextFieledStyle(),
+            
+            // Conditional display based on whether it's a service or product
+            if (isService) ...[
+              // Qualifications section for services
+              if (widget.product.qualifications.isNotEmpty) ...[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.verified,
+                      color: Colors.grey[800],
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Qualifications:",
+                      style: AppWidget.boldTextFieledStyle(),
+                    ),
+                  ],
                 ),
-                Icon(
-                  Icons.alarm,
+                SizedBox(height: 5.0),
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Text(
+                    widget.product.qualifications,
+                    style: AppWidget.smallBoldTextFieledStyle(),
+                  ),
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  "${widget.product.deliveryTime} minutes",
-                  style: AppWidget.smallBoldTextFieledStyle(),
-                ),
+                SizedBox(height: 15.0),
               ],
-            ),
-            Spacer(),
+              
+              // Location section for services
+              if (widget.product.location.isNotEmpty) ...[
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                      color: Colors.red[400],
+                      size: 20,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      "Location:",
+                      style: AppWidget.boldTextFieledStyle(),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5.0),
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Text(
+                    widget.product.location,
+                    style: AppWidget.smallBoldTextFieledStyle(),
+                  ),
+                ),
+                SizedBox(height: 15.0),
+              ],
+              
+              // Services/Pricing info
+              Row(
+                children: [
+                  Icon(
+                    Icons.attach_money,
+                    color: Colors.green[700],
+                    size: 20,
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    "Service Fee:",
+                    style: AppWidget.boldTextFieledStyle(),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5.0),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey[300]!),
+                ),
+                child: Text(
+                  "Ksh${widget.product.price.toStringAsFixed(0)} ${widget.product.price >= 10000 ? 'per month' : 'per session'}",
+                  style: AppWidget.smallBoldTextFieledStyle(),
+                ),
+              ),
+            ] else ...[
+              // Nutritional Value for food products
+              Text(
+                "Nutritional Value:",
+                style: AppWidget.boldTextFieledStyle(),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Text(
+                widget.product.nutritionalValue,
+                style: AppWidget.smallBoldTextFieledStyle(),
+              ),
+              SizedBox(
+                height: 15.0,
+              ),
+              
+              // Delivery Time for food products
+              Row(
+                children: [
+                  Text(
+                    "Delivery Time:",
+                    style: AppWidget.smallBoldTextFieledStyle(),
+                  ),
+                  Icon(
+                    Icons.alarm,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "${widget.product.deliveryTime} minutes",
+                    style: AppWidget.smallBoldTextFieledStyle(),
+                  ),
+                ],
+              ),
+            ],
+            SizedBox(height: 20.0),
             Padding(
               padding: const EdgeInsets.only(bottom: 40.0),
               child: Row(
@@ -815,6 +916,7 @@ class _ProductdetailsState extends State<Productdetails> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

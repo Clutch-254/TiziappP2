@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:tiziappp2/technicals/services/post_service.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'package:intl/intl.dart';
 class Contentscroll extends StatefulWidget {
   const Contentscroll({super.key});
 
@@ -16,53 +19,22 @@ class _ContentscrollState extends State<Contentscroll>
   bool _isPanelVisible = false;
   bool _isMediaPickerVisible = false;
 
-  // Selected category state
-  String _selectedCategory = 'Brand'; // Default selected category
-  final List<String> _categories = ['Brand', 'Specialist', 'Influencer'];
-
-  // Image picker
+  final PostService _postService = PostService();
+  List<Map<String, dynamic>> _contentItems = [];
+  bool _isLoading = true;
+  String _selectedCategory = 'Influencer'; // Default to Influencer for feed
+  
+  // Media picker properties
   final ImagePicker _picker = ImagePicker();
   File? _mediaFile;
   bool _isVideo = false;
-
-  // Sample content data - replace with your actual content
-  final List<Map<String, dynamic>> _contentItems = [
-    {
-      'username': '@user1',
-      'description': 'This is my workout routine #fitness #gym',
-      'likes': '10.2K',
-      'comments': '342',
-      'backgroundColor': Colors.red.shade200,
-    },
-    {
-      'username': '@nutritionist',
-      'description': 'Easy protein meal prep for the week #nutrition #mealprep',
-      'likes': '5.7K',
-      'comments': '129',
-      'backgroundColor': Colors.blue.shade200,
-    },
-    {
-      'username': '@gymtrainer',
-      'description':
-          'Perfect your squat form with these tips #squat #technique',
-      'likes': '8.3K',
-      'comments': '256',
-      'backgroundColor': Colors.green.shade200,
-    },
-    {
-      'username': '@fitnessjourney',
-      'description': 'My 3-month transformation #progress #motivation',
-      'likes': '15.9K',
-      'comments': '478',
-      'backgroundColor': Colors.purple.shade200,
-    },
-    {
-      'username': '@healthycooking',
-      'description': 'Low-carb dinner ideas #recipes #healthyeating',
-      'likes': '7.1K',
-      'comments': '215',
-      'backgroundColor': Colors.orange.shade200,
-    },
+  
+  // Categories for the top selector
+  final List<String> _categories = [
+    'Influencer',
+    'Trainer',
+    'Nutritionist',
+    'Institution',
   ];
 
   @override
@@ -72,6 +44,24 @@ class _ContentscrollState extends State<Contentscroll>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
+    _loadPosts();
+  }
+
+  Future<void> _loadPosts() async {
+    setState(() => _isLoading = true);
+    try {
+      // Load all posts for the feed
+      final posts = await _postService.getAllFeedPosts();
+      if (mounted) {
+        setState(() {
+          _contentItems = posts;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print("Error loading posts: $e");
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
@@ -262,24 +252,38 @@ class _ContentscrollState extends State<Contentscroll>
             bottom: 0,
             left: 0,
             right: 0,
-            child: PageView.builder(
-              scrollDirection: Axis.vertical,
-              controller: _pageController,
-              itemCount: _contentItems.length,
-              itemBuilder: (context, index) {
-                final item = _contentItems[index];
-                return ContentPage(
-                  username: item['username'],
-                  description: item['description'],
-                  likes: item['likes'],
-                  comments: item['comments'],
-                  backgroundColor: item['backgroundColor'],
-                  onActionButtonTap: _toggleActionPanel,
-                  currentPage: index + 1,
-                  totalPages: _contentItems.length,
-                );
-              },
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator(color: Colors.white))
+                : _contentItems.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.video_library_outlined,
+                                color: Colors.white54, size: 64),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "No posts yet",
+                              style: TextStyle(color: Colors.white54, fontSize: 16),
+                            ),
+                          ],
+                        ),
+                      )
+                    : PageView.builder(
+                        scrollDirection: Axis.vertical,
+                        controller: _pageController,
+                        itemCount: _contentItems.length,
+                        itemBuilder: (context, index) {
+                          final item = _contentItems[index];
+                          return ContentPage(
+                            post: item,
+                            onActionButtonTap: _toggleActionPanel,
+                            currentPage: index + 1,
+                            totalPages: _contentItems.length,
+                            postService: _postService,
+                          );
+                        },
+                      ),
           ),
 
           // Slide-up action panel
@@ -425,9 +429,9 @@ class _ContentscrollState extends State<Contentscroll>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _buildActionButton(Icons.favorite, 'Like', currentItem['likes']),
+            _buildActionButton(Icons.favorite, 'Like', '${currentItem['likes'] ?? 0}'),
             _buildActionButton(
-                Icons.chat_bubble, 'Comment', currentItem['comments']),
+                Icons.chat_bubble, 'Comment', '0'),
             _buildActionButton(Icons.share, 'Share', ''),
             _buildActionButton(Icons.bookmark, 'Save', ''),
           ],
@@ -519,130 +523,308 @@ class _ContentscrollState extends State<Contentscroll>
   }
 }
 
-class ContentPage extends StatelessWidget {
-  final String username;
-  final String description;
-  final String likes;
-  final String comments;
-  final Color backgroundColor;
+class ContentPage extends StatefulWidget {
+  final Map<String, dynamic> post;
   final VoidCallback onActionButtonTap;
   final int currentPage;
   final int totalPages;
+  final PostService postService;
 
   const ContentPage({
     Key? key,
-    required this.username,
-    required this.description,
-    required this.likes,
-    required this.comments,
-    required this.backgroundColor,
+    required this.post,
     required this.onActionButtonTap,
     required this.currentPage,
     required this.totalPages,
+    required this.postService,
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: backgroundColor,
-      child: Stack(
-        children: [
-          // This would be your content (video or image)
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.fitness_center,
-                  size: 64,
-                  color: Colors.white,
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Content $currentPage of $totalPages',
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Swipe up for next content',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Swipe down for previous content',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-              ],
-            ),
-          ),
+  State<ContentPage> createState() => _ContentPageState();
+}
 
-          // Overlay with user info
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              padding: const EdgeInsets.all(20),
+class _ContentPageState extends State<ContentPage> {
+  VideoPlayerController? _videoController;
+  ChewieController? _chewieController;
+  bool _isLiked = false;
+  int _likeCount = 0;
+  bool _showHeartAnimation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _likeCount = widget.post['likes'] ?? 0;
+    _checkIfLiked();
+    if (widget.post['mediaType'] == 'video') {
+      _initializeVideo();
+    }
+  }
+
+  Future<void> _checkIfLiked() async {
+    final liked = await widget.postService.hasLikedPost(widget.post['id']);
+    if (mounted) {
+      setState(() => _isLiked = liked);
+    }
+  }
+
+  Future<void> _initializeVideo() async {
+    final file = File(widget.post['mediaPath']);
+    if (await file.exists()) {
+      _videoController = VideoPlayerController.file(file);
+      await _videoController!.initialize();
+      
+      _chewieController = ChewieController(
+        videoPlayerController: _videoController!,
+        autoPlay: true,
+        looping: true,
+        showControls: false,
+        aspectRatio: _videoController!.value.aspectRatio,
+      );
+      
+      if (mounted) setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    _chewieController?.dispose();
+    super.dispose();
+  }
+
+  void _handleDoubleTap() {
+    if (!_isLiked) {
+      _toggleLike();
+    }
+    setState(() => _showHeartAnimation = true);
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) setState(() => _showHeartAnimation = false);
+    });
+  }
+
+  Future<void> _toggleLike() async {
+    await widget.postService.toggleLike(widget.post['id']);
+    if (mounted) {
+      setState(() {
+        _isLiked = !_isLiked;
+        _likeCount += _isLiked ? 1 : -1;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isVideo = widget.post['mediaType'] == 'video';
+    final mediaPath = widget.post['mediaPath'];
+    final file = File(mediaPath);
+
+    return GestureDetector(
+      onDoubleTap: _handleDoubleTap,
+      child: Container(
+        color: Colors.black,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // Media Content
+            Center(
+              child: isVideo
+                  ? (_chewieController != null && _chewieController!.videoPlayerController.value.isInitialized
+                      ? Chewie(controller: _chewieController!)
+                      : const CircularProgressIndicator(color: Colors.white))
+                  : (file.existsSync() 
+                      ? Image.file(file, fit: BoxFit.contain)
+                      : const Icon(Icons.broken_image, color: Colors.white, size: 64)),
+            ),
+
+            // Gradient Overlay
+            Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
+                    Colors.black.withOpacity(0.3),
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.6),
                   ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    username,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+            ),
+
+            // Heart Animation
+            if (_showHeartAnimation)
+              const Center(
+                child: Icon(
+                  Icons.favorite,
+                  color: Colors.white,
+                  size: 100,
+                ),
+              ),
+
+            // Overlay with user info
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        _buildProfileImage(),
+                        const SizedBox(width: 10),
+                        Text(
+                          "@${widget.post['userName']}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 8),
+                    if (widget.post['caption'] != null && widget.post['caption'].isNotEmpty)
+                      Text(
+                        widget.post['caption'],
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _formatDate(widget.post['createdAt']),
+                      style: const TextStyle(color: Colors.white54, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Single interaction button that opens the slide-up panel
+            Positioned(
+              right: 16,
+              bottom: 100,
+              child: Column(
+                children: [
+                  _buildSideActionButton(
+                    icon: _isLiked ? Icons.favorite : Icons.favorite_border,
+                    color: _isLiked ? Colors.red : Colors.white,
+                    label: _formatCount(_likeCount),
+                    onTap: _toggleLike,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: widget.onActionButtonTap,
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.more_horiz,
+                        color: Colors.white,
+                        size: 30,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-
-          // Single interaction button that opens the slide-up panel
-          Positioned(
-            right: 16,
-            bottom: 100,
-            child: GestureDetector(
-              onTap: onActionButtonTap,
+            
+            // Page indicator
+            Positioned(
+              top: 100,
+              right: 20,
               child: Container(
-                width: 50,
-                height: 50,
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Icon(
-                  Icons.more_horiz,
-                  color: Colors.white,
-                  size: 30,
+                child: Text(
+                  '${widget.currentPage}/${widget.totalPages}',
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    final profilePicPath = widget.post['userProfilePic'];
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 1),
+        shape: BoxShape.circle,
+      ),
+      child: CircleAvatar(
+        radius: 16,
+        backgroundImage: profilePicPath != null && File(profilePicPath).existsSync()
+            ? FileImage(File(profilePicPath))
+            : const AssetImage("Images/profile.png") as ImageProvider,
+      ),
+    );
+  }
+
+  Widget _buildSideActionButton({
+    required IconData icon,
+    required Color color,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 35),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              shadows: [Shadow(color: Colors.black, blurRadius: 2)],
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatCount(int count) {
+    if (count >= 1000000) return '${(count / 1000000).toStringAsFixed(1)}M';
+    if (count >= 1000) return '${(count / 1000).toStringAsFixed(1)}K';
+    return count.toString();
+  }
+
+  String _formatDate(String dateStr) {
+    final date = DateTime.parse(dateStr);
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 7) {
+      return DateFormat('MMM d, yyyy').format(date);
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
   }
 }

@@ -19,7 +19,7 @@ class LocalDatabase {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: _createDB,
       onUpgrade: _onUpgrade,
     );
@@ -144,6 +144,32 @@ CREATE TABLE MonthlyWeightTracking (
   totalCaloriesBurned INTEGER NOT NULL,
   calorieBalance INTEGER NOT NULL,
   UNIQUE(month)
+)
+''');
+
+    // Progress Posts (Social Media)
+    await db.execute('''
+CREATE TABLE ProgressPosts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userName TEXT NOT NULL,
+  userProfilePic TEXT,
+  mediaPath TEXT NOT NULL,
+  mediaType TEXT NOT NULL,
+  caption TEXT,
+  privacy TEXT NOT NULL,
+  likes INTEGER NOT NULL DEFAULT 0,
+  createdAt TEXT NOT NULL,
+  thumbnailPath TEXT
+)
+''');
+
+    // Post Likes
+    await db.execute('''
+CREATE TABLE PostLikes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  postId INTEGER NOT NULL,
+  likedAt TEXT NOT NULL,
+  FOREIGN KEY (postId) REFERENCES ProgressPosts(id) ON DELETE CASCADE
 )
 ''');
   }
@@ -277,6 +303,33 @@ CREATE TABLE MonthlyWeightTracking (
   totalCaloriesBurned INTEGER NOT NULL,
   calorieBalance INTEGER NOT NULL,
   UNIQUE(month)
+)
+''');
+    }
+
+    if (oldVersion < 5) {
+      // Migration for version 5: ProgressPosts and PostLikes
+      await db.execute('''
+CREATE TABLE ProgressPosts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  userName TEXT NOT NULL,
+  userProfilePic TEXT,
+  mediaPath TEXT NOT NULL,
+  mediaType TEXT NOT NULL,
+  caption TEXT,
+  privacy TEXT NOT NULL,
+  likes INTEGER NOT NULL DEFAULT 0,
+  createdAt TEXT NOT NULL,
+  thumbnailPath TEXT
+)
+''');
+
+      await db.execute('''
+CREATE TABLE PostLikes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  postId INTEGER NOT NULL,
+  likedAt TEXT NOT NULL,
+  FOREIGN KEY (postId) REFERENCES ProgressPosts(id) ON DELETE CASCADE
 )
 ''');
     }
