@@ -74,12 +74,33 @@ class _ClientsfitpageState extends State<Clientsfitpage> {
   };
 
   void _addItem() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Adding to specific categories requires a more complex dialog. Coming soon!'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    showDialog(
+      context: context,
+      builder: (context) => const AddItemDialog(),
+    ).then((result) {
+      if (result != null) {
+        setState(() {
+          // result is {gender, category, subcategory, name, stock, price}
+          String gender = result['gender'];
+          String category = result['category'];
+          String subcategory = result['subcategory'];
+          Map<String, dynamic> newItem = {
+            "name": result['name'],
+            "stock": result['stock'],
+            "price": result['price'],
+          };
+
+          // Ensure structure exists (it should, based on dropdowns)
+          if (inventory[gender][category][subcategory] == null) {
+             inventory[gender][category][subcategory] = [];
+          }
+          inventory[gender][category][subcategory].add(newItem);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Item added successfully!')),
+        );
+      }
+    });
   }
 
   void _removeItem(List<dynamic> parentList, int index) {
@@ -150,6 +171,151 @@ class _ClientsfitpageState extends State<Clientsfitpage> {
           child: _buildCategoryTree(inventory),
         ),
       ),
+    );
+  }
+}
+
+class AddItemDialog extends StatefulWidget {
+  const AddItemDialog({super.key});
+
+  @override
+  State<AddItemDialog> createState() => _AddItemDialogState();
+}
+
+class _AddItemDialogState extends State<AddItemDialog> {
+  final _formKey = GlobalKey<FormState>();
+  String? selectedGender;
+  String? selectedCategory;
+  String? selectedSubcategory;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController stockController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+
+  // Hardcoded structure for dropdowns (matching the main inventory structure)
+  final Map<String, Map<String, List<String>>> structure = {
+    "Men's": {
+      "Upper Body": ["T-Shirts", "Hoodies & Jackets"],
+      "Lower Body": ["Shorts", "Pants"],
+      "Footwear": ["Running Shoes", "Training Shoes"], // Simplified for dropdown logic
+      "Accessories": ["Caps", "Wristbands"],
+    },
+    "Women's": {
+      "Upper Body": ["Sports Bras", "Tops"],
+      "Lower Body": ["Leggings", "Shorts"],
+      "Footwear": ["Running Shoes", "Training Shoes"],
+      "Accessories": ["Headbands", "Gym Bags"],
+    },
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Add New Item'),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: selectedGender,
+                decoration: const InputDecoration(labelText: 'Gender'),
+                items: structure.keys.map((String gender) {
+                  return DropdownMenuItem<String>(
+                    value: gender,
+                    child: Text(gender),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedGender = value;
+                    selectedCategory = null;
+                    selectedSubcategory = null;
+                  });
+                },
+                validator: (value) => value == null ? 'Required' : null,
+              ),
+              if (selectedGender != null)
+                DropdownButtonFormField<String>(
+                  value: selectedCategory,
+                  decoration: const InputDecoration(labelText: 'Category'),
+                  items: structure[selectedGender]!.keys.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCategory = value;
+                      selectedSubcategory = null;
+                    });
+                  },
+                  validator: (value) => value == null ? 'Required' : null,
+                ),
+              if (selectedCategory != null)
+                DropdownButtonFormField<String>(
+                  value: selectedSubcategory,
+                  decoration: const InputDecoration(labelText: 'Subcategory'),
+                  items: structure[selectedGender]![selectedCategory]!.map((String sub) {
+                    return DropdownMenuItem<String>(
+                      value: sub,
+                      child: Text(sub),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedSubcategory = value;
+                    });
+                  },
+                  validator: (value) => value == null ? 'Required' : null,
+                ),
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Item Name'),
+                validator: (value) => value!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: stockController,
+                decoration: const InputDecoration(labelText: 'Stock Quantity'),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? 'Required' : null,
+              ),
+              TextFormField(
+                controller: priceController,
+                decoration: const InputDecoration(labelText: 'Price'),
+                keyboardType: TextInputType.number,
+                validator: (value) => value!.isEmpty ? 'Required' : null,
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              Navigator.pop(context, {
+                'gender': selectedGender,
+                'category': selectedCategory,
+                'subcategory': selectedSubcategory,
+                'name': nameController.text,
+                'stock': int.parse(stockController.text),
+                'price': double.parse(priceController.text),
+              });
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Add'),
+        ),
+      ],
     );
   }
 }

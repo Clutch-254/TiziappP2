@@ -4,7 +4,6 @@ import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/addfitpage.dart'
 import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/admingymwearbrandprofile.dart';
 import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/clientsfitpage.dart';
 import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/notificationsfit.dart';
-import 'package:tiziappp2/presentation/pages/admin_gymwearbrand/stafffitpage.dart';
 
 // Import your page classes here
 // For example:
@@ -27,7 +26,6 @@ class _BottomnavfitState extends State<Bottomnavfit> {
   late Widget profile;
   late Widget clientsPage;
   late Widget addPage;
-  late Widget staffPage;
   late Widget notificationsPage;
   
   @override
@@ -37,11 +35,10 @@ class _BottomnavfitState extends State<Bottomnavfit> {
     profile = Admingymwearbrandprofile();
     clientsPage = Clientsfitpage();
     addPage = Addfitpage();
-    staffPage = Stafffitpage();
     notificationsPage = Notificationsfit();
     
     // Add pages to the list in the order they should appear
-    pages = [profile, clientsPage, addPage, staffPage, notificationsPage];
+    pages = [profile, clientsPage, addPage, notificationsPage];
     
     super.initState();
   }
@@ -49,9 +46,10 @@ class _BottomnavfitState extends State<Bottomnavfit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         color: Colors.black,
         animationDuration: const Duration(milliseconds: 500),
         onTap: (int index) {
@@ -70,10 +68,6 @@ class _BottomnavfitState extends State<Bottomnavfit> {
           ),
           Icon(
             Icons.add_circle_outline,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.person_pin_circle,
             color: Colors.white,
           ),
           Icon(
