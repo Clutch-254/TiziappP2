@@ -80,6 +80,22 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
     }
   ];
 
+  // Business Hours Data
+  List<Map<String, String>> businessHours = [
+    {'day': 'Monday - Friday', 'hours': '8:00 AM - 5:00 PM'},
+    {'day': 'Saturday', 'hours': '9:00 AM - 3:00 PM'},
+    {'day': 'Sunday', 'hours': 'Closed'},
+    {'day': 'Public Holidays', 'hours': 'Closed'},
+  ];
+
+  // Warranty Data
+  List<Map<String, String>> warranties = [
+    {'product': 'Strength Equipment', 'details': '5 years on frame, 2 years on parts'},
+    {'product': 'Cardio Equipment', 'details': '3 years on motor, 2 years on electronics'},
+    {'product': 'Functional Training', 'details': '2 years on materials and workmanship'},
+    {'product': 'Accessories', 'details': '1 year limited warranty'},
+  ];
+
   @override
   Widget build(BuildContext context) {
     // Black color scheme to match bottomnav
@@ -341,50 +357,66 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...productCategories.map((category) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Category icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        category['icon'],
-                                        color: secondaryColor,
-                                      ),
+                          ...productCategories.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> category = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Category icon
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Category details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            category['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            category['details'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(
+                                      category['icon'],
+                                      color: secondaryColor,
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Category details
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          category['title'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          category['details'],
+                                          style: TextStyle(
+                                            color: secondaryColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Delete button
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline,
+                                        size: 20, color: Colors.red),
+                                    onPressed: () {
+                                      setState(() {
+                                        productCategories.removeAt(index);
+                                      });
+                                    },
+                                    constraints: const BoxConstraints(),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -416,65 +448,83 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showAddCertificationDialog(context);
+                                },
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...certifications.map((cert) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Certification icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        Icons.verified,
-                                        color: secondaryColor,
-                                      ),
+                          ...certifications.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> cert = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Certification icon
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Certification details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            cert['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Issued by: ${cert['issuer']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Valid until: ${cert['validUntil']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(
+                                      Icons.verified,
+                                      color: secondaryColor,
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Certification details
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          cert['title'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Issued by: ${cert['issuer']}',
+                                          style: TextStyle(
+                                            color: secondaryColor,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Valid until: ${cert['validUntil']}',
+                                          style: TextStyle(
+                                            color: secondaryColor,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  // Delete button
+                                  IconButton(
+                                    icon: const Icon(Icons.delete_outline,
+                                        size: 20, color: Colors.red),
+                                    onPressed: () {
+                                      setState(() {
+                                        certifications.removeAt(index);
+                                      });
+                                    },
+                                    constraints: const BoxConstraints(),
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -507,7 +557,7 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
                                 onPressed: () {
-                                  _showEditProfileDialog(context);
+                                  _showEditBusinessHoursDialog(context);
                                 },
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
@@ -515,12 +565,8 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildBusinessHoursItem(
-                              'Monday - Friday', '8:00 AM - 5:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Saturday', '9:00 AM - 3:00 PM'),
-                          _buildBusinessHoursItem('Sunday', 'Closed'),
-                          _buildBusinessHoursItem('Public Holidays', 'Closed'),
+                          ...businessHours.map((item) => _buildBusinessHoursItem(
+                              item['day']!, item['hours']!)),
                         ],
                       ),
                     ),
@@ -553,7 +599,7 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
                                 onPressed: () {
-                                  _showEditProfileDialog(context);
+                                  _showEditWarrantyDialog(context);
                                 },
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
@@ -561,14 +607,8 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildWarrantyItem('Strength Equipment',
-                              '5 years on frame, 2 years on parts'),
-                          _buildWarrantyItem('Cardio Equipment',
-                              '3 years on motor, 2 years on electronics'),
-                          _buildWarrantyItem('Functional Training',
-                              '2 years on materials and workmanship'),
-                          _buildWarrantyItem(
-                              'Accessories', '1 year limited warranty'),
+                          ...warranties.map((item) => _buildWarrantyItem(
+                              item['product']!, item['details']!)),
                         ],
                       ),
                     ),
@@ -658,14 +698,8 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
               GestureDetector(
                 onTap: () async {
                   await _pickImage();
-                  // Rebuild the dialog to show the selected image if needed, 
-                  // but since _pickImage calls setState, the parent widget rebuilds.
-                  // However, the dialog context might not rebuild automatically unless we use StatefulBuilder.
-                  // For simplicity, we rely on the main page update or close/reopen, 
-                  // but let's add a visual indicator here.
                   Navigator.pop(context);
-                  _showEditProfileDialog(context); // Reopen to show updated state if we want, or just let it be.
-                  // Better UX: Just pick image and show snackbar, or use StatefulBuilder.
+                  _showEditProfileDialog(context);
                 },
                 child: CircleAvatar(
                   radius: 40,
@@ -728,6 +762,193 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
               foregroundColor: Colors.white,
             ),
             child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to show edit business hours dialog
+  void _showEditBusinessHoursDialog(BuildContext context) {
+    // Create controllers for each day
+    List<TextEditingController> controllers = businessHours
+        .map((item) => TextEditingController(text: item['hours']))
+        .toList();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Business Hours'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(businessHours.length, (index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: TextField(
+                  controller: controllers[index],
+                  decoration: InputDecoration(
+                    labelText: businessHours[index]['day'],
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                for (int i = 0; i < businessHours.length; i++) {
+                  businessHours[i]['hours'] = controllers[i].text;
+                }
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Business hours updated!')),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to show edit warranty dialog
+  void _showEditWarrantyDialog(BuildContext context) {
+    // Create controllers for each warranty item
+    List<TextEditingController> controllers = warranties
+        .map((item) => TextEditingController(text: item['details']))
+        .toList();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Warranty Information'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(warranties.length, (index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: TextField(
+                  controller: controllers[index],
+                  decoration: InputDecoration(
+                    labelText: warranties[index]['product'],
+                    border: const OutlineInputBorder(),
+                  ),
+                  maxLines: 2,
+                ),
+              );
+            }),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                for (int i = 0; i < warranties.length; i++) {
+                  warranties[i]['details'] = controllers[i].text;
+                }
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Warranty information updated!')),
+              );
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Method to show add certification dialog
+  void _showAddCertificationDialog(BuildContext context) {
+    final titleController = TextEditingController();
+    final issuerController = TextEditingController();
+    final validUntilController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Certification'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Certification Title',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: issuerController,
+                decoration: const InputDecoration(
+                  labelText: 'Issuer',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: validUntilController,
+                decoration: const InputDecoration(
+                  labelText: 'Valid Until',
+                  border: OutlineInputBorder(),
+                  hintText: 'e.g., January 2026',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              if (titleController.text.isNotEmpty &&
+                  issuerController.text.isNotEmpty) {
+                setState(() {
+                  certifications.add({
+                    'title': titleController.text,
+                    'issuer': issuerController.text,
+                    'validUntil': validUntilController.text,
+                  });
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Certification added!')),
+                );
+                Navigator.pop(context);
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
           ),
         ],
       ),
