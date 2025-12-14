@@ -550,11 +550,34 @@ class _ProductdetailsState extends State<Productdetails> {
         name.contains('nutrition') || 
         name.contains('gym') || 
         name.contains('coach') ||
-        name.contains('instructor')) {
+        name.contains('instructor') ||
+        name.contains('diet') ||
+        name.contains('weight') ||
+        name.contains('fitness') ||
+        name.contains('crossfit') ||
+        name.contains('hub')) {
       setState(() {
         isService = true;
       });
     }
+  }
+
+  bool _isNonConsumable() {
+    // Check if the product is a non-consumable item (equipment, outfit, etc.)
+    final name = widget.product.name.toLowerCase();
+    return name.contains('equipment') ||
+        name.contains('outfit') ||
+        name.contains('glove') ||
+        name.contains('shirt') ||
+        name.contains('short') ||
+        name.contains('pants') ||
+        name.contains('hoodie') ||
+        name.contains('wear') ||
+        name.contains('fullstack') ||
+        name.contains('seamless') ||
+        name.contains('shelift') ||
+        name.contains('maxwear') ||
+        name.contains('heren');
   }
 
   Future<void> _checkSubscriptionStatus() async {
@@ -812,21 +835,24 @@ class _ProductdetailsState extends State<Productdetails> {
                 ),
               ),
             ] else ...[
-              // Nutritional Value for food products
-              Text(
-                "Nutritional Value:",
-                style: AppWidget.boldTextFieledStyle(),
-              ),
-              SizedBox(
-                height: 5.0,
-              ),
-              Text(
-                widget.product.nutritionalValue,
-                style: AppWidget.smallBoldTextFieledStyle(),
-              ),
-              SizedBox(
-                height: 15.0,
-              ),
+              // Only show nutritional value for consumable items (foods, supplements)
+              if (!_isNonConsumable()) ...[
+                // Nutritional Value for food products
+                Text(
+                  "Nutritional Value:",
+                  style: AppWidget.boldTextFieledStyle(),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Text(
+                  widget.product.nutritionalValue,
+                  style: AppWidget.smallBoldTextFieledStyle(),
+                ),
+                SizedBox(
+                  height: 15.0,
+                ),
+              ],
               
               // Delivery Time for food products
               Row(

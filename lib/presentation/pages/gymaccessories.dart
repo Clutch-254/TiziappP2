@@ -157,81 +157,131 @@ class _GymaccessoriesState extends State<Gymaccessories> {
     return FutureBuilder(
       future: fitItemStream, // We will rename this variable to fitItemFuture in the next step or just assign the future to it
       builder: (context, AsyncSnapshot snapshot) {
-        return snapshot.hasData
-            ? Column(
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        
+        if (snapshot.hasError) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
                 children: [
-                  // Horizontal scrolling items
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(snapshot.data.length, (index) {
-                        var ds = snapshot.data[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Productdetails(
-                                  product: Product(
-                                    id: 1, // You might want to use ds['id'] or a field from DB
-                                    name: ds["Name"],
-                                    description: ds["Detail"],
-                                    nutritionalValue: "N/A",
-                                    price: double.parse(ds["Price"]),
-                                    imageAsset: ds["Image"],
-                                    deliveryTime: 0,
-                                    qualifications: '',
-                                    location: '',
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.all(5),
-                            child: Material(
-                              elevation: 5.0,
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: EdgeInsets.all(14),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: DisplayImage(
-                                        imagePath: ds["Image"],
-                                        height: 150,
-                                        width: 150,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Text(
-                                      ds["Name"],
-                                      style: AppWidget.smallBoldTextFieledStyle(),
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    Text(
-                                      "\Ksh" + ds["Price"],
-                                      style: AppWidget.smallBoldTextFieledStyle(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
+                  Icon(Icons.error_outline, size: 60, color: Colors.red),
+                  SizedBox(height: 10),
+                  Text(
+                    'Error loading equipment',
+                    style: AppWidget.boldTextFieledStyle(),
                   ),
-                  SizedBox(
-                    height: 30.0,
+                  SizedBox(height: 5),
+                  Text(
+                    snapshot.error.toString(),
+                    style: AppWidget.smallSemiBoldTextFieledStyle(),
+                    textAlign: TextAlign.center,
                   ),
                 ],
-              )
-            : CircularProgressIndicator();
+              ),
+            ),
+          );
+        }
+        
+        if (!snapshot.hasData || snapshot.data.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Icon(Icons.fitness_center, size: 60, color: Colors.grey),
+                  SizedBox(height: 10),
+                  Text(
+                    'No equipment items available',
+                    style: AppWidget.boldTextFieledStyle(),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    'Please add equipment items from the admin panel',
+                    style: AppWidget.smallSemiBoldTextFieledStyle(),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        
+        return Column(
+          children: [
+            // Horizontal scrolling items
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(snapshot.data.length, (index) {
+                  var ds = snapshot.data[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Productdetails(
+                            product: Product(
+                              id: 1, // You might want to use ds['id'] or a field from DB
+                              name: ds["Name"],
+                              description: ds["Detail"],
+                              nutritionalValue: "N/A",
+                              price: double.parse(ds["Price"]),
+                              imageAsset: ds["Image"],
+                              deliveryTime: 0,
+                              qualifications: '',
+                              location: '',
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.all(5),
+                      child: Material(
+                        elevation: 5.0,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: EdgeInsets.all(14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: DisplayImage(
+                                  imagePath: ds["Image"],
+                                  height: 150,
+                                  width: 150,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Text(
+                                ds["Name"],
+                                style: AppWidget.smallBoldTextFieledStyle(),
+                              ),
+                              SizedBox(
+                                height: 5.0,
+                              ),
+                              Text(
+                                "\\Ksh" + ds["Price"],
+                                style: AppWidget.smallBoldTextFieledStyle(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+            SizedBox(
+              height: 30.0,
+            ),
+          ],
+        );
       },
     );
   }
