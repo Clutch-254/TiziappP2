@@ -5,6 +5,8 @@ import 'package:tiziappp2/presentation/pages/adminsupplementsstore/messagesup.da
 import 'package:tiziappp2/presentation/pages/adminsupplementsstore/notificationssup.dart';
 import 'package:tiziappp2/presentation/pages/adminsupplementsstore/ordersup.dart';
 
+import 'package:tiziappp2/presentation/pages/adminsupplementsstore/addsupplementsup.dart';
+
 class Bottomnavsup extends StatefulWidget {
   const Bottomnavsup({super.key});
 
@@ -19,6 +21,7 @@ class _BottomnavsupState extends State<Bottomnavsup> {
   late List<Widget> pages;
   late Adminsupplementsstoreprofile homePage;
   late Ordersup ordersPage;
+  late Addsupplementsup addPage;
   late Messagesup messagesPage;
   late Notificationssup notificationsPage;
 
@@ -27,10 +30,11 @@ class _BottomnavsupState extends State<Bottomnavsup> {
     // Initialize your pages here
     homePage = const Adminsupplementsstoreprofile();
     ordersPage = const Ordersup();
+    addPage = const Addsupplementsup();
     messagesPage = const Messagesup();
     notificationsPage = const Notificationssup();
     
-    pages = [homePage, ordersPage, messagesPage, notificationsPage];
+    pages = [homePage, ordersPage, addPage, messagesPage, notificationsPage];
     
     super.initState();
   }
@@ -41,8 +45,10 @@ class _BottomnavsupState extends State<Bottomnavsup> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,
         backgroundColor: Colors.white,
-        color: const Color.fromARGB(255, 47, 47, 49) ?? Color.fromARGB(255, 36, 37, 37), // Blue theme for supplements
+        color: const Color.fromARGB(255, 47, 47, 49),
+        buttonBackgroundColor: const Color.fromARGB(255, 47, 47, 49),
         animationDuration: const Duration(milliseconds: 500),
+        index: currentTabIndex,
         onTap: (int index) {
           setState(() {
             currentTabIndex = index;
@@ -52,18 +58,27 @@ class _BottomnavsupState extends State<Bottomnavsup> {
           Icon(
             Icons.home,
             color: Colors.white,
+            size: 26,
           ),
           Icon(
-            Icons.shopping_cart, // Orders icon
+            Icons.shopping_cart,
             color: Colors.white,
+            size: 26,
           ),
           Icon(
-            Icons.message, // Messages icon
+            Icons.add_circle,
             color: Colors.white,
+            size: 28,
           ),
           Icon(
-            Icons.notifications, // Notifications icon
+            Icons.message,
             color: Colors.white,
+            size: 26,
+          ),
+          Icon(
+            Icons.notifications,
+            color: Colors.white,
+            size: 26,
           ),
         ],
       ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Adminsupplementsstoreprofile extends StatefulWidget {
   const Adminsupplementsstoreprofile({super.key});
@@ -8,10 +10,14 @@ class Adminsupplementsstoreprofile extends StatefulWidget {
 }
 
 class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprofile> {
-  // Sample supplements store data
-  final String storeName = "VitaFit Supplements";
-  final String businessType = "Sports Nutrition & Wellness Store";
-  final String description =
+  final ImagePicker _picker = ImagePicker();
+  File? _profileImage;
+
+  // Mutable state variables
+  String storeName = "VitaFit Supplements";
+  String businessType = "Sports Nutrition & Wellness Store";
+  String location = "Nairobi, Kenya";
+  String description =
       "Established in 2019, VitaFit Supplements is a premium sports nutrition and wellness "
       "store specializing in high-quality supplements, performance enhancers, and fitness "
       "products. We cater to athletes, bodybuilders, fitness enthusiasts, and health-conscious "
@@ -19,8 +25,7 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
       "wide range of scientifically-backed products from trusted brands, with expert staff "
       "providing personalized recommendations based on individual goals and needs.";
 
-  // Products list
-  final List<Map<String, dynamic>> products = [
+  List<Map<String, dynamic>> products = [
     {
       'category': 'Protein Supplements',
       'details':
@@ -41,8 +46,7 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
     }
   ];
 
-  // Featured products
-  final List<Map<String, dynamic>> featuredProducts = [
+  List<Map<String, dynamic>> featuredProducts = [
     {
       'name': 'Ultimate Whey Protein',
       'description':
@@ -73,8 +77,7 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
     }
   ];
 
-  // Certifications section
-  final List<Map<String, dynamic>> certifications = [
+  List<Map<String, dynamic>> certifications = [
     {
       'title': 'Good Manufacturing Practice (GMP) Certified',
       'issuer': 'International GMP Association',
@@ -97,8 +100,7 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
     }
   ];
 
-  // Suppliers list
-  final List<Map<String, dynamic>> suppliers = [
+  List<Map<String, dynamic>> suppliers = [
     {
       'name': 'PurePro Nutrition',
       'product': 'Protein & Performance Supplements',
@@ -116,27 +118,401 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
     }
   ];
 
+  Map<String, String> businessHours = {
+    'Monday - Friday': '7:30 AM - 9:00 PM',
+    'Saturday': '8:00 AM - 7:00 PM',
+    'Sunday': '9:00 AM - 5:00 PM',
+    'Public Holidays': '10:00 AM - 4:00 PM',
+  };
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+  void _showEditProfileDialog() {
+    final nameController = TextEditingController(text: storeName);
+    final typeController = TextEditingController(text: businessType);
+    final locationController = TextEditingController(text: location);
+    final descController = TextEditingController(text: description);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profile'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await _pickImage();
+                  Navigator.pop(context);
+                  _showEditProfileDialog();
+                },
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
+                  child: _profileImage == null
+                      ? const Icon(Icons.add_a_photo, size: 30, color: Colors.grey)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Store Name'),
+              ),
+              TextField(
+                controller: typeController,
+                decoration: const InputDecoration(labelText: 'Business Type'),
+              ),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(labelText: 'Location'),
+              ),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'About'),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                storeName = nameController.text;
+                businessType = typeController.text;
+                location = locationController.text;
+                description = descController.text;
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddCategoryDialog() {
+    final categoryController = TextEditingController();
+    final detailsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Product Category'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: categoryController,
+              decoration: const InputDecoration(labelText: 'Category Name'),
+            ),
+            TextField(
+              controller: detailsController,
+              decoration: const InputDecoration(labelText: 'Details'),
+              maxLines: 2,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                products.add({
+                  'category': categoryController.text,
+                  'details': detailsController.text,
+                  'icon': Icons.category,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeCategory(int index) {
+    setState(() {
+      products.removeAt(index);
+    });
+  }
+
+  void _showAddFeaturedProductDialog() {
+    final nameController = TextEditingController();
+    final descController = TextEditingController();
+    final typeController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Featured Product'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Product Name'),
+            ),
+            TextField(
+              controller: descController,
+              decoration: const InputDecoration(labelText: 'Description'),
+              maxLines: 2,
+            ),
+            TextField(
+              controller: typeController,
+              decoration: const InputDecoration(labelText: 'Type'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                featuredProducts.add({
+                  'name': nameController.text,
+                  'description': descController.text,
+                  'type': typeController.text,
+                  'icon': Icons.star,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeFeaturedProduct(int index) {
+    setState(() {
+      featuredProducts.removeAt(index);
+    });
+  }
+
+  void _showAddCertificationDialog() {
+    final titleController = TextEditingController();
+    final issuerController = TextEditingController();
+    final validController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Certification'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Title'),
+            ),
+            TextField(
+              controller: issuerController,
+              decoration: const InputDecoration(labelText: 'Issuer'),
+            ),
+            TextField(
+              controller: validController,
+              decoration: const InputDecoration(labelText: 'Valid Until'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                certifications.add({
+                  'title': titleController.text,
+                  'issuer': issuerController.text,
+                  'validUntil': validController.text,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeCertification(int index) {
+    setState(() {
+      certifications.removeAt(index);
+    });
+  }
+
+  void _showAddSupplierDialog() {
+    final nameController = TextEditingController();
+    final productController = TextEditingController();
+    final locationController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Supplier'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Supplier Name'),
+            ),
+            TextField(
+              controller: productController,
+              decoration: const InputDecoration(labelText: 'Product'),
+            ),
+            TextField(
+              controller: locationController,
+              decoration: const InputDecoration(labelText: 'Location'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                suppliers.add({
+                  'name': nameController.text,
+                  'product': productController.text,
+                  'location': locationController.text,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeSupplier(int index) {
+    setState(() {
+      suppliers.removeAt(index);
+    });
+  }
+
+  void _showEditBusinessHoursDialog() {
+    final controllers = <String, TextEditingController>{};
+    businessHours.forEach((key, value) {
+      controllers[key] = TextEditingController(text: value);
+    });
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Business Hours'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: businessHours.keys.map((day) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: TextField(
+                  controller: controllers[day],
+                  decoration: InputDecoration(labelText: day),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                controllers.forEach((key, controller) {
+                  businessHours[key] = controller.text;
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 47, 47, 49),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // LinkedIn-inspired color scheme (blue)
-    final Color primaryColor = Colors.blue[800]!;
-    final Color secondaryColor = Colors.blue[500]!;
-    final Color backgroundColor = Colors.blue[50]!;
+    // Dark grey color scheme matching bottom nav
+    final Color primaryColor = const Color.fromARGB(255, 47, 47, 49);
+    final Color secondaryColor = Colors.grey[600]!;
+    final Color backgroundColor = Colors.grey[100]!;
     final Color cardColor = Colors.white;
-    final Color accentColor = Colors.blue[900]!;
-    final Color borderColor = Colors.blue[100]!;
+    final Color borderColor = Colors.grey[300]!;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Supplements Store Profile'),
         backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         actions: [
-          // Notifications icon
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
           ),
-          // Messages icon
           IconButton(
             icon: const Icon(Icons.message_outlined),
             onPressed: () {},
@@ -147,68 +523,79 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile header stack - LinkedIn style
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Cover image/background
-                Container(
-                  height: 120,
+                const SizedBox(
+                  height: 180,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: secondaryColor,
-                    border: Border(
-                      bottom: BorderSide(color: borderColor, width: 1),
-                    ),
-                  ),
                 ),
-
-                // Store logo positioned to overlap
                 Positioned(
-                  left: 16,
-                  top: 60, // Position to overlap with the cover image
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 120,
                   child: Container(
-                    width: 120,
-                    height: 120,
                     decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: cardColor, width: 4),
-                      color: backgroundColor,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.fitness_center,
-                        size: 70,
-                        color: primaryColor,
+                      color: primaryColor,
+                      border: Border(
+                        bottom: BorderSide(color: borderColor, width: 1),
                       ),
                     ),
                   ),
                 ),
-
-                // Edit and share buttons positioned on the right side
+                Positioned(
+                  left: 16,
+                  top: 60,
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: cardColor, width: 4),
+                        color: backgroundColor,
+                        image: _profileImage != null
+                            ? DecorationImage(
+                                image: FileImage(_profileImage!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: _profileImage == null
+                          ? Center(
+                              child: Icon(
+                                Icons.fitness_center,
+                                size: 70,
+                                color: primaryColor,
+                              ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
                 Positioned(
                   right: 16,
                   top: 130,
                   child: Wrap(
                     spacing: 8,
                     children: [
-                      // Edit Profile Button
                       OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: _showEditProfileDialog,
                         icon: const Icon(Icons.edit),
                         label: const Text('Edit Profile'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
+                          foregroundColor: primaryColor,
                           side: BorderSide(color: borderColor),
                         ),
                       ),
-                      // Share Profile Button
                       OutlinedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.share),
                         label: const Text('Share'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
+                          foregroundColor: primaryColor,
                           side: BorderSide(color: borderColor),
                         ),
                       ),
@@ -218,16 +605,11 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
               ],
             ),
 
-            // Add spacing to accommodate the profile image overlap
-            const SizedBox(height: 70),
-
-            // Main content area
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name and headline - positioned below the profile image
                   Text(
                     storeName,
                     style: const TextStyle(
@@ -235,10 +617,7 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
-                  // Business type
                   Text(
                     businessType,
                     style: TextStyle(
@@ -247,48 +626,21 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Basic info
                   Row(
                     children: [
                       Icon(Icons.location_on, size: 16, color: secondaryColor),
                       const SizedBox(width: 4),
-                      Text(
-                        'Nairobi, Kenya',
-                        style: TextStyle(color: secondaryColor),
-                      ),
+                      Text(location, style: TextStyle(color: secondaryColor)),
                       const SizedBox(width: 16),
                       Icon(Icons.shopping_bag, size: 16, color: secondaryColor),
                       const SizedBox(width: 4),
-                      // Orders button
-                      TextButton(
-                        onPressed: () {
-                          // Handle button press here
-                          print('Orders button pressed');
-                        },
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 0),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          foregroundColor: secondaryColor,
-                        ),
-                        child: Text(
-                          '92 monthly orders',
-                          style: TextStyle(
-                            color: secondaryColor,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
+                      Text('92 monthly orders', style: TextStyle(color: secondaryColor)),
                     ],
                   ),
-
                   const SizedBox(height: 24),
 
-                  // About section - LinkedIn style card
+                  // About section
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -312,25 +664,21 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditProfileDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            description,
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                          Text(description, style: const TextStyle(fontSize: 14)),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Products section
+                  // Product Categories
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -354,65 +702,62 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddCategoryDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...products.map((product) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Product category icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        product['icon'],
-                                        color: secondaryColor,
-                                      ),
+                          ...products.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var product = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Product details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            product['category'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            product['details'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(product['icon'], color: secondaryColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          product['category'],
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          product['details'],
+                                          style: TextStyle(color: secondaryColor),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                    onPressed: () => _removeCategory(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Featured Products section
+                  // Featured Products
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -436,75 +781,71 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddFeaturedProductDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...featuredProducts.map((item) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Product icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        item['icon'],
-                                        color: secondaryColor,
-                                      ),
+                          ...featuredProducts.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var item = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Product details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            item['name'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                    child: Icon(item['icon'], color: secondaryColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['name'],
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          item['description'],
+                                          style: TextStyle(color: secondaryColor, fontSize: 13),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Category: ${item['type']}',
+                                          style: TextStyle(
+                                            color: secondaryColor,
+                                            fontSize: 12,
+                                            fontStyle: FontStyle.italic,
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            item['description'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Category: ${item['type']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                              fontStyle: FontStyle.italic,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                    onPressed: () => _removeFeaturedProduct(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Certifications section
+                  // Certifications
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -528,73 +869,67 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddCertificationDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...certifications.map((cert) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Certification icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        Icons.verified,
-                                        color: secondaryColor,
-                                      ),
+                          ...certifications.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var cert = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Certification details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            cert['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Issued by: ${cert['issuer']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Valid until: ${cert['validUntil']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(Icons.verified, color: secondaryColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          cert['title'],
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Issued by: ${cert['issuer']}',
+                                          style: TextStyle(color: secondaryColor),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Valid until: ${cert['validUntil']}',
+                                          style: TextStyle(color: secondaryColor, fontSize: 12),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                    onPressed: () => _removeCertification(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Suppliers section
+                  // Suppliers
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -618,74 +953,68 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddSupplierDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...suppliers.map((supplier) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Supplier avatar
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(color: borderColor),
-                                      ),
-                                      child: Icon(
-                                        Icons.business,
-                                        color: secondaryColor,
-                                      ),
+                          ...suppliers.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            var supplier = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: borderColor),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Supplier details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            supplier['name'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            supplier['product'],
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Location: ${supplier['location']}',
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(Icons.business, color: secondaryColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          supplier['name'],
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          supplier['product'],
+                                          style: TextStyle(color: secondaryColor),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Location: ${supplier['location']}',
+                                          style: TextStyle(color: secondaryColor, fontSize: 12),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                    onPressed: () => _removeSupplier(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Business hours section
+                  // Business Hours
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -709,215 +1038,43 @@ class _AdminsupplementsstoreprofileState extends State<Adminsupplementsstoreprof
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditBusinessHoursDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildBusinessHoursItem(
-                              'Monday - Friday', '7:30 AM - 9:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Saturday', '8:00 AM - 7:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Sunday', '9:00 AM - 5:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Public Holidays', '10:00 AM - 4:00 PM'),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // Additional section: Customer Reviews
-                  const SizedBox(height: 16),
-                  Card(
-                    elevation: 1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: borderColor),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                'Customer Reviews',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Row(
+                          ...businessHours.entries.map((entry) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
                                 children: [
+                                  Icon(Icons.schedule, size: 16, color: Colors.grey),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    '4.7',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: secondaryColor,
-                                      fontSize: 18,
-                                    ),
+                                    entry.key,
+                                    style: const TextStyle(fontWeight: FontWeight.w500),
                                   ),
-                                  const SizedBox(width: 4),
-                                  Icon(Icons.star, color: Colors.amber, size: 20),
+                                  const Spacer(),
+                                  Text(
+                                    entry.value,
+                                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                                  ),
                                 ],
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          _buildReviewItem(
-                            'John Kamau',
-                            'Great selection of protein powders, and the staff is very knowledgeable!',
-                            4.5,
-                            '2 weeks ago',
-                          ),
-                          _buildReviewItem(
-                            'Sarah Njoroge',
-                            'I love their pre-workout supplements. Really helps with my morning gym sessions.',
-                            5.0,
-                            '1 month ago',
-                          ),
-                          _buildReviewItem(
-                            'Michael Odhiambo',
-                            'Prices are a bit high, but the quality is worth it. Their multivitamins have improved my recovery significantly.',
-                            4.0,
-                            '3 months ago',
-                          ),
-                          
-                          // See all reviews button
-                          Center(
-                            child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'See all 47 reviews',
-                                style: TextStyle(
-                                  color: secondaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-                  
-                  // Add some space at the bottom
                   const SizedBox(height: 20),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Helper method to build business hours items
-  Widget _buildBusinessHoursItem(String day, String hours) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(Icons.schedule, size: 16, color: Colors.grey),
-          const SizedBox(width: 8),
-          Text(
-            day,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          const Spacer(),
-          Text(
-            hours,
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  
-  // Helper method to build review items
-  Widget _buildReviewItem(String name, String comment, double rating, String timeAgo) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              // User avatar
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.blue[50],
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Text(
-                    name[0],
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[800],
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // User name and rating
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        // Star rating
-                        ...List.generate(5, (index) {
-                          if (index < rating.floor()) {
-                            return Icon(Icons.star, color: Colors.amber, size: 16);
-                          } else if (index == rating.floor() && rating % 1 > 0) {
-                            return Icon(Icons.star_half, color: Colors.amber, size: 16);
-                          } else {
-                            return Icon(Icons.star_border, color: Colors.amber, size: 16);
-                          }
-                        }),
-                        const SizedBox(width: 8),
-                        // Time ago
-                        Text(
-                          timeAgo,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          // Review comment
-          Text(
-            comment,
-            style: const TextStyle(fontSize: 14),
-          ),
-          const Divider(height: 24),
-        ],
       ),
     );
   }
