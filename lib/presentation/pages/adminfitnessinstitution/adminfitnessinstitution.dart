@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Adminfitnessinstitution extends StatefulWidget {
   const Adminfitnessinstitution({super.key});
 
   @override
-  State createState() => _AdminfitnessinstitutionState();
+  State<Adminfitnessinstitution> createState() => _AdminfitnessinstitutionState();
 }
 
-class _AdminfitnessinstitutionState extends State {
-  // Sample fitness institution data
-  final String institutionName = "Elite Fitness Center";
-  final String businessType = "Fitness & Health Facility";
-  final String description =
+class _AdminfitnessinstitutionState extends State<Adminfitnessinstitution> {
+  // Mutable state variables
+  String institutionName = "Elite Fitness Center";
+  String businessType = "Fitness & Health Facility";
+  String description =
       "A premier fitness facility established in 2015, offering state-of-the-art equipment and "
       "personalized training programs. Our center specializes in strength training, cardio fitness, "
       "group classes, and nutritional guidance. We pride ourselves on our team of certified trainers and "
       "dieticians who are dedicated to helping our clients achieve their fitness goals through "
       "customized workout plans and expert guidance in a motivating environment.";
+  
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
 
-  final List<Map<String, dynamic>> facilities = [
+  List<Map<String, dynamic>> facilities = [
     {
       'title': 'Training Areas',
       'details':
@@ -44,8 +49,7 @@ class _AdminfitnessinstitutionState extends State {
     }
   ];
 
-  // Replacing staff with licenses
-  final List<Map<String, dynamic>> licenses = [
+  List<Map<String, dynamic>> licenses = [
     {
       'title': 'Fitness Facility Operating License',
       'issuer': 'Kenya Sports Authority',
@@ -68,20 +72,254 @@ class _AdminfitnessinstitutionState extends State {
     }
   ];
 
+  List<Map<String, String>> businessHours = [
+    {'day': 'Monday - Friday', 'hours': '5:30 AM - 10:00 PM'},
+    {'day': 'Saturday', 'hours': '7:00 AM - 8:00 PM'},
+    {'day': 'Sunday', 'hours': '8:00 AM - 6:00 PM'},
+    {'day': 'Public Holidays', 'hours': '8:00 AM - 4:00 PM'},
+  ];
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+  void _showEditProfileDialog() {
+    final nameController = TextEditingController(text: institutionName);
+    final typeController = TextEditingController(text: businessType);
+    final descController = TextEditingController(text: description);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profile'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await _pickImage();
+                  Navigator.pop(context);
+                  _showEditProfileDialog();
+                },
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
+                  child: _profileImage == null
+                      ? const Icon(Icons.add_a_photo, size: 30, color: Colors.grey)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Institution Name'),
+              ),
+              TextField(
+                controller: typeController,
+                decoration: const InputDecoration(labelText: 'Business Type'),
+              ),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                institutionName = nameController.text;
+                businessType = typeController.text;
+                description = descController.text;
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddFacilityDialog() {
+    final titleController = TextEditingController();
+    final detailsController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Facility'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Facility Name'),
+            ),
+            TextField(
+              controller: detailsController,
+              decoration: const InputDecoration(labelText: 'Details'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                facilities.add({
+                  'title': titleController.text,
+                  'details': detailsController.text,
+                  'icon': Icons.star, // Default icon
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeFacility(int index) {
+    setState(() {
+      facilities.removeAt(index);
+    });
+  }
+
+  void _showAddLicenseDialog() {
+    final titleController = TextEditingController();
+    final issuerController = TextEditingController();
+    final validController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add License'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'License Name'),
+            ),
+            TextField(
+              controller: issuerController,
+              decoration: const InputDecoration(labelText: 'Issuer'),
+            ),
+            TextField(
+              controller: validController,
+              decoration: const InputDecoration(labelText: 'Valid Until'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                licenses.add({
+                  'title': titleController.text,
+                  'issuer': issuerController.text,
+                  'validUntil': validController.text,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeLicense(int index) {
+    setState(() {
+      licenses.removeAt(index);
+    });
+  }
+
+  void _showEditBusinessHoursDialog() {
+    List<TextEditingController> controllers = businessHours.map((e) => TextEditingController(text: e['hours'])).toList();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Business Hours'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(businessHours.length, (index) {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: TextField(
+                  controller: controllers[index],
+                  decoration: InputDecoration(labelText: businessHours[index]['day']),
+                ),
+              );
+            }),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                for (int i = 0; i < businessHours.length; i++) {
+                  businessHours[i]['hours'] = controllers[i].text;
+                }
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.black, foregroundColor: Colors.white),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // LinkedIn-inspired color scheme (grey)
-    final Color primaryColor = Colors.grey[700]!;
-    final Color secondaryColor = Colors.grey[500]!;
+    // Black color scheme to match bottom navigation
+    final Color primaryColor = Colors.black;
+    final Color secondaryColor = Colors.grey[700]!;
     final Color backgroundColor = Colors.grey[100]!;
     final Color cardColor = Colors.white;
-    final Color accentColor = Colors.grey[800]!;
+    final Color accentColor = Colors.black;
     final Color borderColor = Colors.grey[300]!;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fitness Institution Profile'),
         backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
         actions: [
           // Notifications icon
           IconButton(
@@ -103,14 +341,24 @@ class _AdminfitnessinstitutionState extends State {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Cover image/background
-                Container(
-                  height: 120,
+                // Invisible container to set the stack height to accommodate buttons
+                const SizedBox(
+                  height: 180,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: secondaryColor,
-                    border: Border(
-                      bottom: BorderSide(color: borderColor, width: 1),
+                ),
+                
+                // Cover image/background
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 120,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      border: Border(
+                        bottom: BorderSide(color: borderColor, width: 1),
+                      ),
                     ),
                   ),
                 ),
@@ -119,20 +367,31 @@ class _AdminfitnessinstitutionState extends State {
                 Positioned(
                   left: 16,
                   top: 60, // Position to overlap with the cover image
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: cardColor, width: 4),
-                      color: backgroundColor,
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.fitness_center,
-                        size: 70,
-                        color: primaryColor,
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: cardColor, width: 4),
+                        color: backgroundColor,
+                        image: _profileImage != null
+                            ? DecorationImage(
+                                image: FileImage(_profileImage!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
+                      child: _profileImage == null
+                          ? Center(
+                              child: Icon(
+                                Icons.add_a_photo,
+                                size: 40,
+                                color: primaryColor,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 ),
@@ -146,7 +405,7 @@ class _AdminfitnessinstitutionState extends State {
                     children: [
                       // Edit Profile Button
                       OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: _showEditProfileDialog,
                         icon: const Icon(Icons.edit),
                         label: const Text('Edit Profile'),
                         style: OutlinedButton.styleFrom(
@@ -170,8 +429,8 @@ class _AdminfitnessinstitutionState extends State {
               ],
             ),
 
-            // Add spacing to accommodate the profile image overlap
-            const SizedBox(height: 70),
+            // No extra spacing needed as Stack now reserves the space
+            // const SizedBox(height: 70),
 
             // Main content area
             Padding(
@@ -264,7 +523,7 @@ class _AdminfitnessinstitutionState extends State {
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditProfileDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
@@ -306,14 +565,17 @@ class _AdminfitnessinstitutionState extends State {
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddFacilityDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...facilities.map((facility) => Padding(
+                          ...facilities.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> facility = entry.value;
+                            return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,9 +616,14 @@ class _AdminfitnessinstitutionState extends State {
                                         ],
                                       ),
                                     ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                      onPressed: () => _removeFacility(index),
+                                    ),
                                   ],
                                 ),
-                              )),
+                              );
+                          }),
                         ],
                       ),
                     ),
@@ -388,14 +655,17 @@ class _AdminfitnessinstitutionState extends State {
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddLicenseDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...licenses.map((license) => Padding(
+                          ...licenses.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> license = entry.value;
+                            return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -444,9 +714,14 @@ class _AdminfitnessinstitutionState extends State {
                                         ],
                                       ),
                                     ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                      onPressed: () => _removeLicense(index),
+                                    ),
                                   ],
                                 ),
-                              )),
+                              );
+                          }),
                         ],
                       ),
                     ),
@@ -478,21 +753,14 @@ class _AdminfitnessinstitutionState extends State {
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditBusinessHoursDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          _buildBusinessHoursItem(
-                              'Monday - Friday', '5:30 AM - 10:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Saturday', '7:00 AM - 8:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Sunday', '8:00 AM - 6:00 PM'),
-                          _buildBusinessHoursItem(
-                              'Public Holidays', '8:00 AM - 4:00 PM'),
+                          ...businessHours.map((e) => _buildBusinessHoursItem(e['day']!, e['hours']!)),
                         ],
                       ),
                     ),

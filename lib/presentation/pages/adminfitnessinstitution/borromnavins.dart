@@ -6,14 +6,14 @@ import 'package:tiziappp2/presentation/pages/adminfitnessinstitution/clientsinsp
 import 'package:tiziappp2/presentation/pages/adminfitnessinstitution/notificationsinspage.dart';
 import 'package:tiziappp2/presentation/pages/adminfitnessinstitution/staffinspage.dart';
 
-class Borromnavins extends StatefulWidget {
-  const Borromnavins({super.key});
+class Bottomnavins extends StatefulWidget {
+  const Bottomnavins({super.key});
 
   @override
-  State<Borromnavins> createState() => _BorromnavinsState();
+  State<Bottomnavins> createState() => _BottomnavinsState();
 }
 
-class _BorromnavinsState extends State<Borromnavins> {
+class _BottomnavinsState extends State<Bottomnavins> {
   int currentTabIndex = 0;
 
   // Define page placeholders - replace these with your actual pages
@@ -42,10 +42,11 @@ class _BorromnavinsState extends State<Borromnavins> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,
-        backgroundColor: Colors.white,
-        color: Colors.grey,
+        backgroundColor: Colors.transparent,
+        color: Colors.black,
         animationDuration: const Duration(milliseconds: 500),
         onTap: (int index) {
           setState(() {
