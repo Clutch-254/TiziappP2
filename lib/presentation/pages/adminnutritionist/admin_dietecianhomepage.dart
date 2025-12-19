@@ -336,23 +336,14 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                const SizedBox(
-                  height: 180,
-                  width: double.infinity,
-                ),
-                
                 // Cover image/background
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
+                Container(
                   height: 120,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      border: Border(
-                        bottom: BorderSide(color: borderColor, width: 1),
-                      ),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: secondaryColor,
+                    border: Border(
+                      bottom: BorderSide(color: borderColor, width: 1),
                     ),
                   ),
                 ),
@@ -389,37 +380,43 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                     ),
                   ),
                 ),
-
-                // Edit and share buttons
-                Positioned(
-                  right: 16,
-                  top: 130,
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: _showEditProfileDialog,
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Edit Profile'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.share),
-                        label: const Text('Share'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
+
+            const SizedBox(height: 10),
+
+            // Edit and share buttons positioned below the stack
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: _showEditProfileDialog,
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Edit Profile'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('Share'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             // Main content area
             Padding(

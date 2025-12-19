@@ -341,24 +341,14 @@ class _AdminfitnessinstitutionState extends State<Adminfitnessinstitution> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Invisible container to set the stack height to accommodate buttons
-                const SizedBox(
-                  height: 180,
-                  width: double.infinity,
-                ),
-                
                 // Cover image/background
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
+                Container(
                   height: 120,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: secondaryColor,
-                      border: Border(
-                        bottom: BorderSide(color: borderColor, width: 1),
-                      ),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: secondaryColor,
+                    border: Border(
+                      bottom: BorderSide(color: borderColor, width: 1),
                     ),
                   ),
                 ),
@@ -395,42 +385,45 @@ class _AdminfitnessinstitutionState extends State<Adminfitnessinstitution> {
                     ),
                   ),
                 ),
-
-                // Edit and share buttons positioned on the right side
-                Positioned(
-                  right: 16,
-                  top: 130,
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      // Edit Profile Button
-                      OutlinedButton.icon(
-                        onPressed: _showEditProfileDialog,
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Edit Profile'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                      // Share Profile Button
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.share),
-                        label: const Text('Share'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
 
-            // No extra spacing needed as Stack now reserves the space
-            // const SizedBox(height: 70),
+            const SizedBox(height: 10),
+
+            // Edit and share buttons positioned below the stack
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    // Edit Profile Button
+                    OutlinedButton.icon(
+                      onPressed: _showEditProfileDialog,
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Edit Profile'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                    // Share Profile Button
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('Share'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             // Main content area
             Padding(

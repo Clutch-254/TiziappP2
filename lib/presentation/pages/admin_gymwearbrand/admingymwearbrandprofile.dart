@@ -234,7 +234,6 @@ class _AdmingymwearbrandprofileState extends State<Admingymwearbrandprofile> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                const SizedBox(height: 180, width: double.infinity),
                 Container(
                   height: 120,
                   width: double.infinity,
@@ -273,35 +272,42 @@ class _AdmingymwearbrandprofileState extends State<Admingymwearbrandprofile> {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 16,
-                  top: 130,
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: () => _showEditProfileDialog(context),
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Edit Profile'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.share),
-                        label: const Text('Share'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
+            
+            const SizedBox(height: 10),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: () => _showEditProfileDialog(context),
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Edit Profile'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('Share'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
             
             Padding(
               padding: const EdgeInsets.all(16.0),

@@ -132,9 +132,6 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Force Stack height to accommodate positioned elements (profile pic & buttons)
-                const SizedBox(height: 180, width: double.infinity),
-
                 // Cover image/background
                 Container(
                   height: 120,
@@ -179,41 +176,47 @@ class _AdminGymequipmentprofileState extends State<AdminGymequipmentprofile> {
                     ),
                   ),
                 ),
-
-                // Edit and share buttons positioned on the right side
-                Positioned(
-                  right: 16,
-                  top: 130,
-                  child: Wrap(
-                    spacing: 8,
-                    children: [
-                      // Edit Profile Button
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          _showEditProfileDialog(context);
-                        },
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Edit Profile'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                      // Share Profile Button
-                      OutlinedButton.icon(
-                        onPressed: () {},
-                        icon: const Icon(Icons.share),
-                        label: const Text('Share'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: accentColor,
-                          side: BorderSide(color: borderColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
+
+            const SizedBox(height: 10),
+
+            // Edit and share buttons positioned below the stack
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Wrap(
+                  spacing: 8,
+                  children: [
+                    // Edit Profile Button
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        _showEditProfileDialog(context);
+                      },
+                      icon: const Icon(Icons.edit),
+                      label: const Text('Edit Profile'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                    // Share Profile Button
+                    OutlinedButton.icon(
+                      onPressed: () {},
+                      icon: const Icon(Icons.share),
+                      label: const Text('Share'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: accentColor,
+                        side: BorderSide(color: borderColor),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
 
             // Main content area
             Padding(
