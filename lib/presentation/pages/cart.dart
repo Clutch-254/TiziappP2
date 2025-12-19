@@ -109,20 +109,21 @@ class _CartPageState extends State<CartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text(
           "Cart",
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 1,
-        iconTheme: const IconThemeData(color: Colors.black),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
-        color: Colors.white,
+        color: Colors.transparent,
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
@@ -188,9 +189,9 @@ class _CartPageState extends State<CartPage> {
 
   Widget buildCartItem(CartItem item) {
     return Material(
-      elevation: 5.0,
+      elevation: 0,
       borderRadius: BorderRadius.circular(12),
-      color: Colors.white,
+      color: Colors.black.withOpacity(0.6),
       child: InkWell(
         onTap: () {
           // Handle item tap - show details or edit quantity

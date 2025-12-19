@@ -141,6 +141,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.only(
@@ -278,7 +279,7 @@ class _HomepageState extends State<Homepage> {
                         child: Container(
                           margin: const EdgeInsets.all(5),
                           child: Material(
-                            elevation: 5.0,
+                            color: Colors.black.withOpacity(0.6),
                             borderRadius: BorderRadius.circular(8),
                             child: Container(
                               padding: const EdgeInsets.all(14),
@@ -355,7 +356,7 @@ class _HomepageState extends State<Homepage> {
                         child: Container(
                           margin: const EdgeInsets.all(4),
                           child: Material(
-                            elevation: 5.0,
+                            color: Colors.black.withOpacity(0.6),
                             borderRadius: BorderRadius.circular(8),
                             child: Container(
                               padding: const EdgeInsets.all(14),
@@ -434,7 +435,7 @@ class _HomepageState extends State<Homepage> {
                   child: Container(
                     margin: const EdgeInsets.only(right: 20.0),
                     child: Material(
-                      elevation: 5.0,
+                      color: Colors.black.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -525,7 +526,7 @@ class _HomepageState extends State<Homepage> {
                   child: Container(
                     margin: const EdgeInsets.only(right: 20.0),
                     child: Material(
-                      elevation: 5.0,
+                      color: Colors.black.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -616,7 +617,7 @@ class _HomepageState extends State<Homepage> {
                   child: Container(
                     margin: const EdgeInsets.only(right: 20.0),
                     child: Material(
-                      elevation: 5.0,
+                      color: Colors.black.withOpacity(0.6),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
                         padding: const EdgeInsets.all(5),
@@ -1364,11 +1365,12 @@ class _HomepageState extends State<Homepage> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
+            elevation: 0,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
               decoration: BoxDecoration(
-                color: trainer2o ? Colors.grey : Colors.white,
+                color: trainer2o ? Colors.grey[800] : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.all(10),
@@ -1390,10 +1392,14 @@ class _HomepageState extends State<Homepage> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
-            color: nutritionist ? Colors.grey : Colors.white,
+            elevation: 0,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
+              decoration: BoxDecoration(
+                color: nutritionist ? Colors.grey[800] : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
               padding: const EdgeInsets.all(10),
               child: Image.asset(
                 "Images/nutritionist.png",
@@ -1413,10 +1419,14 @@ class _HomepageState extends State<Homepage> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
-            color: gyms ? Colors.grey : Colors.white,
+            elevation: 0,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
+              decoration: BoxDecoration(
+                color: gyms ? Colors.grey[800] : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
               padding: const EdgeInsets.all(10),
               child: Image.asset(
                 "Images/gyms.png",

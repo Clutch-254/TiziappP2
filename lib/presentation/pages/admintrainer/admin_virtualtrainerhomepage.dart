@@ -62,12 +62,10 @@ class _AdminVirtualhomepageState extends State<AdminVirtualhomepage> {
   @override
   void initState() {
     super.initState();
-    debugPrint('AdminVirtualhomepage initState called, hash: $hashCode');
   }
 
   @override
   void dispose() {
-    debugPrint('AdminVirtualhomepage dispose called, hash: $hashCode');
     super.dispose();
   }
 
@@ -81,7 +79,6 @@ class _AdminVirtualhomepageState extends State<AdminVirtualhomepage> {
   }
 
   void _showEditProfileDialog() {
-    debugPrint('Entering _showEditProfileDialog, hash: $hashCode');
     final nameController = TextEditingController(text: trainerName);
     final titleController = TextEditingController(text: jobTitle);
     final locationController = TextEditingController(text: location);
@@ -91,7 +88,6 @@ class _AdminVirtualhomepageState extends State<AdminVirtualhomepage> {
       context: context,
       useRootNavigator: true,
       builder: (context) {
-        debugPrint('Building dialog content, hash: $hashCode');
         return StatefulBuilder(
           builder: (context, setDialogState) => AlertDialog(
             title: const Text('Edit Profile'),
@@ -285,7 +281,6 @@ class _AdminVirtualhomepageState extends State<AdminVirtualhomepage> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('AdminVirtualhomepage build called, hash: $hashCode');
     final Color primaryColor = Colors.grey[700]!;
     final Color secondaryColor = Colors.grey[500]!;
     final Color backgroundColor = Colors.grey[100]!;
@@ -340,7 +335,6 @@ class _AdminVirtualhomepageState extends State<AdminVirtualhomepage> {
                     color: Colors.transparent,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        debugPrint('Edit Profile button pressed');
                         _showEditProfileDialog();
                       },
                       icon: const Icon(Icons.edit),

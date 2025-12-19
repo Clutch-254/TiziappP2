@@ -33,6 +33,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(
@@ -179,7 +180,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                     child: Container(
                       margin: EdgeInsets.all(5),
                       child: Material(
-                        elevation: 5.0,
+                        color: Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
                           padding: EdgeInsets.all(14),
@@ -266,7 +267,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                 child: Container(
                   margin: EdgeInsets.all(5),
                   child: Material(
-                    elevation: 5.0,
+                    color: Colors.black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
                       padding: EdgeInsets.all(14),
@@ -336,7 +337,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
                 child: Container(
                   margin: EdgeInsets.all(4),
                   child: Material(
-                    elevation: 5.0,
+                    color: Colors.black.withOpacity(0.6),
                     borderRadius: BorderRadius.circular(8),
                     child: Container(
                       padding: EdgeInsets.all(14),
@@ -410,7 +411,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
-              elevation: 5.0,
+              color: Colors.black.withOpacity(0.6),
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: EdgeInsets.all(5),
@@ -495,7 +496,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           child: Container(
             margin: EdgeInsets.only(right: 20.0),
             child: Material(
-              elevation: 5.0,
+              color: Colors.black.withOpacity(0.6),
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: EdgeInsets.all(5),
@@ -578,7 +579,7 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
           child: Container(
             margin: EdgeInsets.only(right: 20.0, bottom: 30.0),
             child: Material(
-              elevation: 5.0,
+              color: Colors.black.withOpacity(0.6),
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: EdgeInsets.all(5),
@@ -639,11 +640,11 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
               decoration: BoxDecoration(
-                color: foods ? Colors.grey : Colors.white,
+                color: foods ? Colors.grey[800] : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: EdgeInsets.all(10),
@@ -664,10 +665,13 @@ class _FoodnsupplementsState extends State<Foodnsupplements> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
-            color: supplements ? Colors.grey : Colors.white,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
+              decoration: BoxDecoration(
+                color: supplements ? Colors.grey[800] : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
               padding: EdgeInsets.all(10),
               child: Image.asset(
                 "Images/supplements.png",

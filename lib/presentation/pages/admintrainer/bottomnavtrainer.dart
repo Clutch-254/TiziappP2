@@ -41,7 +41,6 @@ class _BottomnavtrainerState extends State<Bottomnavtrainer> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Bottomnavtrainer build called');
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,

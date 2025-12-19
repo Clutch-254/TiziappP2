@@ -45,6 +45,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Container(
         margin: EdgeInsets.only(
           top: 50.0,
@@ -108,11 +109,11 @@ class _GymaccessoriesState extends State<Gymaccessories> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
               decoration: BoxDecoration(
-                color: equipment ? Colors.grey : Colors.white,
+                color: equipment ? Colors.grey[800] : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: EdgeInsets.all(10),
@@ -133,10 +134,13 @@ class _GymaccessoriesState extends State<Gymaccessories> {
             setState(() {});
           },
           child: Material(
-            elevation: 5.0,
-            color: gymoutfits ? Colors.grey : Colors.white,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(8),
             child: Container(
+              decoration: BoxDecoration(
+                color: gymoutfits ? Colors.grey[800] : Colors.transparent,
+                borderRadius: BorderRadius.circular(8),
+              ),
               padding: EdgeInsets.all(10),
               child: Image.asset(
                 "Images/gymoutfit.png",
@@ -241,7 +245,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
                     child: Container(
                       margin: EdgeInsets.all(5),
                       child: Material(
-                        elevation: 5.0,
+                        color: Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(8),
                         child: Container(
                           padding: EdgeInsets.all(14),
@@ -535,7 +539,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
     return Container(
       margin: EdgeInsets.all(5),
       child: Material(
-        elevation: 5.0,
+        color: Colors.black.withOpacity(0.6),
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: EdgeInsets.all(14),
@@ -590,7 +594,7 @@ class _GymaccessoriesState extends State<Gymaccessories> {
   // Updated helper method to build vertical cards with image placeholders
   Widget _buildVerticalCard(String title, String price, String imagePath) {
     return Material(
-      elevation: 5.0,
+      color: Colors.black.withOpacity(0.6),
       borderRadius: BorderRadius.circular(8),
       child: Container(
         padding: EdgeInsets.all(5),

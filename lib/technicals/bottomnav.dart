@@ -47,44 +47,42 @@ class _BottomnavState extends State<Bottomnav> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: CurvedNavigationBar(
         height: 65,
-        backgroundColor: Colors.white,
-        color: Colors.black, // Changed from grey to black for darker appearance
-        animationDuration: Duration(milliseconds: 500),
+        backgroundColor: Colors.transparent, // Changed to transparent to show background
+        color: Colors.black.withOpacity(0.8), // Semi-transparent black
+        buttonBackgroundColor: Colors.black,
+        animationDuration: const Duration(milliseconds: 500),
         onTap: (int index) {
           setState(() {
             currentTabIndex = index;
           });
         },
-        items: [
-          Icon(
-            Icons.home_outlined,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.food_bank_outlined,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.fitness_center_outlined,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.video_collection_outlined, // Added content/video icon
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.shopping_bag_outlined,
-            color: Colors.white,
-          ),
-          Icon(
-            Icons.person_outlined,
-            color: Colors.white,
-          ),
+        items: const [
+          Icon(Icons.home_outlined, color: Colors.white),
+          Icon(Icons.food_bank_outlined, color: Colors.white),
+          Icon(Icons.fitness_center_outlined, color: Colors.white),
+          Icon(Icons.video_collection_outlined, color: Colors.white),
+          Icon(Icons.shopping_bag_outlined, color: Colors.white),
+          Icon(Icons.person_outlined, color: Colors.white),
         ],
       ),
-      body: pages[currentTabIndex],
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('Images/background_texture.jpg'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black54, // Darken the image slightly for better readability
+              BlendMode.darken,
+            ),
+          ),
+        ),
+        child: pages[currentTabIndex],
+      ),
     );
   }
 }

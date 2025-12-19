@@ -211,6 +211,7 @@ class _ContentscrollState extends State<Contentscroll>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // Category selector at the top
@@ -222,7 +223,7 @@ class _ContentscrollState extends State<Contentscroll>
               height: 60,
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withOpacity(0.4),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -299,7 +300,7 @@ class _ContentscrollState extends State<Contentscroll>
                     _animationController.value,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.8),
+                    color: Colors.black.withOpacity(0.6),
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
                       topRight: Radius.circular(20),
@@ -621,7 +622,7 @@ class _ContentPageState extends State<ContentPage> {
     return GestureDetector(
       onDoubleTap: _handleDoubleTap,
       child: Container(
-        color: Colors.black,
+        color: Colors.transparent,
         child: Stack(
           fit: StackFit.expand,
           children: [

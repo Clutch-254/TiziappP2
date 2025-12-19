@@ -626,6 +626,7 @@ class _ProductdetailsState extends State<Productdetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(top: 50.0, right: 20.0, left: 20.0, bottom: 20.0),
@@ -638,7 +639,7 @@ class _ProductdetailsState extends State<Productdetails> {
               },
               child: Icon(
                 Icons.arrow_back_ios_new_outlined,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
             Image.asset(
@@ -762,9 +763,9 @@ class _ProductdetailsState extends State<Productdetails> {
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Colors.black.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: Colors.white24),
                   ),
                   child: Text(
                     widget.product.qualifications,
@@ -794,9 +795,9 @@ class _ProductdetailsState extends State<Productdetails> {
                 Container(
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.grey[100],
+                    color: Colors.black.withOpacity(0.4),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.grey[300]!),
+                    border: Border.all(color: Colors.white24),
                   ),
                   child: Text(
                     widget.product.location,
@@ -825,9 +826,9 @@ class _ProductdetailsState extends State<Productdetails> {
               Container(
                 padding: EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: Colors.black.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: Colors.white24),
                 ),
                 child: Text(
                   "Ksh${widget.product.price.toStringAsFixed(0)} ${widget.product.price >= 10000 ? 'per month' : 'per session'}",

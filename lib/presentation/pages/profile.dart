@@ -485,37 +485,31 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: Colors.black.withOpacity(0.4),
           borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white10),
         ),
         child: Row(
           children: [
             Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.black.withOpacity(0.6),
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
               ),
-              child: Icon(icon, color: Colors.grey[800], size: 24),
+              child: Icon(icon, color: Colors.white, size: 24),
             ),
             SizedBox(width: 16),
             Text(
               title,
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
             Spacer(),
-            Icon(Icons.chevron_right, color: Colors.grey[600]),
+            Icon(Icons.chevron_right, color: Colors.white70),
           ],
         ),
       ),
@@ -539,6 +533,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // Main Content
@@ -554,7 +549,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         child: GestureDetector(
                           onTap: _showImagePickerOptions,
                           child: Material(
-                            elevation: 10.0,
+                            elevation: 0,
+                            color: Colors.black.withOpacity(0.4),
                             borderRadius: BorderRadius.circular(60),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(60),
@@ -591,7 +587,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             Text(
                               _userName,
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Poppins',
@@ -604,13 +600,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               child: Container(
                                 padding: EdgeInsets.all(4),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[200],
+                                  color: Colors.white,
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(
                                   Icons.edit,
                                   size: 18,
-                                  color: Colors.grey[800],
+                                  color: Colors.black,
                                 ),
                               ),
                             ),
@@ -670,6 +666,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     SizedBox(height: 10),
@@ -698,6 +695,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     SizedBox(height: 10),
@@ -730,7 +728,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     ),
                     Container(
                       padding: EdgeInsets.only(top: 8, bottom: 16),
-                      color: widget.backgroundColor,
+                      color: Colors.transparent,
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -844,13 +842,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       left: 16,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white24),
                         ),
                         child: IconButton(
                           icon: Icon(
                             Icons.music_note, // Music icon
-                            color: Colors.grey[800],
+                            color: Colors.white,
                             size: 26,
                           ),
                           onPressed: _showMusicDialog,
@@ -865,13 +864,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       left: 70, // Moved to make room for music button
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white24),
                         ),
                         child: IconButton(
                           icon: Icon(
                             Icons.smart_toy_outlined, // Robot icon
-                            color: Colors.grey[800],
+                            color: Colors.white,
                             size: 26,
                           ),
                           onPressed: _toggleDrawer,
@@ -886,13 +886,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       right: 70,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white24),
                         ),
                         child: IconButton(
                           icon: Icon(
                             Icons.settings,
-                            color: Colors.grey[800],
+                            color: Colors.white,
                             size: 26,
                           ),
                           onPressed: () {
@@ -912,13 +913,14 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       right: 16,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
+                          color: Colors.black.withOpacity(0.5),
                           shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white24),
                         ),
                         child: IconButton(
                           icon: Icon(
                             Icons.message,
-                            color: Colors.grey[800],
+                            color: Colors.white,
                             size: 26,
                           ),
                           onPressed: () {
@@ -981,7 +983,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
         child: Icon(
           icon,
           size: 30,
-          color: _selectedIconIndex == index ? Colors.grey : Colors.grey[600],
+          color: _selectedIconIndex == index ? Colors.black : Colors.white70,
         ),
       ),
     );
@@ -2140,11 +2142,11 @@ class DonutChartPainter extends CustomPainter {
     final innerRadius = radius * 0.6; // Size of the donut hole
 
     // Define the colors as specified
-    final proteinColor = Colors.grey[800]!; // Dark grey
-    final carbsColor = Colors.grey[400]!; // Light grey
-    final fatsColor = Colors.grey[600]!; // Medium grey
-    final vitaminsColor = Colors.grey; // Medium grey
-    final mineralsColor = Colors.black; // Black
+    final proteinColor = Colors.cyanAccent;
+    final carbsColor = Colors.greenAccent;
+    final fatsColor = Colors.orangeAccent;
+    final vitaminsColor = Colors.purpleAccent;
+    final mineralsColor = Colors.pinkAccent;
 
     // Calculate total
     final total = proteins + carbs + fats + vitamins + minerals;
@@ -2166,7 +2168,7 @@ class DonutChartPainter extends CustomPainter {
 
     // If total is 0, draw a placeholder ring
     if (total == 0) {
-      paint.color = Colors.grey[200]!;
+      paint.color = Colors.white24;
       canvas.drawArc(
         Rect.fromCircle(center: center, radius: radius - (paint.strokeWidth / 2)),
         0,
@@ -2266,8 +2268,8 @@ class CaloriesBalanceChartPainter extends CustomPainter {
     final innerRadius = radius * 0.6; // Size of the donut hole
 
     // Define the colors
-    final consumedColor = Colors.grey[800]!; // Dark grey for calories consumed
-    final burnedColor = Colors.black; // Black for calories burned
+    final consumedColor = Colors.orangeAccent; // Bright orange for calories consumed
+    final burnedColor = Colors.lightBlueAccent; // Bright blue for calories burned
 
     // Calculate percentages
     final total = consumed + burned.toDouble();
@@ -2387,7 +2389,7 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: Colors.white,
                 ),
               ),
               IconButton(
@@ -2459,7 +2461,8 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
                     });
                   }
                 },
-                activeColor: Colors.grey[800],
+                activeColor: Colors.white,
+                checkColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4),
                 ),
@@ -2472,7 +2475,7 @@ class _SupplementIntakeSectionState extends State<SupplementIntakeSection> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: Colors.grey[800],
+                  color: Colors.white,
                   decoration: supplementStatus[supplement]!
                       ? TextDecoration.lineThrough
                       : TextDecoration.none,
@@ -3124,28 +3127,35 @@ class _WorkoutRoutineState extends State<WorkoutRoutine> {
 class TrainerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Action when the trainer button is pressed
-        print("Trainer button pressed");
-      },
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage: AssetImage("Images/PnM.png"), // Placeholder image
-            radius: 30,
-          ),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Material(
+      color: Colors.black.withOpacity(0.6),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () {
+          print("Trainer button pressed");
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
             children: [
-              Text("Trainer: PnM",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Subscription ends in 10 days",
-                  style: TextStyle(fontSize: 12)),
+              CircleAvatar(
+                backgroundImage: AssetImage("Images/PnM.png"),
+                radius: 30,
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Trainer: PnM",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text("Subscription ends in 10 days",
+                      style: TextStyle(fontSize: 12, color: Colors.white70)),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -3155,29 +3165,35 @@ class TrainerSection extends StatelessWidget {
 class NutritionistSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Action when the nutritionist button is pressed
-        print("Nutritionist button pressed");
-      },
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage:
-                AssetImage("Images/kisha.png"), // Placeholder image
-            radius: 30,
-          ),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Material(
+      color: Colors.black.withOpacity(0.6),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () {
+          print("Nutritionist button pressed");
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
             children: [
-              Text("Nutritionist: Kisha",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Subscription ends in 3 days",
-                  style: TextStyle(fontSize: 12)),
+              CircleAvatar(
+                backgroundImage: AssetImage("Images/kisha.png"),
+                radius: 30,
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Nutritionist: Kisha",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text("Subscription ends in 3 days",
+                      style: TextStyle(fontSize: 12, color: Colors.white70)),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -3187,29 +3203,35 @@ class NutritionistSection extends StatelessWidget {
 class GymSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Action when the gym button is pressed
-        print("Gym button pressed");
-      },
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundImage:
-                AssetImage("Images/gordon.png"), // Placeholder image
-            radius: 30,
-          ),
-          SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return Material(
+      color: Colors.black.withOpacity(0.6),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () {
+          print("Gym button pressed");
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
             children: [
-              Text("Gym: Gordon's Gym",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              Text("Subscription ends in 20 days",
-                  style: TextStyle(fontSize: 12)),
+              CircleAvatar(
+                backgroundImage: AssetImage("Images/gordon.png"),
+                radius: 30,
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Gym: Gordon's Gym",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  Text("Subscription ends in 20 days",
+                      style: TextStyle(fontSize: 12, color: Colors.white70)),
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -3353,11 +3375,11 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: Colors.white,
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.add_circle, color: Colors.black),
+                icon: Icon(Icons.add_circle, color: Colors.white),
                 onPressed: _showAddFoodDialog,
                 tooltip: "Add Food",
               ),
@@ -3376,7 +3398,7 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
+                      color: Colors.white70,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -3385,7 +3407,7 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[900],
+                      color: Colors.orangeAccent,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -3409,7 +3431,8 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                           "Daily",
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -3420,11 +3443,11 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLegendItem('Protein', Colors.grey[800]!),
-                        _buildLegendItem('Carbs', Colors.grey[400]!),
-                        _buildLegendItem('Fats', Colors.grey[600]!),
-                        _buildLegendItem('Vitamins', Colors.grey),
-                        _buildLegendItem('Minerals', Colors.black),
+                        _buildLegendItem('Protein', Colors.blue),
+                        _buildLegendItem('Carbs', Colors.green),
+                        _buildLegendItem('Fats', Colors.orange),
+                        _buildLegendItem('Vitamins', Colors.purple),
+                        _buildLegendItem('Minerals', Colors.red),
                       ],
                     ),
                   ),
@@ -3443,7 +3466,7 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.grey[600],
+                        color: Colors.white70,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -3487,7 +3510,8 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
           text,
           style: TextStyle(
             fontSize: 10,
-            color: Colors.grey[700],
+            color: Colors.white70,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
@@ -3514,7 +3538,7 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
+                color: Colors.white70,
               ),
             ),
             Text(
@@ -3522,7 +3546,7 @@ class _NutritionInfoSectionState extends State<NutritionInfoSection> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[900],
+                color: Colors.white,
               ),
             ),
           ],
@@ -3628,11 +3652,11 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey[800],
+                  color: Colors.white,
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.fitness_center, color: Colors.black),
+                icon: Icon(Icons.fitness_center, color: Colors.white),
                 onPressed: _showLogWorkoutDialog,
                 tooltip: "Log Workout",
               ),
@@ -3660,7 +3684,7 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.grey[900],
+                      color: Colors.orangeAccent,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -3692,8 +3716,8 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildLegendItem('Consumed', Colors.grey[800]!),
-                        _buildLegendItem('Burned', Colors.black),
+                        _buildLegendItem('Consumed', Colors.orangeAccent),
+                        _buildLegendItem('Burned', Colors.lightBlueAccent),
                       ],
                     ),
                   ),
@@ -3717,9 +3741,9 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
                     ),
                     SizedBox(height: 16),
                     _buildCalorieInfo(
-                        "Consumed", "$caloriesConsumed kcal", Colors.grey[800]!),
+                        "Consumed", "$caloriesConsumed kcal", Colors.orangeAccent),
                     SizedBox(height: 12),
-                    _buildCalorieInfo("Burned", "$caloriesBurned kcal", Colors.black),
+                    _buildCalorieInfo("Burned", "$caloriesBurned kcal", Colors.lightBlueAccent),
                     SizedBox(height: 12),
                     Divider(color: Colors.grey[400]),
                     SizedBox(height: 12),
@@ -3758,7 +3782,8 @@ class _CaloriesBalanceSectionState extends State<CaloriesBalanceSection> {
           text,
           style: TextStyle(
             fontSize: 10,
-            color: Colors.grey[700],
+            color: Colors.white70,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],

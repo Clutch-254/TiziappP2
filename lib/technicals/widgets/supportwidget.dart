@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppWidget {
   static TextStyle boldTextFieledStyle() {
-    return TextStyle(
-      color: Colors.black,
+    return const TextStyle(
+      color: Colors.white,
       fontSize: 20,
       fontWeight: FontWeight.bold,
       fontFamily: 'Poppins',
@@ -11,8 +11,8 @@ class AppWidget {
   }
 
   static TextStyle HeadlineTextFieledStyle() {
-    return TextStyle(
-      color: Colors.black,
+    return const TextStyle(
+      color: Colors.white,
       fontSize: 24,
       fontWeight: FontWeight.bold,
       fontFamily: 'Poppins',
@@ -20,8 +20,8 @@ class AppWidget {
   }
 
   static TextStyle LightTextFieledStyle() {
-    return TextStyle(
-      color: Colors.black38,
+    return const TextStyle(
+      color: Colors.white70,
       fontSize: 15,
       fontWeight: FontWeight.w500,
       fontFamily: 'Poppins',
@@ -29,8 +29,8 @@ class AppWidget {
   }
 
   static TextStyle smallBoldTextFieledStyle() {
-    return TextStyle(
-      color: Colors.black,
+    return const TextStyle(
+      color: Colors.white,
       fontSize: 13,
       fontWeight: FontWeight.bold,
       fontFamily: 'Poppins',
@@ -38,8 +38,8 @@ class AppWidget {
   }
 
   static TextStyle smallSemiBoldTextFieledStyle() {
-    return TextStyle(
-      color: Colors.black54,
+    return const TextStyle(
+      color: Colors.white70,
       fontSize: 12,
       fontWeight: FontWeight.bold,
       fontFamily: 'Poppins',
