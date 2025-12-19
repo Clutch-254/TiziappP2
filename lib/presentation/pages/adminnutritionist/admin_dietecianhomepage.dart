@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AdminDietecianhomepage extends StatefulWidget {
   const AdminDietecianhomepage({super.key});
@@ -8,17 +10,27 @@ class AdminDietecianhomepage extends StatefulWidget {
 }
 
 class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
-  // Sample dietician data - this would typically come from a database
-  final String dieticianName = "Sarah Wanjiru";
-  final String jobTitle = "Clinical Dietician";
-  final String description =
+  // Mutable state variables
+  String dieticianName = "Sarah Wanjiru";
+  String jobTitle = "Clinical Dietician";
+  String location = "Nairobi, Kenya";
+  String description =
       "A dedicated nutrition specialist with over 6 years of experience in clinical dietetics, "
       "weight management, and therapeutic meal planning. Specializes in creating customized "
       "nutrition programs for various health conditions including diabetes, heart disease, and "
       "digestive disorders. Passionate about empowering clients to make sustainable dietary changes "
       "that improve overall health and well-being through evidence-based nutritional guidance.";
 
-  final List<Map<String, String>> certificates = [
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Map<String, String> institution = {
+    'name': 'Wellness Nutrition Center',
+    'description': 'Leading nutrition consultation and counseling center',
+    'duration': '2020 - Present · 4 years',
+  };
+
+  List<Map<String, String>> certificates = [
     {
       'title': 'Bachelor of Science in Food Science and Nutrition',
       'institution': 'University of Nairobi',
@@ -41,27 +53,275 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
     }
   ];
 
+  List<Map<String, dynamic>> skills = [
+    {'name': 'Clinical Nutrition', 'endorsements': 18},
+    {'name': 'Diabetes Management', 'endorsements': 15},
+    {'name': 'Therapeutic Meal Planning', 'endorsements': 12},
+    {'name': 'Sports Nutrition', 'endorsements': 9},
+  ];
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
+
+  void _showEditProfileDialog() {
+    final nameController = TextEditingController(text: dieticianName);
+    final titleController = TextEditingController(text: jobTitle);
+    final locationController = TextEditingController(text: location);
+    final descController = TextEditingController(text: description);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profile'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await _pickImage();
+                  Navigator.pop(context);
+                  _showEditProfileDialog();
+                },
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundColor: Colors.grey[200],
+                  backgroundImage: _profileImage != null ? FileImage(_profileImage!) : null,
+                  child: _profileImage == null
+                      ? const Icon(Icons.add_a_photo, size: 30, color: Colors.grey)
+                      : null,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Name'),
+              ),
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(labelText: 'Occupation/Title'),
+              ),
+              TextField(
+                controller: locationController,
+                decoration: const InputDecoration(labelText: 'Location'),
+              ),
+              TextField(
+                controller: descController,
+                decoration: const InputDecoration(labelText: 'About'),
+                maxLines: 3,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                dieticianName = nameController.text;
+                jobTitle = titleController.text;
+                location = locationController.text;
+                description = descController.text;
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[700],
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditInstitutionDialog() {
+    final nameController = TextEditingController(text: institution['name']);
+    final descController = TextEditingController(text: institution['description']);
+    final durationController = TextEditingController(text: institution['duration']);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Institution'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'Institution Name'),
+            ),
+            TextField(
+              controller: descController,
+              decoration: const InputDecoration(labelText: 'Description'),
+              maxLines: 2,
+            ),
+            TextField(
+              controller: durationController,
+              decoration: const InputDecoration(labelText: 'Duration'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                institution = {
+                  'name': nameController.text,
+                  'description': descController.text,
+                  'duration': durationController.text,
+                };
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[700],
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddCertificateDialog() {
+    final titleController = TextEditingController();
+    final institutionController = TextEditingController();
+    final yearController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Certificate'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Certificate Title'),
+            ),
+            TextField(
+              controller: institutionController,
+              decoration: const InputDecoration(labelText: 'Institution'),
+            ),
+            TextField(
+              controller: yearController,
+              decoration: const InputDecoration(labelText: 'Year'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                certificates.add({
+                  'title': titleController.text,
+                  'institution': institutionController.text,
+                  'year': yearController.text,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[700],
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeCertificate(int index) {
+    setState(() {
+      certificates.removeAt(index);
+    });
+  }
+
+  void _showAddSkillDialog() {
+    final skillController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Skill'),
+        content: TextField(
+          controller: skillController,
+          decoration: const InputDecoration(labelText: 'Skill Name'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                skills.add({
+                  'name': skillController.text,
+                  'endorsements': 0,
+                });
+              });
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green[700],
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _removeSkill(int index) {
+    setState(() {
+      skills.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // LinkedIn-inspired color scheme (grey)
-    final Color primaryColor = Colors.grey[700]!;
-    final Color secondaryColor = Colors.grey[500]!;
-    final Color backgroundColor = Colors.grey[100]!;
+    // Green color scheme matching bottom nav
+    final Color primaryColor = Colors.green[700]!;
+    final Color secondaryColor = Colors.green[500]!;
+    final Color backgroundColor = Colors.green[50]!;
     final Color cardColor = Colors.white;
-    final Color accentColor = Colors.grey[800]!;
-    final Color borderColor = Colors.grey[300]!;
+    final Color accentColor = Colors.green[700]!;
+    final Color borderColor = Colors.green[200]!;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dietician Profile'),
         backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         actions: [
-          // Notifications icon
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {},
           ),
-          // Messages icon
           IconButton(
             icon: const Icon(Icons.message_outlined),
             onPressed: () {},
@@ -72,18 +332,27 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile header stack - LinkedIn style
+            // Profile header stack
             Stack(
               clipBehavior: Clip.none,
               children: [
-                // Cover image/background
-                Container(
-                  height: 120,
+                const SizedBox(
+                  height: 180,
                   width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: secondaryColor,
-                    border: Border(
-                      bottom: BorderSide(color: borderColor, width: 1),
+                ),
+                
+                // Cover image/background
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 120,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      border: Border(
+                        bottom: BorderSide(color: borderColor, width: 1),
+                      ),
                     ),
                   ),
                 ),
@@ -91,31 +360,45 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                 // Profile image positioned to overlap
                 Positioned(
                   left: 16,
-                  top: 60, // Position to overlap with the cover image
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: cardColor, width: 4),
-                      image: const DecorationImage(
-                        image: AssetImage('Images/kisha.png'),
-                        fit: BoxFit.cover,
+                  top: 60,
+                  child: GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: cardColor, width: 4),
+                        color: backgroundColor,
+                        image: _profileImage != null
+                            ? DecorationImage(
+                                image: FileImage(_profileImage!),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
+                      child: _profileImage == null
+                          ? Center(
+                              child: Icon(
+                                Icons.person,
+                                size: 70,
+                                color: primaryColor,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 ),
 
-                // Edit and share buttons positioned on the right side
+                // Edit and share buttons
                 Positioned(
                   right: 16,
                   top: 130,
                   child: Wrap(
                     spacing: 8,
                     children: [
-                      // Edit Profile Button
                       OutlinedButton.icon(
-                        onPressed: () {},
+                        onPressed: _showEditProfileDialog,
                         icon: const Icon(Icons.edit),
                         label: const Text('Edit Profile'),
                         style: OutlinedButton.styleFrom(
@@ -123,7 +406,6 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                           side: BorderSide(color: borderColor),
                         ),
                       ),
-                      // Share Profile Button
                       OutlinedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.share),
@@ -139,16 +421,12 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
               ],
             ),
 
-            // Add spacing to accommodate the profile image overlap
-            const SizedBox(height: 70),
-
             // Main content area
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Name and headline - positioned below the profile image
                   Text(
                     dieticianName,
                     style: const TextStyle(
@@ -156,10 +434,7 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-
                   const SizedBox(height: 4),
-
-                  // Job title
                   Text(
                     jobTitle,
                     style: TextStyle(
@@ -168,7 +443,6 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
                   // Connection info
@@ -176,22 +450,14 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                     children: [
                       Icon(Icons.location_on, size: 16, color: secondaryColor),
                       const SizedBox(width: 4),
-                      Text(
-                        'Nairobi, Kenya',
-                        style: TextStyle(color: secondaryColor),
-                      ),
+                      Text(location, style: TextStyle(color: secondaryColor)),
                       const SizedBox(width: 16),
                       Icon(Icons.people, size: 16, color: secondaryColor),
                       const SizedBox(width: 4),
-                      // Client button
                       TextButton(
-                        onPressed: () {
-                          // Handle button press here
-                          print('Clients button pressed');
-                        },
+                        onPressed: () {},
                         style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           foregroundColor: secondaryColor,
@@ -206,7 +472,6 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 24),
 
                   // Institution section
@@ -233,7 +498,7 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditInstitutionDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
@@ -262,23 +527,21 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Text(
-                                      'Wellness Nutrition Center',
-                                      style: TextStyle(
+                                    Text(
+                                      institution['name']!,
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Leading nutrition consultation and counseling center',
-                                      style: TextStyle(
-                                        color: secondaryColor,
-                                      ),
+                                      institution['description']!,
+                                      style: TextStyle(color: secondaryColor),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      '2020 - Present · 4 years',
+                                      institution['duration']!,
                                       style: TextStyle(
                                         color: secondaryColor,
                                         fontSize: 12,
@@ -293,10 +556,9 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // About section - LinkedIn style card
+                  // About section
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -320,25 +582,21 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.edit, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showEditProfileDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
-                          Text(
-                            description,
-                            style: const TextStyle(fontSize: 14),
-                          ),
+                          Text(description, style: const TextStyle(fontSize: 14)),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Education & Certificates section - LinkedIn style
+                  // Education & Certificates section
                   Card(
                     elevation: 1,
                     shape: RoundedRectangleBorder(
@@ -362,70 +620,64 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddCertificateDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          ...certificates.map((cert) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Education icon
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: backgroundColor,
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Icon(
-                                        Icons.school,
-                                        color: secondaryColor,
-                                      ),
+                          ...certificates.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, String> cert = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
-                                    const SizedBox(width: 12),
-                                    // Certificate details
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            cert['title']!,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            cert['institution']!,
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            cert['year']!,
-                                            style: TextStyle(
-                                              color: secondaryColor,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    child: Icon(Icons.school, color: secondaryColor),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          cert['title']!,
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          cert['institution']!,
+                                          style: TextStyle(color: secondaryColor),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          cert['year']!,
+                                          style: TextStyle(color: secondaryColor, fontSize: 12),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20, color: Colors.red),
+                                    onPressed: () => _removeCertificate(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
                   // Skills section
@@ -452,17 +704,40 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.add, color: secondaryColor),
-                                onPressed: () {},
+                                onPressed: _showAddSkillDialog,
                                 constraints: const BoxConstraints(),
                                 padding: EdgeInsets.zero,
                               ),
                             ],
                           ),
                           const SizedBox(height: 16),
-                          _buildSkillItem('Clinical Nutrition', 18),
-                          _buildSkillItem('Diabetes Management', 15),
-                          _buildSkillItem('Therapeutic Meal Planning', 12),
-                          _buildSkillItem('Sports Nutrition', 9),
+                          ...skills.asMap().entries.map((entry) {
+                            int index = entry.key;
+                            Map<String, dynamic> skill = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.check_circle, size: 16, color: primaryColor),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      skill['name'],
+                                      style: const TextStyle(fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  Text(
+                                    '${skill['endorsements']} endorsements',
+                                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.close, size: 16, color: Colors.red),
+                                    onPressed: () => _removeSkill(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -472,31 +747,6 @@ class _AdminDietecianhomepageState extends State<AdminDietecianhomepage> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  // Helper method to build skill items with endorsements
-  Widget _buildSkillItem(String skillName, int endorsements) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          Icon(Icons.check_circle, size: 16, color: Colors.grey),
-          const SizedBox(width: 8),
-          Text(
-            skillName,
-            style: const TextStyle(fontWeight: FontWeight.w500),
-          ),
-          const Spacer(),
-          Text(
-            '$endorsements endorsements',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-            ),
-          ),
-        ],
       ),
     );
   }
