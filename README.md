@@ -118,6 +118,25 @@ Bottom Navigation Bar
 
 ## Installation
 
+### Quick Start - Download APK
+
+For Android users, you can download the pre-built APK:
+
+1. Navigate to `build/app/outputs/flutter-apk/app-release.apk`
+2. Download the APK (67.3MB)
+3. Transfer the APK to your Android device
+4. Enable "Install from Unknown Sources" in your device settings
+5. Install and enjoy!
+
+**Build Information:**
+- APK Size: 67.3MB
+- Build Type: Release (Optimized)
+- Min SDK: Android API 21+
+- Target SDK: Android API 34
+- Built with: Flutter 3.5.4, Kotlin 2.1.0, AGP 8.7.3
+
+### Build from Source
+
 1. Clone the repository
 ```bash
 git clone [repository-url]
@@ -133,6 +152,11 @@ flutter pub get
 flutter run
 ```
 
+4. Build APK (optional)
+```bash
+flutter build apk --release
+```
+
 ## Development Setup
 
 ### Prerequisites
@@ -146,6 +170,37 @@ flutter run
 2. Add Flutter application
 3. Configure Firebase services
 4. Set up environment variables
+
+## Build Notes
+
+The production APK has been successfully built with the following fixes applied:
+
+### Configuration Fixes
+1. **Gradle Configuration**
+   - Fixed typo: `dependancies` → `dependencies`
+   - Updated Android Gradle Plugin: 7.3.0 → 8.7.3
+   - Updated Kotlin version: 1.7.10 → 2.1.0
+   - Updated Java compatibility: 1.8 → 17
+
+2. **Android Manifest**
+   - Added required permissions: INTERNET, LOCATION, CAMERA, STORAGE, NETWORK_STATE, WAKE_LOCK
+
+3. **MainActivity.kt**
+   - Fixed import syntax error in Kotlin file
+
+4. **ProGuard Configuration**
+   - Created proguard-rules.pro with Stripe SDK rules
+   - Configured code minification for release builds
+
+5. **Dependencies**
+   - Fixed package references and version placeholders
+   - Updated Material Design library to 1.9.0
+   - Configured Firebase BOM to 33.6.0
+
+### Build Output
+- Location: `build/app/outputs/flutter-apk/app-release.apk`
+- Size: 67.3MB (optimized with R8/ProGuard)
+- Includes all dependencies and assets
 
 ## Contributing
 
