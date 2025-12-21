@@ -30,6 +30,10 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+# Exception: Keep the release APK
+!/build/app/outputs/flutter-apk/
+/build/app/outputs/flutter-apk/*
+!/build/app/outputs/flutter-apk/app-release.apk
 
 # Symbolication related
 app.*.symbols
