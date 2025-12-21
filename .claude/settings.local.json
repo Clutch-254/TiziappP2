@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter:*)",
+      "Bash(where:*)",
+      "Bash(echo:*)",
+      "Bash(export PATH=\"/c/flutter/bin:$PATH\")",
+      "Bash(/c/flutter/bin/flutter:*)",
+      "Bash(/c/Users/Tyroon/flutter/bin/flutter pub get:*)",
+      "Bash(test:*)",
+      "Bash(/c/Users/Tyroon/flutter/bin/flutter build:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
