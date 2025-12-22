@@ -30,11 +30,15 @@ class _LoginPageState extends State<LoginPage> {
     }
     
       void loginUser() async {
-      String res = await AuthenServ().loginUser(
-        email: emailController.text,
-        password: passwordController.text,
-        
-      );
+      // Firebase disabled - bypass authentication
+      // String res = await AuthenServ().loginUser(
+      //   email: emailController.text,
+      //   password: passwordController.text,
+      // );
+
+      // Auto-login without Firebase
+      String res = "Success!";
+
       //if log in is successful user navigates to homepage else error message displayed
       if (res == "Success!") {
         setState(() {

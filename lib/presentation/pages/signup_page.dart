@@ -33,12 +33,16 @@ class _SignupPageState extends State<SignupPage> {
     }
 
     void signUpUser() async {
-      String res = await AuthenServ().signUpUser(
-        name: nameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        
-      );
+      // Firebase disabled - bypass authentication
+      // String res = await AuthenServ().signUpUser(
+      //   name: nameController.text,
+      //   email: emailController.text,
+      //   password: passwordController.text,
+      // );
+
+      // Auto-signup without Firebase
+      String res = "Success!";
+
       //if sign up is successful user navigates to homepage else error message displayed
       if (res == "Success!") {
         setState(() {
