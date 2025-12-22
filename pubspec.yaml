@@ -31,9 +31,10 @@ dependencies:
   flutter:
     sdk: flutter
   curved_navigation_bar: ^1.0.6
-  firebase_auth: ^5.3.3
-  cloud_firestore: ^5.5.0
-  firebase_core: ^3.8.0
+  # Firebase disabled - uncomment below to re-enable
+  # firebase_auth: ^5.3.3
+  # cloud_firestore: ^5.5.0
+  # firebase_core: ^3.8.0
   image_picker: ^1.1.2
   flutter_stripe: ^11.3.0
   sqflite: ^2.3.0

@@ -9,7 +9,14 @@
       "Bash(/c/Users/Tyroon/flutter/bin/flutter pub get:*)",
       "Bash(test:*)",
       "Bash(/c/Users/Tyroon/flutter/bin/flutter build:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nBuild: Generate production APK and fix all build errors\n\nThis commit includes the successfully built production APK and all fixes required to build it.\n\nChanges:\n- Fixed build configuration errors \\(typos, syntax issues\\)\n- Updated Android Gradle Plugin from 7.3.0 to 8.7.3\n- Updated Kotlin from 1.7.10 to 2.1.0\n- Updated Java compatibility from 1.8 to 17\n- Fixed MainActivity.kt import syntax error\n- Added missing Android permissions \\(INTERNET, LOCATION, etc.\\)\n- Created ProGuard rules for Stripe SDK\n- Fixed Material Design library configuration\n- Updated README with build information and APK download instructions\n- Added release APK \\(67.3MB\\) to repository\n\nBuild Output:\n- APK Location: build/app/outputs/flutter-apk/app-release.apk\n- APK Size: 67.3MB\n- Target: Android API 34\n- Minimum: Android API 21+\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git config:*)",
+      "Bash(choco --version:*)",
+      "Bash(git reset:*)",
+      "Bash(gh auth status:*)",
+      "Bash(choco install:*)"
     ]
   }
 }

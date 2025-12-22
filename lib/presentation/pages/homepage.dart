@@ -20,10 +20,11 @@ class _HomepageState extends State<Homepage> {
 
   // We no longer need the dynamic title getter as we're using conditional widgets
 
-  Stream? subItemStream;
-  onLoad() async {
-    subItemStream = await DatabaseMethods().getSubItem("Trainer");
-  }
+  // Firebase disabled - uncomment below to re-enable
+  // Stream? subItemStream;
+  // onLoad() async {
+  //   subItemStream = await DatabaseMethods().getSubItem("Trainer");
+  // }
 
   // Google Maps Controller
   final Completer<GoogleMapController> _controller = Completer();
@@ -43,7 +44,8 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    onLoad();
+    // Firebase disabled - uncomment below to re-enable
+    // onLoad();
     _determinePosition();
   }
 

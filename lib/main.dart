@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -32,15 +32,17 @@ void main() async {
         sqfliteFfiInit();
         databaseFactory = databaseFactoryFfi;
       }
-      await Firebase.initializeApp(
-          options: const FirebaseOptions(
-              apiKey: "AIzaSyCZ-B2EsfIptUSOcJjbzCm7PH1IoCEiXFs",
-              appId: "1:142062664626:web:28d1d6045059635232252c",
-              messagingSenderId: "142062664626",
-              projectId: "tiziapppro2",
-              storageBucket: "tiziapppro2.firebasestorage.app"));
+      // Firebase disabled - uncomment below to re-enable
+      // await Firebase.initializeApp(
+      //     options: const FirebaseOptions(
+      //         apiKey: "AIzaSyCZ-B2EsfIptUSOcJjbzCm7PH1IoCEiXFs",
+      //         appId: "1:142062664626:web:28d1d6045059635232252c",
+      //         messagingSenderId: "142062664626",
+      //         projectId: "tiziapppro2",
+      //         storageBucket: "tiziapppro2.firebasestorage.app"));
     } else {
-      await Firebase.initializeApp();
+      // Firebase disabled - uncomment below to re-enable
+      // await Firebase.initializeApp();
     }
   } catch (e) {
     print("Error initializing app: $e");

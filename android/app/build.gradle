@@ -1,7 +1,8 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    id "com.google.gms.google-services"
+    // Firebase disabled - uncomment below to re-enable
+    // id "com.google.gms.google-services"
     id "dev.flutter.flutter-gradle-plugin"
 }
 
@@ -64,7 +65,8 @@ flutter {
 }
 dependencies{
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
-    implementation("com.google.firebase:firebase-analytics")
+    // Firebase disabled - uncomment below to re-enable
+    // implementation(platform("com.google.firebase:firebase-bom:33.6.0"))
+    // implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.material:material:1.9.0")
 }
